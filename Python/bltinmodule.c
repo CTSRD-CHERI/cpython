@@ -3152,7 +3152,6 @@ _PyBuiltin_Init(PyInterpreterState *interp)
     }
     Py_DECREF(debug);
 #ifdef __CHERI_PURE_CAPABILITY__
-    // XXX use config->cheri_bits?
     cheri = PyLong_FromLong(__SIZEOF_CHERI_CAPABILITY__);
 #else
     cheri = PyLong_FromLong(0);

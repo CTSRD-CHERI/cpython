@@ -1009,7 +1009,6 @@ FREEZE_MODULE_BOOTSTRAP_DEPS
 FREEZE_MODULE_BOOTSTRAP
 PYTHON_FOR_FREEZE
 PYTHON_FOR_BUILD
-cheri_bits
 host_os
 host_vendor
 host_cpu
@@ -1065,7 +1064,6 @@ SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
-enable_cheri
 with_build_python
 with_pkg_config
 enable_universalsdk
@@ -1791,9 +1789,6 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-cheri=cheri_bits
-                          Enable CHERI support, this is needed beyond building
-                          with the right compiler flags
   --enable-universalsdk[=SDKDIR]
                           create a universal binary build. SDKDIR specifies
                           which macOS SDK should be used to perform the build,
@@ -3664,27 +3659,6 @@ fi
 
 # pybuilddir.txt will be created by --generate-posix-vars in the Makefile
 rm -f pybuilddir.txt
-
-# Check whether --enable-cheri was given.
-if test ${enable_cheri+y}
-then :
-  enableval=$enable_cheri;
-    case $enableval in
-    64|128)
-    cheri_bits=$enableval
-    ;;
-    *)
-    as_fn_error $? "--enable-cheri must specify the capability size (64, 128 bits), found ${enableval}" "$LINENO" 5
-    ;;
-    esac
-
-else $as_nop
-
-    cheri_bits=
-
-fi
-
-
 
 
 # Check whether --with-build-python was given.

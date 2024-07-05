@@ -145,24 +145,6 @@ AS_VAR_IF([cross_compiling], [maybe],
 # pybuilddir.txt will be created by --generate-posix-vars in the Makefile
 rm -f pybuilddir.txt
 
-AC_ARG_ENABLE([cheri],
-  [AS_HELP_STRING([--enable-cheri=cheri_bits],
-                  [Enable CHERI support, this is needed beyond building with the right compiler flags])],
-[
-    case $enableval in
-    64|128)
-    cheri_bits=$enableval
-    ;;
-    *)
-    AC_MSG_ERROR([--enable-cheri must specify the capability size (64, 128 bits), found ${enableval}])
-    ;;
-    esac
-],
-[
-    cheri_bits=
-])
-AC_SUBST([cheri_bits])
-
 AC_ARG_WITH([build-python],
   [AS_HELP_STRING([--with-build-python=python]PYTHON_VERSION,
                   [path to build python binary for cross compiling (default: _bootstrap_python or python]PYTHON_VERSION[)])],

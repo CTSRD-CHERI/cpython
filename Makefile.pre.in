@@ -1550,7 +1550,6 @@ regen-cases:
 	PYTHONPATH=$(srcdir)/Tools/cases_generator \
 	$(PYTHON_FOR_REGEN) \
 	    $(srcdir)/Tools/cases_generator/generate_cases.py \
-        --cheri-bits @cheri_bits@ \
 		--emit-line-directives \
 		-o $(srcdir)/Python/generated_cases.c.h.new \
 		-m $(srcdir)/Python/opcode_metadata.h.new \

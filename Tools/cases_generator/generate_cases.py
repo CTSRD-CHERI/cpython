@@ -1249,12 +1249,11 @@ def main():
     args = arg_parser.parse_args()  # Prints message and sys.exit(2) on error
     if len(args.input) == 0:
         args.input.append(DEFAULT_INPUT)
-    if args.cheri_bits:
-        # Ensure that this is in sync with Includes/internal/pycore_code.h and Lib/opcode.py
-        # Use 2 * pointer width because of alignment, the size is in code units
-        cache_effect_ptr_size = int(2 * args.cheri_bits / BITS_PER_CODE_UNIT)
-    else:
-        cache_effect_ptr_size = 4
+
+    # Ensure that this is in sync with Includes/internal/pycore_code.h and Lib/opcode.py
+    # Use 2 * pointer width because of alignment, the size is in code units
+    cache_effect_ptr_size = 16
+
     a = Analyzer(args.input, args.output, args.metadata, cache_effect_ptr_size)  # Raises OSError if input unreadable
     if args.emit_line_directives:
         a.emit_line_directives = True

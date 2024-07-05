@@ -71,26 +71,22 @@ typedef struct {
     uint16_t counter;
     uint16_t type_version[2];
     uint16_t keys_version[2];
-#ifdef __CHERI_PURE_CAPABILITY__
-    /**
-     * XXX-AM: This is used to store a PyObject pointer. We have two options:
-     * 1) expand it to store a capability; this makes the opcode larger and
-     *   requires alignment constraints, which are not easy to enforce at this
-     *   point.
-     * 2) leave the field as an integer address and re-construct the capability
-     *   somehow. This seems more of an option if we determine that the overhead
-     *   of capabilities here is too taxing and we decide to use an hybridized
-     *   approach.
-     * Take option (1) and just double the space so that we can always find an
-     * aligned boundary within it.
-     *
-     * Note that the size of this field must be arch-independent, because we
-     * rely on it in Lib/opcode.py
-     */
-    uint16_t descr[8 * 2];
-#else
-    uint16_t descr[4];
-#endif
+/**
+ * XXX-AM: This is used to store a PyObject pointer. We have two options:
+ * 1) expand it to store a capability; this makes the opcode larger and
+ *   requires alignment constraints, which are not easy to enforce at this
+ *   point.
+ * 2) leave the field as an integer address and re-construct the capability
+ *   somehow. This seems more of an option if we determine that the overhead
+ *   of capabilities here is too taxing and we decide to use an hybridized
+ *   approach.
+ * Take option (1) and just double the space so that we can always find an
+ * aligned boundary within it.
+ *
+ * Note that the size of this field must be arch-independent, because we
+ * rely on it in Lib/opcode.py
+ */
+    uint16_t descr[16];
 } _PyLoadMethodCache;
 
 static_assert(_Alignof(void *) <= 16,

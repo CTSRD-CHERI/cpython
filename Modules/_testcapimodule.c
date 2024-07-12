@@ -1287,13 +1287,13 @@ test_from_contiguous(PyObject* self, PyObject *Py_UNUSED(ignored))
         NULL,
         5 * itemsize,
         itemsize,
+        1,
+        1,
         NULL,
         &shape,
         &strides,
         NULL,
-        NULL,
-        1,
-        1
+        NULL
     };
     int *ptr;
     int i;

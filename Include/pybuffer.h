@@ -15,7 +15,6 @@ extern "C" {
  * struct layout and size must not be changed in any way, as it would
  * break the ABI.
  *
- * XXX-AM: CHERI breaks the stable abi3 here.
  */
 
 typedef struct {
@@ -24,14 +23,13 @@ typedef struct {
     Py_ssize_t len;
     Py_ssize_t itemsize;  /* This is Py_ssize_t so it can be
                              pointed to by strides in simple case.*/
+    int readonly;
+    int ndim;
     char *format;
     Py_ssize_t *shape;
     Py_ssize_t *strides;
     Py_ssize_t *suboffsets;
     void *internal;
-    int readonly;
-    int ndim;
-    int _pad[2];
 } Py_buffer;
 
 typedef int (*getbufferproc)(PyObject *, Py_buffer *, int);

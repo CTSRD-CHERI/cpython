@@ -2695,13 +2695,13 @@ static Py_buffer static_buffer = {
     NULL,           /* obj */
     12,             /* len */
     1,              /* itemsize */
+    1,              /* readonly */
+    1,              /* ndim */
     "B",            /* format */
     static_shape,   /* shape */
     static_strides, /* strides */
     NULL,           /* suboffsets */
-    NULL,           /* internal */
-    1,              /* readonly */
-    1,              /* ndim */
+    NULL            /* internal */
 };
 
 static PyObject *

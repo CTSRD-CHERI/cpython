@@ -718,8 +718,6 @@ typedef struct UnpicklerObject {
     Py_ssize_t next_read_idx;
     Py_ssize_t prefetched_idx;  /* index of first prefetched byte */
 
-    Py_ssize_t _pad0;           /* CHERI padding */
-
     PyObject *read;             /* read() method of the input stream. */
     PyObject *readinto;         /* readinto() method of the input stream. */
     PyObject *readline;         /* readline() method of the input stream. */
@@ -739,7 +737,6 @@ typedef struct UnpicklerObject {
     int proto;                  /* Protocol of the pickle loaded. */
     int fix_imports;            /* Indicate whether Unpickler should fix
                                    the name of globals pickled by Python 2.x. */
-    int _pad1[2];               /* CHERI padding */
 } UnpicklerObject;
 
 typedef struct {

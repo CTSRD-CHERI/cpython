@@ -219,6 +219,23 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 #endif
 }
 
+PyObject *
+PyNativePointer_FromUIntPtr(uintptr_t value) {
+    /* A parallel to PyNativePointer_FromVoidPointer method, allowing */
+    /* untagged uintptr_t, with the developer assuming the risks of this. */
+    PyNativePointerObject *p;
+    if (value == NULL) {
+        Py_INCREF(Py_NativeNULL);
+        return Py_NativeNULL;
+    }
+    /* Cheri validity tag check is skipped here, in constrast to FromVoidPointer method. */
+    p = PyObject_New(PyNativePointerObject, &_PyNativePointer_Type);
+    if (p == NULL)
+        return NULL;
+    p->pointer = (void *)value;
+    return (PyObject *)p;
+}
+
 uintptr_t
 PyNativePointer_AsUIntPtr(PyObject *vv)
 {

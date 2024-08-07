@@ -1832,7 +1832,7 @@ convert_bool:
 convert_bytes:
     return PyBytes_FromStringAndSize(ptr, 1);
 convert_pointer:
-    return PyNativePointer_FromVoidPointer(p);
+    return PyNativePointer_FromUIntPtr((uintptr_t)p);
 err_format:
     PyErr_Format(PyExc_NotImplementedError,
         "memoryview: format %s not supported", fmt);

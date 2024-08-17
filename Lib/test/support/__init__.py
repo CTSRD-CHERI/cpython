@@ -809,8 +809,6 @@ _align = '0n'
 if hasattr(sys, "getobjects"):
     _header = '2P' + _header
     _align = '0P'
-if hasattr(sys, "cheri_platform"):
-    _align = '0P'
 _vheader = _header + 'n'
 
 def calcobjsize(fmt):

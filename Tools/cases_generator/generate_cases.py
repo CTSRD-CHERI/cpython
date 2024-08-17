@@ -48,9 +48,6 @@ arg_parser.add_argument(
     "-l", "--emit-line-directives", help="Emit #line directives", action="store_true"
 )
 arg_parser.add_argument(
-    "--cheri-bits", help="CHERI capability bits", type=int,
-)
-arg_parser.add_argument(
     "input", nargs=argparse.REMAINDER, help="Instruction definition file(s)"
 )
 

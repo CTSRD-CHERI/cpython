@@ -3022,7 +3022,14 @@ class TestBufferProtocol(unittest.TestCase):
                 continue
             if fmt == 'c': # special case tested above
                 continue
-            m2 = m1.cast(fmt)
+            if fmt == 'P':
+                # Assert "TypeError: memoryview: length is not a multiple of itemsize"
+                self.assertRaises(TypeError, m1.cast, fmt)
+                # Using alternative memoryview with a length that is a multiple of 16
+                mP = memoryview(ndarray(list(range(96)), shape=[1,2,3,4,4], flags=ND_WRITABLE))
+                m2 = mP.cast(fmt)
+            else:
+                m2 = m1.cast(fmt)
             lo, hi = _range
             if fmt == 'd' or fmt == 'f':
                 lo, hi = -2**1024, 2**1024

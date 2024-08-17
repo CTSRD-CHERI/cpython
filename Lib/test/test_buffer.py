@@ -3022,7 +3022,7 @@ class TestBufferProtocol(unittest.TestCase):
                 continue
             if fmt == 'c': # special case tested above
                 continue
-            if fmt == 'P':
+            if __cheri_cap_size__ and fmt == 'P':
                 # Assert "TypeError: memoryview: length is not a multiple of itemsize"
                 self.assertRaises(TypeError, m1.cast, fmt)
                 # Using alternative memoryview with a length that is a multiple of 16

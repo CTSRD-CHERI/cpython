@@ -168,7 +168,7 @@ class StructTest(unittest.TestCase):
         self.assertLessEqual(struct.calcsize('l'), struct.calcsize('q'))
         self.assertGreaterEqual(struct.calcsize('n'), struct.calcsize('i'))
         # XXX-AM: Enforcing sizeof(ssize_t) >= sizeof(void *) does not seem portable
-        if not hasattr(sys, "cheri_platform"):
+        if not __cheri_cap_size__:
             self.assertGreaterEqual(struct.calcsize('n'), struct.calcsize('P'))
 
     def test_integers(self):

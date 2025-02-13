@@ -1,3 +1,3 @@
 
 # Build Instructions
-Run `./configure --with-pydebug --build=aarch64-unknown-freebsd --with-assertions --without-pymalloc --with-build-python=python3.10`
+Run `env PKG_CONFIG=/usr/local/bin/pkg-config ./configure --with-pydebug --build=aarch64-unknown-freebsd --with-assertions --without-pymalloc`

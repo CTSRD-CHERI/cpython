@@ -2514,11 +2514,11 @@ class TestBufferProtocol(unittest.TestCase):
         per_dim = '3n'
 
         items = list(range(8))
-        check(memoryview(b''), vsize(base_struct + 1 * per_dim))
+        check(memoryview(b''), vsize(base_struct, 1 * per_dim))
         a = ndarray(items, shape=[2, 4], format="b")
-        check(memoryview(a), vsize(base_struct + 2 * per_dim))
+        check(memoryview(a), vsize(base_struct, 2 * per_dim))
         a = ndarray(items, shape=[2, 2, 2], format="b")
-        check(memoryview(a), vsize(base_struct + 3 * per_dim))
+        check(memoryview(a), vsize(base_struct, 3 * per_dim))
 
     def test_memoryview_struct_module(self):
 

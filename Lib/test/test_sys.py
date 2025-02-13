@@ -31,7 +31,7 @@ def requires_subinterpreters(func):
     return deco(func)
 
 
-DICT_KEY_STRUCT_FORMAT = 'n2BI2n'
+DICT_KEY_STRUCT_FORMAT = 'n3BI2n0P'
 
 class DisplayHookTest(unittest.TestCase):
 
@@ -1337,9 +1337,9 @@ class SizeofTest(unittest.TestCase):
         vsize = test.support.calcvobjsize
         gc_header_size = self.gc_headsize
         # bool objects are not gc tracked
-        self.assertEqual(sys.getsizeof(True), vsize('') + self.longdigit)
+        self.assertEqual(sys.getsizeof(True), vsize('', '') + self.longdigit)
         # but lists are
-        self.assertEqual(sys.getsizeof([]), vsize('Pn') + gc_header_size)
+        self.assertEqual(sys.getsizeof([]), vsize('Pn', '') + gc_header_size)
 
     def test_errors(self):
         class BadSizeof:
@@ -1373,19 +1373,23 @@ class SizeofTest(unittest.TestCase):
             sys.getsizeof(OverflowSizeof(-sys.maxsize - 1))
 
     def test_default(self):
-        size = test.support.calcvobjsize
-        self.assertEqual(sys.getsizeof(True), size('') + self.longdigit)
-        self.assertEqual(sys.getsizeof(True, -1), size('') + self.longdigit)
+        size = test.support.calcobjsize
+        # XXX-JL: size include 'P' due to _PyLongValue including
+        #   uintptr_t lv_tag, which is potentially something that could
+        #   be changed to a different type
+        self.assertEqual(sys.getsizeof(True), size('P') + self.longdigit)
+        self.assertEqual(sys.getsizeof(True, -1), size('P') + self.longdigit)
 
     def test_objecttypes(self):
         # check all types defined in Objects/
         calcsize = struct.calcsize
         size = test.support.calcobjsize
         vsize = test.support.calcvobjsize
+        empty_vsize = vsize('', '')
         check = self.check_sizeof
         # bool
-        check(True, vsize('') + self.longdigit)
-        check(False, vsize('') + self.longdigit)
+        check(True, empty_vsize + self.longdigit)
+        check(False, empty_vsize + self.longdigit)
         # buffer
         # XXX
         # builtin_function_or_method
@@ -1394,12 +1398,12 @@ class SizeofTest(unittest.TestCase):
         samples = [b'', b'u'*100000]
         for sample in samples:
             x = bytearray(sample)
-            check(x, vsize('n2Pi') + x.__alloc__())
+            check(x, vsize('n2Pn', '') + x.__alloc__())
         # bytearray_iterator
         check(iter(bytearray()), size('nP'))
         # bytes
-        check(b'', vsize('n') + 1)
-        check(b'x' * 10, vsize('n') + 11)
+        check(b'', vsize('n', '') + 1)
+        check(b'x' * 10, vsize('n', '') + 11)
         # cell
         def get_cell():
             x = 42
@@ -1436,13 +1440,13 @@ class SizeofTest(unittest.TestCase):
         # empty dict
         check({}, size('nQ2P'))
         # dict (string key)
-        check({"a": 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 8 + (8*2//3)*calcsize('2P'))
+        check({"a": 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT + "8B0P") + (8*2//3)*calcsize('2P'))
         longdict = {str(i): i for i in range(8)}
-        check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 16 + (16*2//3)*calcsize('2P'))
+        check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT + "16B0P") + (16*2//3)*calcsize('2P'))
         # dict (non-string key)
-        check({1: 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 8 + (8*2//3)*calcsize('n2P'))
+        check({1: 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT + "8B0P") + (8*2//3)*calcsize('n2P'))
         longdict = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
-        check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 16 + (16*2//3)*calcsize('n2P'))
+        check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT + "16B0P") + (16*2//3)*calcsize('n2P'))
         # dictionary-keyview
         check({}.keys(), size('P'))
         # dictionary-valueview
@@ -1481,12 +1485,12 @@ class SizeofTest(unittest.TestCase):
         # float
         check(float(0), size('d'))
         # sys.floatinfo
-        check(sys.float_info, vsize('') + self.P * len(sys.float_info))
+        check(sys.float_info, empty_vsize + self.P * len(sys.float_info))
         # frame
         def func():
             return sys._getframe()
         x = func()
-        check(x, size('3Pi3c7P2ic??2P'))
+        check(x, size('3Pi3c8PiHc??2P'))
         # function
         def func(): pass
         check(func, size('15Pi'))
@@ -1503,17 +1507,17 @@ class SizeofTest(unittest.TestCase):
             check(bar, size('PP'))
         # generator
         def get_gen(): yield 1
-        check(get_gen(), size('PP4P4c7P2ic??2P'))
+        check(get_gen(), size('PP4P3cb8PiHc??2P'))
         # iterator
         check(iter('abc'), size('lP'))
         # callable-iterator
         import re
         check(re.finditer('',''), size('2P'))
         # list
-        check(list([]), vsize('Pn'))
-        check(list([1]), vsize('Pn') + 2*self.P)
-        check(list([1, 2]), vsize('Pn') + 2*self.P)
-        check(list([1, 2, 3]), vsize('Pn') + 4*self.P)
+        check(list([]), vsize('Pn', ''))
+        check(list([1]), vsize('Pn', '') + 2*self.P)
+        check(list([1, 2]), vsize('Pn', '') + 2*self.P)
+        check(list([1, 2, 3]), vsize('Pn', '') + 4*self.P)
         # sortwrapper (list)
         # XXX
         # cmpwrapper (list)
@@ -1523,13 +1527,13 @@ class SizeofTest(unittest.TestCase):
         # listreverseiterator (list)
         check(reversed([]), size('nP'))
         # int
-        check(0, vsize('') + self.longdigit)
-        check(1, vsize('') + self.longdigit)
-        check(-1, vsize('') + self.longdigit)
+        check(0, empty_vsize + self.longdigit)
+        check(1, empty_vsize + self.longdigit)
+        check(-1, empty_vsize + self.longdigit)
         PyLong_BASE = 2**sys.int_info.bits_per_digit
-        check(int(PyLong_BASE), vsize('') + 2*self.longdigit)
-        check(int(PyLong_BASE**2-1), vsize('') + 2*self.longdigit)
-        check(int(PyLong_BASE**2), vsize('') + 3*self.longdigit)
+        check(int(PyLong_BASE), empty_vsize + 2*self.longdigit)
+        check(int(PyLong_BASE**2-1), empty_vsize + 2*self.longdigit)
+        check(int(PyLong_BASE**2), empty_vsize + 3*self.longdigit)
         # module
         check(unittest, size('PnPPP'))
         # None
@@ -1582,12 +1586,12 @@ class SizeofTest(unittest.TestCase):
         # super
         check(super(int), size('3P'))
         # tuple
-        check((), vsize(''))
-        check((1,2,3), vsize('') + 3*self.P)
+        check((), empty_vsize)
+        check((1,2,3), empty_vsize + 3*self.P)
         # type
         # static type: PyTypeObject
         fmt = 'P2nPI13Pl4Pn9Pn12PIPc'
-        s = vsize('2P' + fmt)
+        s = vsize('2P' + fmt, '')
         check(int, s)
         # class
         s = vsize(fmt +                 # PyTypeObject
@@ -1598,6 +1602,7 @@ class SizeofTest(unittest.TestCase):
                   '2P'                  # PyBufferProcs
                   '6P'
                   '1PI'                 # Specializer cache
+                  , ''                  # fmt_items added after _align
                   )
         class newstyleclass(object): pass
         # Separate block for PyDictKeysObject with 8 keys and 5 entries
@@ -1619,7 +1624,7 @@ class SizeofTest(unittest.TestCase):
                    '\u0100'*40, '\uffff'*100,
                    '\U00010000'*30, '\U0010ffff'*100]
         # also update field definitions in test_unicode.test_raiseMemError
-        asciifields = "nnb"
+        asciifields = "nnb0P"
         compactfields = asciifields + "nP"
         unicodefields = compactfields + "P"
         for s in samples:
@@ -1698,7 +1703,7 @@ class SizeofTest(unittest.TestCase):
         # symtable entry
         # XXX
         # sys.flags
-        check(sys.flags, vsize('') + self.P * len(sys.flags))
+        check(sys.flags, vsize('', '') + self.P * len(sys.flags))
 
     def test_asyncgen_hooks(self):
         old = sys.get_asyncgen_hooks()

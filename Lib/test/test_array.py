@@ -1124,14 +1124,14 @@ class BaseTest:
     @support.cpython_only
     def test_sizeof_with_buffer(self):
         a = array.array(self.typecode, self.example)
-        basesize = support.calcvobjsize('Pn2Pi')
+        basesize = support.calcvobjsize('Pn2Pi', '')
         buffer_size = a.buffer_info()[1] * a.itemsize
         support.check_sizeof(self, a, basesize + buffer_size)
 
     @support.cpython_only
     def test_sizeof_without_buffer(self):
         a = array.array(self.typecode)
-        basesize = support.calcvobjsize('Pn2Pi')
+        basesize = support.calcvobjsize('Pn2Pi', '')
         support.check_sizeof(self, a, basesize)
 
     def test_initialize_with_unicode(self):

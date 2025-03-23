@@ -10,6 +10,11 @@
 #include <stdlib.h>               // malloc()
 #include <stdbool.h>
 
+// #ifdef __CHERI_PURE_CAPABILITY__
+// #include <cheriintrin.h>
+// #endif
+
+
 #undef  uint
 #define uint pymem_uint
 
@@ -1553,7 +1558,12 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
         bp = allocate_from_new_pool(state, size);
     }
 
+#ifdef __CHERI_PURE_CAPABILITY__
+	return (void *)__builtin_cheri_bounds_set(bp, nbytes); 
+#else
     return (void *)bp;
+#endif
+	
 }
 
 

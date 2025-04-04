@@ -1983,6 +1983,8 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
 
     DATA = b"12345abcde" * 16 * 1024  # 160 KiB
 
+                             
+
     class MyProto(asyncio.Protocol):
 
         def __init__(self, loop):
@@ -2042,8 +2044,10 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
     def prepare(self):
         sock = self.make_socket()
         proto = self.MyProto(self.loop)
+        # print("Creating server now..")
         server = self.run_loop(self.loop.create_server(
             lambda: proto, socket_helper.HOST, 0, family=socket.AF_INET))
+        # print("Server created:", server)
         addr = server.sockets[0].getsockname()
 
         for _ in range(10):
@@ -2070,8 +2074,17 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
 
         return sock, proto
 
+    # def test_sock_sendfile_native_not_implemented(self):
+        # m_sock = mock.Mock()
+        # m_file = mock.Mock()
+    #    sock, proto = self.prepare()
+
+    #    with self.assertRaises(NotImplementedError):
+    #        self.loop._sock_sendfile_native(sock, self.file, 0, None) 
+
     def test__sock_sendfile_native_failure(self):
         sock, proto = self.prepare()
+        # print("Did I finish here?")
 
         with self.assertRaisesRegex(asyncio.SendfileNotAvailableError,
                                     "sendfile is not available"):

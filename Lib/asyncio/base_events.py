@@ -1946,7 +1946,10 @@ class BaseEventLoop(events.AbstractEventLoop):
             when = self._scheduled[0]._when
             timeout = min(max(0, when - self.time()), MAXIMUM_SELECT_TIMEOUT)
 
+        # print("Waiting for events on selector...")
         event_list = self._selector.select(timeout)
+        # print("Got events:", event_list)
+
         self._process_events(event_list)
         # Needed to break cycles when an exception occurs.
         event_list = None

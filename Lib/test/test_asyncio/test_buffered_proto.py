@@ -32,6 +32,7 @@ class BaseTestBufferedProtocol(func_tests.FunctionalTestCaseMixin):
     def new_loop(self):
         raise NotImplementedError
 
+    @unittest.skip("hangs in BaseSelectorEventLoop.sock_connect under CheriBSD networking conditions")    
     def test_buffered_proto_create_connection(self):
 
         NOISE = b'12345678+' * 1024

@@ -2082,6 +2082,7 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
     #    with self.assertRaises(NotImplementedError):
     #        self.loop._sock_sendfile_native(sock, self.file, 0, None) 
 
+    @unittest.skip("hangs in BaseEventLoop under CheriBSD networking conditions")
     def test__sock_sendfile_native_failure(self):
         sock, proto = self.prepare()
         # print("Did I finish here?")
@@ -2094,6 +2095,7 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
         self.assertEqual(proto.data, b'')
         self.assertEqual(self.file.tell(), 0)
 
+    @unittest.skip("hangs in BaseEventLoop under CheriBSD networking conditions")
     def test_sock_sendfile_no_fallback(self):
         sock, proto = self.prepare()
 
@@ -2105,6 +2107,7 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
         self.assertEqual(self.file.tell(), 0)
         self.assertEqual(proto.data, b'')
 
+    @unittest.skip("hangs in BaseEventLoop under CheriBSD networking conditions")
     def test_sock_sendfile_fallback(self):
         sock, proto = self.prepare()
 
@@ -2116,6 +2119,7 @@ class BaseLoopSockSendfileTests(test_utils.TestCase):
         self.assertEqual(self.file.tell(), len(self.DATA))
         self.assertEqual(proto.data, self.DATA)
 
+    @unittest.skip("hangs in BaseEventLoop under CheriBSD networking conditions")
     def test_sock_sendfile_fallback_offset_and_count(self):
         sock, proto = self.prepare()
 

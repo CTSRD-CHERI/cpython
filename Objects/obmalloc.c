@@ -10,9 +10,9 @@
 #include <stdlib.h>               // malloc()
 #include <stdbool.h>
 
-// #ifdef __CHERI_PURE_CAPABILITY__
+#ifdef __CHERI_PURE_CAPABILITY__
 // #include <cheriintrin.h>
-// #endif
+#endif
 
 
 #undef  uint

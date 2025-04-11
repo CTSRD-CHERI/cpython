@@ -145,10 +145,12 @@ Tools/msi/obj
 Tools/ssl/amd64
 Tools/ssl/win32
 Tools/freeze/test/outdir
-build-hybrid/
-build-purecap/
-build-benchmark/
-prev-build-purecap/
+# build-*/python.core
+build-hybrid/python.core
+build-purecap/python.core
+build-benchmark/python.core
+
+.git-rewrite/
 
 ## all third party packages required build from source for specific ABIs
 site-packages/

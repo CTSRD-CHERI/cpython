@@ -10,13 +10,13 @@ build_time_vars = {'ABIFLAGS': 'd',
  'ANDROID_API_LEVEL': 0,
  'AR': 'ar',
  'ARFLAGS': 'rcs',
- 'BASECFLAGS': '-fno-strict-overflow',
+ 'BASECFLAGS': '-fno-strict-overflow -Wsign-compare',
  'BASECPPFLAGS': '-IObjects -IInclude -IPython',
  'BASEMODLIBS': '',
  'BINDIR': '/home/qianhuiwang/cpython/build-purecap/bin',
  'BINLIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
  'BLDLIBRARY': 'libpython3.12d.a',
- 'BLDSHARED': 'cc -pthread -shared -mabi=purecap',
+ 'BLDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib',
  'BOOTSTRAP_HEADERS': '\\',
  'BUILDEXE': '',
  'BUILDPYTHON': 'python',
@@ -25,7 +25,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'BYTESTR_DEPS': '\\',
  'CC': 'cc -pthread',
  'CCSHARED': '-fPIC',
- 'CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap',
+ 'CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall -mabi=purecap',
  'CFLAGSFORSHARED': '',
  'CFLAGS_ALIASING': '-fno-strict-aliasing',
  'CFLAGS_NODIST': '',
@@ -35,15 +35,19 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGFILES': 'configure configure.ac acconfig.h pyconfig.h.in '
                 'Makefile.pre.in',
  'CONFIGURE_CFLAGS': '-mabi=purecap',
- 'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
+ 'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Wextra -Wno-unused-parameter '
+                            '-Wno-missing-field-initializers '
+                            '-Wstrict-prototypes '
+                            '-Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
- 'CONFIGURE_CPPFLAGS': '',
- 'CONFIGURE_LDFLAGS': '-mabi=purecap',
+ 'CONFIGURE_CPPFLAGS': '-mabi=purecap -I/usr/local/include',
+ 'CONFIGURE_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
- 'CONFIG_ARGS': "'CFLAGS=-mabi=purecap' 'PKG_CONFIG=/usr/local/bin/pkg-config' "
+ 'CONFIG_ARGS': "'CFLAGS=-mabi=purecap' 'CPPFLAGS=-mabi=purecap "
+                "-I/usr/local/include' 'PKG_CONFIG=/usr/local/bin/pkg-config' "
                 "'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' "
-                "'LDFLAGS=-mabi=purecap' '--with-pydebug' "
+                "'LDFLAGS=-mabi=purecap -L/usr/local/lib' '--with-pydebug' "
                 "'--build=aarch64-unknown-freebsd' '--with-assertions' "
                 "'--prefix=/home/qianhuiwang/cpython/build-purecap' "
                 "'build_alias=aarch64-unknown-freebsd' 'CC=cc'",
@@ -56,7 +60,8 @@ build_time_vars = {'ABIFLAGS': 'd',
  'COVERAGE_REPORT_OPTIONS': '--rc lcov_branch_coverage=1 --branch-coverage '
                             '--title "CPython 3.12 LCOV report [commit $(shell '
                             'git --git-dir ../.git rev-parse --short HEAD)]"',
- 'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include',
+ 'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include -mabi=purecap '
+             '-I/usr/local/include',
  'CXX': 'c++ -pthread',
  'DEEPFREEZE_C': 'Python/deepfreeze/deepfreeze.c',
  'DEEPFREEZE_DEPS': '../Tools/build/deepfreeze.py _bootstrap_python '
@@ -123,7 +128,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'HAVE_ASM_TYPES_H': 0,
  'HAVE_ATANH': 1,
  'HAVE_BIND': 1,
- 'HAVE_BIND_TEXTDOMAIN_CODESET': 0,
+ 'HAVE_BIND_TEXTDOMAIN_CODESET': 1,
  'HAVE_BLUETOOTH_BLUETOOTH_H': 0,
  'HAVE_BLUETOOTH_H': 1,
  'HAVE_BROKEN_MBSTOWCS': 0,
@@ -240,7 +245,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'HAVE_GCC_ASM_FOR_X87': 0,
  'HAVE_GCC_UINT128_T': 1,
  'HAVE_GDBM_DASH_NDBM_H': 0,
- 'HAVE_GDBM_H': 0,
+ 'HAVE_GDBM_H': 1,
  'HAVE_GDBM_NDBM_H': 0,
  'HAVE_GETADDRINFO': 1,
  'HAVE_GETC_UNLOCKED': 1,
@@ -315,7 +320,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'HAVE_LIBDL': 1,
  'HAVE_LIBDLD': 0,
  'HAVE_LIBIEEE': 0,
- 'HAVE_LIBINTL_H': 0,
+ 'HAVE_LIBINTL_H': 1,
  'HAVE_LIBRESOLV': 0,
  'HAVE_LIBSENDFILE': 0,
  'HAVE_LIBSQLITE3': 1,
@@ -616,28 +621,32 @@ build_time_vars = {'ABIFLAGS': 'd',
  'IO_H': 'Modules/_io/_iomodule.h',
  'IO_OBJS': '\\',
  'LDCXXSHARED': 'c++ -pthread -shared',
- 'LDFLAGS': '-mabi=purecap',
+ 'LDFLAGS': '-mabi=purecap -L/usr/local/lib',
  'LDFLAGS_NODIST': '',
  'LDLIBRARY': 'libpython3.12d.a',
  'LDLIBRARYDIR': '',
- 'LDSHARED': 'cc -pthread -shared -mabi=purecap',
+ 'LDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib',
  'LDVERSION': '3.12d',
  'LIBC': '',
  'LIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
  'LIBDIR': '/home/qianhuiwang/cpython/build-purecap/lib',
  'LIBEXPAT_A': 'Modules/expat/libexpat.a',
- 'LIBEXPAT_CFLAGS': '-I../Modules/expat -fno-strict-overflow -g -Og -Wall '
-                    '-mabi=purecap -std=c11 '
-                    '-Werror=implicit-function-declaration '
+ 'LIBEXPAT_CFLAGS': '-I../Modules/expat -fno-strict-overflow -Wsign-compare -g '
+                    '-Og -Wall -mabi=purecap -std=c11 -Wextra '
+                    '-Wno-unused-parameter -Wno-missing-field-initializers '
+                    '-Wstrict-prototypes -Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
-                    '-IInclude -IPython -I. -I../Include -fPIC',
+                    '-IInclude -IPython -I. -I../Include -mabi=purecap '
+                    '-I/usr/local/include -fPIC',
  'LIBEXPAT_HEADERS': '\\',
  'LIBEXPAT_OBJS': '\\',
  'LIBHACL_CFLAGS': '-I../Modules/_hacl/include -D_BSD_SOURCE -D_DEFAULT_SOURCE '
-                   '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
+                   '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
+                   '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
+                   '-Wno-missing-field-initializers -Wstrict-prototypes '
                    '-Werror=implicit-function-declaration -fvisibility=hidden  '
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
-                   '-I../Include -fPIC',
+                   '-I../Include -mabi=purecap -I/usr/local/include -fPIC',
  'LIBHACL_HEADERS': '\\',
  'LIBHACL_SHA2_A': 'Modules/_hacl/libHacl_Hash_SHA2.a',
  'LIBHACL_SHA2_HEADERS': '\\',
@@ -646,10 +655,13 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBMPDEC_A': 'Modules/_decimal/libmpdec/libmpdec.a',
  'LIBMPDEC_CFLAGS': '-I../Modules/_decimal/libmpdec -DTEST_COVERAGE '
                     '-DCONFIG_64=1 -DANSI=1 -DHAVE_UINT128_T=1 '
-                    '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
+                    '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
+                    '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
+                    '-Wno-missing-field-initializers -Wstrict-prototypes '
                     '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
-                    '-IInclude -IPython -I. -I../Include -fPIC',
+                    '-IInclude -IPython -I. -I../Include -mabi=purecap '
+                    '-I/usr/local/include -fPIC',
  'LIBMPDEC_HEADERS': '\\',
  'LIBMPDEC_OBJS': '\\',
  'LIBOBJDIR': 'Python/',
@@ -661,7 +673,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBRARY_DEPS': 'libpython3.12d.a',
  'LIBRARY_OBJS': '\\',
  'LIBRARY_OBJS_OMIT_FROZEN': '\\',
- 'LIBS': '-ldl  -lutil',
+ 'LIBS': '-lintl -ldl  -lutil',
  'LIBSUBDIRS': 'asyncio \\',
  'LINKCC': 'cc -pthread',
  'LINKFORSHARED': '-Wl,--export-dynamic',
@@ -687,21 +699,21 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '_json  _lsprof  _opcode  _pickle  _queue  _random  '
                    '_struct  _xxsubinterpreters  _xxinterpchannels  _zoneinfo  '
                    'audioop  math  cmath  _statistics  _datetime  _decimal  '
-                   'binascii  _bz2  _lzma  zlib  _dbm  readline  _md5  _sha1  '
-                   '_sha2  _sha3  _blake2  pyexpat  _elementtree  _codecs_cn  '
-                   '_codecs_hk  _codecs_iso2022  _codecs_jp  _codecs_kr  '
-                   '_codecs_tw  _multibytecodec  unicodedata  _crypt  fcntl  '
-                   'grp  mmap  nis  ossaudiodev  _posixsubprocess  resource  '
-                   'select  _socket  syslog  termios  _posixshmem  '
-                   '_multiprocessing  _ctypes  _curses  _curses_panel  '
-                   '_sqlite3  _ssl  _hashlib  _uuid  xxsubtype  _xxtestfuzz  '
-                   '_testbuffer  _testinternalcapi  _testcapi  _testclinic  '
-                   '_testimportmultiple  _testmultiphase  _testsinglephase  '
-                   '_ctypes_test  xxlimited  xxlimited_35  atexit  '
-                   'faulthandler  posix  _signal  _tracemalloc  _codecs  '
-                   '_collections  errno  _io  itertools  _sre  _thread  time  '
-                   '_typing  _weakref  _abc  _functools  _locale  _operator  '
-                   '_stat  _symtable  pwd',
+                   'binascii  _bz2  _lzma  zlib  _dbm  _gdbm  readline  _md5  '
+                   '_sha1  _sha2  _sha3  _blake2  pyexpat  _elementtree  '
+                   '_codecs_cn  _codecs_hk  _codecs_iso2022  _codecs_jp  '
+                   '_codecs_kr  _codecs_tw  _multibytecodec  unicodedata  '
+                   '_crypt  fcntl  grp  mmap  nis  ossaudiodev  '
+                   '_posixsubprocess  resource  select  _socket  syslog  '
+                   'termios  _posixshmem  _multiprocessing  _ctypes  _curses  '
+                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  xxsubtype  '
+                   '_xxtestfuzz  _testbuffer  _testinternalcapi  _testcapi  '
+                   '_testclinic  _testimportmultiple  _testmultiphase  '
+                   '_testsinglephase  _ctypes_test  xxlimited  xxlimited_35  '
+                   'atexit  faulthandler  posix  _signal  _tracemalloc  '
+                   '_codecs  _collections  errno  _io  itertools  _sre  '
+                   '_thread  time  _typing  _weakref  _abc  _functools  '
+                   '_locale  _operator  _stat  _symtable  pwd',
  'MODDISABLED_NAMES': '',
  'MODLIBS': '',
  'MODOBJS': 'Modules/atexitmodule.o  Modules/faulthandler.o  '
@@ -721,8 +733,8 @@ build_time_vars = {'ABIFLAGS': 'd',
                     '_lsprof _opcode _pickle _queue _random _struct '
                     '_xxsubinterpreters _xxinterpchannels _zoneinfo audioop '
                     'math cmath _statistics _datetime _decimal binascii _bz2 '
-                    '_lzma zlib _dbm readline _md5 _sha1 _sha2 _sha3 _blake2 '
-                    'pyexpat _elementtree _codecs_cn _codecs_hk '
+                    '_lzma zlib _dbm _gdbm readline _md5 _sha1 _sha2 _sha3 '
+                    '_blake2 pyexpat _elementtree _codecs_cn _codecs_hk '
                     '_codecs_iso2022 _codecs_jp _codecs_kr _codecs_tw '
                     '_multibytecodec unicodedata _crypt fcntl grp mmap nis '
                     'ossaudiodev _posixsubprocess resource select _socket '
@@ -874,7 +886,9 @@ build_time_vars = {'ABIFLAGS': 'd',
  'MODULE__ELEMENTTREE_DEPS': '../Modules/pyexpat.c \\ Modules/expat/libexpat.a',
  'MODULE__ELEMENTTREE_STATE': 'yes',
  'MODULE__FUNCTOOLS_LDFLAGS': '',
- 'MODULE__GDBM_STATE': 'missing',
+ 'MODULE__GDBM_CFLAGS': '',
+ 'MODULE__GDBM_LDFLAGS': '-lgdbm',
+ 'MODULE__GDBM_STATE': 'yes',
  'MODULE__HASHLIB_CFLAGS': '',
  'MODULE__HASHLIB_DEPS': '../Modules/hashlib.h',
  'MODULE__HASHLIB_LDFLAGS': '-lcrypto',
@@ -1012,34 +1026,48 @@ build_time_vars = {'ABIFLAGS': 'd',
  'PYTHON_HEADERS': '\\',
  'PYTHON_OBJS': '\\',
  'PY_BUILTIN_HASHLIB_HASHES': '"md5,sha1,sha2,sha3,blake2"',
- 'PY_BUILTIN_MODULE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap '
-                             '-std=c11 -Werror=implicit-function-declaration '
+ 'PY_BUILTIN_MODULE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
+                             '-mabi=purecap -std=c11 -Wextra '
+                             '-Wno-unused-parameter '
+                             '-Wno-missing-field-initializers '
+                             '-Wstrict-prototypes '
+                             '-Werror=implicit-function-declaration '
                              '-fvisibility=hidden  -I../Include/internal '
                              '-IObjects -IInclude -IPython -I. -I../Include '
+                             '-mabi=purecap -I/usr/local/include '
                              '-DPy_BUILD_CORE_BUILTIN',
- 'PY_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap',
- 'PY_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
+ 'PY_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall -mabi=purecap',
+ 'PY_CFLAGS_NODIST': '-std=c11 -Wextra -Wno-unused-parameter '
+                     '-Wno-missing-field-initializers -Wstrict-prototypes '
+                     '-Werror=implicit-function-declaration '
                      '-fvisibility=hidden  -I../Include/internal',
  'PY_COERCE_C_LOCALE': 1,
- 'PY_CORE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
+ 'PY_CORE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
+                   '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
+                   '-Wno-missing-field-initializers -Wstrict-prototypes '
                    '-Werror=implicit-function-declaration -fvisibility=hidden  '
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
-                   '-I../Include -DPy_BUILD_CORE',
- 'PY_CORE_LDFLAGS': '-mabi=purecap',
- 'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include',
+                   '-I../Include -mabi=purecap -I/usr/local/include '
+                   '-DPy_BUILD_CORE',
+ 'PY_CORE_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
+ 'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include -mabi=purecap '
+                '-I/usr/local/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
- 'PY_LDFLAGS': '-mabi=purecap',
+ 'PY_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
  'PY_LDFLAGS_NODIST': '',
- 'PY_LDFLAGS_NOLTO': '-mabi=purecap',
+ 'PY_LDFLAGS_NOLTO': '-mabi=purecap -L/usr/local/lib',
  'PY_SQLITE_ENABLE_LOAD_EXTENSION': 0,
  'PY_SQLITE_HAVE_SERIALIZE': 1,
  'PY_SSL_DEFAULT_CIPHERS': 1,
  'PY_SSL_DEFAULT_CIPHER_STRING': 0,
- 'PY_STDMODULE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap '
-                        '-std=c11 -Werror=implicit-function-declaration '
+ 'PY_STDMODULE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
+                        '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
+                        '-Wno-missing-field-initializers -Wstrict-prototypes '
+                        '-Werror=implicit-function-declaration '
                         '-fvisibility=hidden  -I../Include/internal -IObjects '
-                        '-IInclude -IPython -I. -I../Include',
+                        '-IInclude -IPython -I. -I../Include -mabi=purecap '
+                        '-I/usr/local/include',
  'PY_SUPPORT_TIER': 0,
  'Py_DEBUG': 1,
  'Py_ENABLE_SHARED': 0,
@@ -1076,10 +1104,10 @@ build_time_vars = {'ABIFLAGS': 'd',
                'Modules/_decimal.cpython-312d.so '
                'Modules/binascii.cpython-312d.so Modules/_bz2.cpython-312d.so '
                'Modules/_lzma.cpython-312d.so Modules/zlib.cpython-312d.so '
-               'Modules/_dbm.cpython-312d.so Modules/readline.cpython-312d.so '
-               'Modules/_md5.cpython-312d.so Modules/_sha1.cpython-312d.so '
-               'Modules/_sha2.cpython-312d.so Modules/_sha3.cpython-312d.so '
-               'Modules/_blake2.cpython-312d.so '
+               'Modules/_dbm.cpython-312d.so Modules/_gdbm.cpython-312d.so '
+               'Modules/readline.cpython-312d.so Modules/_md5.cpython-312d.so '
+               'Modules/_sha1.cpython-312d.so Modules/_sha2.cpython-312d.so '
+               'Modules/_sha3.cpython-312d.so Modules/_blake2.cpython-312d.so '
                'Modules/pyexpat.cpython-312d.so '
                'Modules/_elementtree.cpython-312d.so '
                'Modules/_codecs_cn.cpython-312d.so '
@@ -1118,7 +1146,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                'Modules/xxlimited.cpython-312d.so '
                'Modules/xxlimited_35.cpython-312d.so',
  'SHELL': '/bin/sh -e',
- 'SHLIBS': '-ldl  -lutil',
+ 'SHLIBS': '-lintl -ldl  -lutil',
  'SHLIB_SUFFIX': '.so',
  'SIGNED_RIGHT_SHIFT_ZERO_FILLS': 0,
  'SITEPATH': '',
@@ -1184,7 +1212,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'WITH_DYLD': 0,
  'WITH_EDITLINE': 0,
  'WITH_FREELISTS': 1,
- 'WITH_LIBINTL': 0,
+ 'WITH_LIBINTL': 1,
  'WITH_NEXT_FRAMEWORK': 0,
  'WITH_PYMALLOC': 1,
  'WITH_VALGRIND': 0,

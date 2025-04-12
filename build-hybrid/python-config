@@ -35,15 +35,15 @@ exec_prefix="${prefix}"
 exec_prefix_real=${prefix_real}
 includedir=$(echo "${prefix}/include" | sed "s#$prefix#$prefix_real#")
 libdir=$(echo "${exec_prefix}/lib" | sed "s#$prefix#$prefix_real#")
-CFLAGS=$(echo "-march=morello -mabi=aapcs" | sed "s#$prefix#$prefix_real#")
+CFLAGS=$(echo "-mabi=aapcs" | sed "s#$prefix#$prefix_real#")
 VERSION="3.12"
 LIBM="-lm"
 LIBC=""
 SYSLIBS="$LIBM $LIBC"
 ABIFLAGS="d"
-LIBS=" -ldl  -lutil $SYSLIBS"
-LIBS_EMBED="-lpython${VERSION}${ABIFLAGS} -ldl  -lutil $SYSLIBS"
-BASECFLAGS=" -fno-strict-overflow"
+LIBS=" -lintl -ldl  -lutil $SYSLIBS"
+LIBS_EMBED="-lpython${VERSION}${ABIFLAGS} -lintl -ldl  -lutil $SYSLIBS"
+BASECFLAGS=" -fno-strict-overflow -Wsign-compare"
 LDLIBRARY="libpython${VERSION}${ABIFLAGS}.a"
 OPT="-g -Og -Wall"
 PY_ENABLE_SHARED="0"

@@ -80,13 +80,13 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
 OPT=		-g -Og -Wall
-BASECFLAGS=	 -fno-strict-overflow
+BASECFLAGS=	 -fno-strict-overflow -Wsign-compare
 BASECPPFLAGS=	-IObjects -IInclude -IPython
 CONFIGURE_CFLAGS=	-mabi=purecap-benchmark
 # CFLAGS_NODIST is used for building the interpreter and stdlib C extensions.
 # Use it when a compiler flag should _not_ be part of the distutils CFLAGS
 # once Python is installed (Issue #21121).
-CONFIGURE_CFLAGS_NODIST= -std=c11 -Werror=implicit-function-declaration -fvisibility=hidden
+CONFIGURE_CFLAGS_NODIST= -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration -fvisibility=hidden
 # LDFLAGS_NODIST is used in the same manner as CFLAGS_NODIST.
 # Use it when a linker flag should _not_ be part of the distutils LDFLAGS
 # once Python is installed (bpo-35257)
@@ -94,8 +94,8 @@ CONFIGURE_LDFLAGS_NODIST=
 # LDFLAGS_NOLTO is an extra flag to disable lto. It is used to speed up building
 # of _bootstrap_python and _freeze_module tools, which don't need LTO.
 CONFIGURE_LDFLAGS_NOLTO=
-CONFIGURE_CPPFLAGS=	
-CONFIGURE_LDFLAGS=	-mabi=purecap-benchmark -lmd
+CONFIGURE_CPPFLAGS=	-mabi=purecap-benchmark -I/usr/local64cb/include
+CONFIGURE_LDFLAGS=	-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd
 # Avoid assigning CFLAGS, LDFLAGS, etc. so users can use them on the
 # command line to append to these values without stomping the pre-set
 # values.
@@ -314,7 +314,9 @@ MODULE__DECIMAL_LDFLAGS=-lm $(LIBMPDEC_A)
 MODULE__DBM_STATE=yes
 MODULE__DBM_CFLAGS=-DUSE_NDBM
 MODULE__DBM_LDFLAGS=
-MODULE__GDBM_STATE=missing
+MODULE__GDBM_STATE=yes
+MODULE__GDBM_CFLAGS=
+MODULE__GDBM_LDFLAGS=-lgdbm
 MODULE_NIS_STATE=yes
 MODULE_NIS_CFLAGS=
 MODULE_NIS_LDFLAGS=
@@ -370,7 +372,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 'CFLAGS=-mabi=purecap-benchmark' 'PKG_CONFIG=/usr/local64cb/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'LDFLAGS=-mabi=purecap-benchmark -lmd' '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-benchmark' 'build_alias=aarch64-unknown-freebsd' 'CC=cc'
+CONFIG_ARGS=	 'CFLAGS=-mabi=purecap-benchmark' 'CPPFLAGS=-mabi=purecap-benchmark -I/usr/local64cb/include' 'PKG_CONFIG=/usr/local64cb/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-benchmark' 'build_alias=aarch64-unknown-freebsd' 'CC=cc'
 
 
 # Subdirectories with code

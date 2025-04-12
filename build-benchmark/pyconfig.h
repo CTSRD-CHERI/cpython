@@ -455,7 +455,7 @@
 /* #undef HAVE_GDBM_DASH_NDBM_H */
 
 /* Define to 1 if you have the <gdbm.h> header file. */
-/* #undef HAVE_GDBM_H */
+#define HAVE_GDBM_H 1
 
 /* Define to 1 if you have the <gdbm/ndbm.h> header file. */
 /* #undef HAVE_GDBM_NDBM_H */

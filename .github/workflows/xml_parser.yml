@@ -22,4 +22,4 @@ jobs:
         with:
           name: 'Py Regression test results'
           path: 'build-*/*.xml'
-          reporter: jest-junit
+          reporter: java-junit

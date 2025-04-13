@@ -151,7 +151,7 @@ build-hybrid/*.core
 build-purecap/*.core
 build-benchmark/*.core
 *.core
-# .github/workflows/xml_parser.yml
+.github/workflows/xml_parser.yml
 
 .git-rewrite/
 compile

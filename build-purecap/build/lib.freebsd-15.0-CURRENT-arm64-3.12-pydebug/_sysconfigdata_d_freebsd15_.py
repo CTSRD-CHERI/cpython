@@ -10,7 +10,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'ANDROID_API_LEVEL': 0,
  'AR': 'ar',
  'ARFLAGS': 'rcs',
- 'BASECFLAGS': '-fno-strict-overflow -Wsign-compare',
+ 'BASECFLAGS': '-fno-strict-overflow',
  'BASECPPFLAGS': '-IObjects -IInclude -IPython',
  'BASEMODLIBS': '',
  'BINDIR': '/home/qianhuiwang/cpython/build-purecap/bin',
@@ -25,7 +25,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'BYTESTR_DEPS': '\\',
  'CC': 'cc -pthread',
  'CCSHARED': '-fPIC',
- 'CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall -mabi=purecap',
+ 'CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap',
  'CFLAGSFORSHARED': '',
  'CFLAGS_ALIASING': '-fno-strict-aliasing',
  'CFLAGS_NODIST': '',
@@ -35,17 +35,14 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGFILES': 'configure configure.ac acconfig.h pyconfig.h.in '
                 'Makefile.pre.in',
  'CONFIGURE_CFLAGS': '-mabi=purecap',
- 'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Wextra -Wno-unused-parameter '
-                            '-Wno-missing-field-initializers '
-                            '-Wstrict-prototypes '
-                            '-Werror=implicit-function-declaration '
+ 'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
- 'CONFIGURE_CPPFLAGS': '-mabi=purecap -I/usr/local/include',
+ 'CONFIGURE_CPPFLAGS': '-I/usr/local/include',
  'CONFIGURE_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
- 'CONFIG_ARGS': "'CFLAGS=-mabi=purecap' 'CPPFLAGS=-mabi=purecap "
-                "-I/usr/local/include' 'PKG_CONFIG=/usr/local/bin/pkg-config' "
+ 'CONFIG_ARGS': "'CFLAGS=-mabi=purecap' 'CPPFLAGS=-I/usr/local/include' "
+                "'PKG_CONFIG=/usr/local/bin/pkg-config' "
                 "'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' "
                 "'LDFLAGS=-mabi=purecap -L/usr/local/lib' '--with-pydebug' "
                 "'--build=aarch64-unknown-freebsd' '--with-assertions' "
@@ -60,7 +57,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'COVERAGE_REPORT_OPTIONS': '--rc lcov_branch_coverage=1 --branch-coverage '
                             '--title "CPython 3.12 LCOV report [commit $(shell '
                             'git --git-dir ../.git rev-parse --short HEAD)]"',
- 'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include -mabi=purecap '
+ 'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
              '-I/usr/local/include',
  'CXX': 'c++ -pthread',
  'DEEPFREEZE_C': 'Python/deepfreeze/deepfreeze.c',
@@ -631,22 +628,19 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
  'LIBDIR': '/home/qianhuiwang/cpython/build-purecap/lib',
  'LIBEXPAT_A': 'Modules/expat/libexpat.a',
- 'LIBEXPAT_CFLAGS': '-I../Modules/expat -fno-strict-overflow -Wsign-compare -g '
-                    '-Og -Wall -mabi=purecap -std=c11 -Wextra '
-                    '-Wno-unused-parameter -Wno-missing-field-initializers '
-                    '-Wstrict-prototypes -Werror=implicit-function-declaration '
+ 'LIBEXPAT_CFLAGS': '-I../Modules/expat -fno-strict-overflow -g -Og -Wall '
+                    '-mabi=purecap -std=c11 '
+                    '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
-                    '-IInclude -IPython -I. -I../Include -mabi=purecap '
-                    '-I/usr/local/include -fPIC',
+                    '-IInclude -IPython -I. -I../Include -I/usr/local/include '
+                    '-fPIC',
  'LIBEXPAT_HEADERS': '\\',
  'LIBEXPAT_OBJS': '\\',
  'LIBHACL_CFLAGS': '-I../Modules/_hacl/include -D_BSD_SOURCE -D_DEFAULT_SOURCE '
-                   '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                   '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
-                   '-Wno-missing-field-initializers -Wstrict-prototypes '
+                   '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
                    '-Werror=implicit-function-declaration -fvisibility=hidden  '
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
-                   '-I../Include -mabi=purecap -I/usr/local/include -fPIC',
+                   '-I../Include -I/usr/local/include -fPIC',
  'LIBHACL_HEADERS': '\\',
  'LIBHACL_SHA2_A': 'Modules/_hacl/libHacl_Hash_SHA2.a',
  'LIBHACL_SHA2_HEADERS': '\\',
@@ -655,13 +649,11 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBMPDEC_A': 'Modules/_decimal/libmpdec/libmpdec.a',
  'LIBMPDEC_CFLAGS': '-I../Modules/_decimal/libmpdec -DTEST_COVERAGE '
                     '-DCONFIG_64=1 -DANSI=1 -DHAVE_UINT128_T=1 '
-                    '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                    '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
-                    '-Wno-missing-field-initializers -Wstrict-prototypes '
+                    '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
                     '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
-                    '-IInclude -IPython -I. -I../Include -mabi=purecap '
-                    '-I/usr/local/include -fPIC',
+                    '-IInclude -IPython -I. -I../Include -I/usr/local/include '
+                    '-fPIC',
  'LIBMPDEC_HEADERS': '\\',
  'LIBMPDEC_OBJS': '\\',
  'LIBOBJDIR': 'Python/',
@@ -706,14 +698,14 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '_crypt  fcntl  grp  mmap  nis  ossaudiodev  '
                    '_posixsubprocess  resource  select  _socket  syslog  '
                    'termios  _posixshmem  _multiprocessing  _ctypes  _curses  '
-                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  xxsubtype  '
-                   '_xxtestfuzz  _testbuffer  _testinternalcapi  _testcapi  '
-                   '_testclinic  _testimportmultiple  _testmultiphase  '
-                   '_testsinglephase  _ctypes_test  xxlimited  xxlimited_35  '
-                   'atexit  faulthandler  posix  _signal  _tracemalloc  '
-                   '_codecs  _collections  errno  _io  itertools  _sre  '
-                   '_thread  time  _typing  _weakref  _abc  _functools  '
-                   '_locale  _operator  _stat  _symtable  pwd',
+                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  _tkinter  '
+                   'xxsubtype  _xxtestfuzz  _testbuffer  _testinternalcapi  '
+                   '_testcapi  _testclinic  _testimportmultiple  '
+                   '_testmultiphase  _testsinglephase  _ctypes_test  '
+                   'xxlimited  xxlimited_35  atexit  faulthandler  posix  '
+                   '_signal  _tracemalloc  _codecs  _collections  errno  _io  '
+                   'itertools  _sre  _thread  time  _typing  _weakref  _abc  '
+                   '_functools  _locale  _operator  _stat  _symtable  pwd',
  'MODDISABLED_NAMES': '',
  'MODLIBS': '',
  'MODOBJS': 'Modules/atexitmodule.o  Modules/faulthandler.o  '
@@ -740,9 +732,10 @@ build_time_vars = {'ABIFLAGS': 'd',
                     'ossaudiodev _posixsubprocess resource select _socket '
                     'syslog termios _posixshmem _multiprocessing _ctypes '
                     '_curses _curses_panel _sqlite3 _ssl _hashlib _uuid '
-                    'xxsubtype _xxtestfuzz _testbuffer _testinternalcapi '
-                    '_testcapi _testclinic _testimportmultiple _testmultiphase '
-                    '_testsinglephase _ctypes_test xxlimited xxlimited_35',
+                    '_tkinter xxsubtype _xxtestfuzz _testbuffer '
+                    '_testinternalcapi _testcapi _testclinic '
+                    '_testimportmultiple _testmultiphase _testsinglephase '
+                    '_ctypes_test xxlimited xxlimited_35',
  'MODULE_ARRAY_STATE': 'yes',
  'MODULE_ATEXIT_LDFLAGS': '',
  'MODULE_AUDIOOP_LDFLAGS': '-lm',
@@ -974,7 +967,12 @@ build_time_vars = {'ABIFLAGS': 'd',
  'MODULE__TESTINTERNALCAPI_STATE': 'yes',
  'MODULE__TESTMULTIPHASE_STATE': 'yes',
  'MODULE__THREAD_LDFLAGS': '',
- 'MODULE__TKINTER_STATE': 'missing',
+ 'MODULE__TKINTER_CFLAGS': '-I/usr/local/include/tcl8.6 -I/usr/local/include  '
+                           '-I/usr/local/include -D_THREAD_SAFE  '
+                           '-Wno-strict-prototypes -DWITH_APPINIT=1',
+ 'MODULE__TKINTER_LDFLAGS': '-L/usr/local/lib -ltk8.6 -ltkstub8.6 -ltcl86 '
+                            '-ltclstub86  -L/usr/local/lib -lX11',
+ 'MODULE__TKINTER_STATE': 'yes',
  'MODULE__TRACEMALLOC_LDFLAGS': '',
  'MODULE__TYPING_LDFLAGS': '',
  'MODULE__TYPING_STATE': 'yes',
@@ -1026,31 +1024,21 @@ build_time_vars = {'ABIFLAGS': 'd',
  'PYTHON_HEADERS': '\\',
  'PYTHON_OBJS': '\\',
  'PY_BUILTIN_HASHLIB_HASHES': '"md5,sha1,sha2,sha3,blake2"',
- 'PY_BUILTIN_MODULE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                             '-mabi=purecap -std=c11 -Wextra '
-                             '-Wno-unused-parameter '
-                             '-Wno-missing-field-initializers '
-                             '-Wstrict-prototypes '
-                             '-Werror=implicit-function-declaration '
+ 'PY_BUILTIN_MODULE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap '
+                             '-std=c11 -Werror=implicit-function-declaration '
                              '-fvisibility=hidden  -I../Include/internal '
                              '-IObjects -IInclude -IPython -I. -I../Include '
-                             '-mabi=purecap -I/usr/local/include '
-                             '-DPy_BUILD_CORE_BUILTIN',
- 'PY_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall -mabi=purecap',
- 'PY_CFLAGS_NODIST': '-std=c11 -Wextra -Wno-unused-parameter '
-                     '-Wno-missing-field-initializers -Wstrict-prototypes '
-                     '-Werror=implicit-function-declaration '
+                             '-I/usr/local/include -DPy_BUILD_CORE_BUILTIN',
+ 'PY_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap',
+ 'PY_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                      '-fvisibility=hidden  -I../Include/internal',
  'PY_COERCE_C_LOCALE': 1,
- 'PY_CORE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                   '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
-                   '-Wno-missing-field-initializers -Wstrict-prototypes '
+ 'PY_CORE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
                    '-Werror=implicit-function-declaration -fvisibility=hidden  '
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
-                   '-I../Include -mabi=purecap -I/usr/local/include '
-                   '-DPy_BUILD_CORE',
+                   '-I../Include -I/usr/local/include -DPy_BUILD_CORE',
  'PY_CORE_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
- 'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include -mabi=purecap '
+ 'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
                 '-I/usr/local/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
@@ -1061,12 +1049,10 @@ build_time_vars = {'ABIFLAGS': 'd',
  'PY_SQLITE_HAVE_SERIALIZE': 1,
  'PY_SSL_DEFAULT_CIPHERS': 1,
  'PY_SSL_DEFAULT_CIPHER_STRING': 0,
- 'PY_STDMODULE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                        '-mabi=purecap -std=c11 -Wextra -Wno-unused-parameter '
-                        '-Wno-missing-field-initializers -Wstrict-prototypes '
-                        '-Werror=implicit-function-declaration '
+ 'PY_STDMODULE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap '
+                        '-std=c11 -Werror=implicit-function-declaration '
                         '-fvisibility=hidden  -I../Include/internal -IObjects '
-                        '-IInclude -IPython -I. -I../Include -mabi=purecap '
+                        '-IInclude -IPython -I. -I../Include '
                         '-I/usr/local/include',
  'PY_SUPPORT_TIER': 0,
  'Py_DEBUG': 1,
@@ -1133,6 +1119,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                'Modules/_curses_panel.cpython-312d.so '
                'Modules/_sqlite3.cpython-312d.so Modules/_ssl.cpython-312d.so '
                'Modules/_hashlib.cpython-312d.so Modules/_uuid.cpython-312d.so '
+               'Modules/_tkinter.cpython-312d.so '
                'Modules/xxsubtype.cpython-312d.so '
                'Modules/_xxtestfuzz.cpython-312d.so '
                'Modules/_testbuffer.cpython-312d.so '

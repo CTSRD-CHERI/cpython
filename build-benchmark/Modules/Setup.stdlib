@@ -152,7 +152,7 @@ _hashlib _hashopenssl.c
 # Linux: -luuid, BSD/AIX: libc's uuid_create()
 _uuid _uuidmodule.c
 
-#_tkinter _tkinter.c tkappinit.c
+_tkinter _tkinter.c tkappinit.c
 
 ############################################################################
 # macOS specific modules

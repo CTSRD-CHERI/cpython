@@ -153,6 +153,10 @@ build-benchmark/*.core
 *.core
 
 .git-rewrite/
+compile
+depcomp
+ltmain.sh
+missing
 
 ## all third party packages required build from source for specific ABIs
 site-packages/

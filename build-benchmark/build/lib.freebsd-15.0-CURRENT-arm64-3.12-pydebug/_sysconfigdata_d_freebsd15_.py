@@ -10,7 +10,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'ANDROID_API_LEVEL': 0,
  'AR': 'ar',
  'ARFLAGS': 'rcs',
- 'BASECFLAGS': '-fno-strict-overflow -Wsign-compare',
+ 'BASECFLAGS': '-fno-strict-overflow',
  'BASECPPFLAGS': '-IObjects -IInclude -IPython',
  'BASEMODLIBS': '',
  'BINDIR': '/home/qianhuiwang/cpython/build-benchmark/bin',
@@ -26,8 +26,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'BYTESTR_DEPS': '\\',
  'CC': 'cc -pthread',
  'CCSHARED': '-fPIC',
- 'CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-           '-mabi=purecap-benchmark',
+ 'CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap-benchmark',
  'CFLAGSFORSHARED': '',
  'CFLAGS_ALIASING': '-fno-strict-aliasing',
  'CFLAGS_NODIST': '',
@@ -37,17 +36,14 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGFILES': 'configure configure.ac acconfig.h pyconfig.h.in '
                 'Makefile.pre.in',
  'CONFIGURE_CFLAGS': '-mabi=purecap-benchmark',
- 'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Wextra -Wno-unused-parameter '
-                            '-Wno-missing-field-initializers '
-                            '-Wstrict-prototypes '
-                            '-Werror=implicit-function-declaration '
+ 'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
- 'CONFIGURE_CPPFLAGS': '-mabi=purecap-benchmark -I/usr/local64cb/include',
+ 'CONFIGURE_CPPFLAGS': '-I/usr/local64cb/include',
  'CONFIGURE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
  'CONFIG_ARGS': "'CFLAGS=-mabi=purecap-benchmark' "
-                "'CPPFLAGS=-mabi=purecap-benchmark -I/usr/local64cb/include' "
+                "'CPPFLAGS=-I/usr/local64cb/include' "
                 "'PKG_CONFIG=/usr/local64cb/bin/pkg-config' "
                 "'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' "
                 "'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' "
@@ -65,7 +61,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                             '--title "CPython 3.12 LCOV report [commit $(shell '
                             'git --git-dir ../.git rev-parse --short HEAD)]"',
  'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
-             '-mabi=purecap-benchmark -I/usr/local64cb/include',
+             '-I/usr/local64cb/include',
  'CXX': 'c++ -pthread',
  'DEEPFREEZE_C': 'Python/deepfreeze/deepfreeze.c',
  'DEEPFREEZE_DEPS': '../Tools/build/deepfreeze.py _bootstrap_python '
@@ -132,7 +128,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'HAVE_ASM_TYPES_H': 0,
  'HAVE_ATANH': 1,
  'HAVE_BIND': 1,
- 'HAVE_BIND_TEXTDOMAIN_CODESET': 0,
+ 'HAVE_BIND_TEXTDOMAIN_CODESET': 1,
  'HAVE_BLUETOOTH_BLUETOOTH_H': 0,
  'HAVE_BLUETOOTH_H': 1,
  'HAVE_BROKEN_MBSTOWCS': 0,
@@ -324,7 +320,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'HAVE_LIBDL': 1,
  'HAVE_LIBDLD': 0,
  'HAVE_LIBIEEE': 0,
- 'HAVE_LIBINTL_H': 0,
+ 'HAVE_LIBINTL_H': 1,
  'HAVE_LIBRESOLV': 0,
  'HAVE_LIBSENDFILE': 0,
  'HAVE_LIBSQLITE3': 1,
@@ -636,23 +632,20 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBDEST': '/home/qianhuiwang/cpython/build-benchmark/lib/python3.12',
  'LIBDIR': '/home/qianhuiwang/cpython/build-benchmark/lib',
  'LIBEXPAT_A': 'Modules/expat/libexpat.a',
- 'LIBEXPAT_CFLAGS': '-I../Modules/expat -fno-strict-overflow -Wsign-compare -g '
-                    '-Og -Wall -mabi=purecap-benchmark -std=c11 -Wextra '
-                    '-Wno-unused-parameter -Wno-missing-field-initializers '
-                    '-Wstrict-prototypes -Werror=implicit-function-declaration '
+ 'LIBEXPAT_CFLAGS': '-I../Modules/expat -fno-strict-overflow -g -Og -Wall '
+                    '-mabi=purecap-benchmark -std=c11 '
+                    '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
                     '-IInclude -IPython -I. -I../Include '
-                    '-mabi=purecap-benchmark -I/usr/local64cb/include -fPIC',
+                    '-I/usr/local64cb/include -fPIC',
  'LIBEXPAT_HEADERS': '\\',
  'LIBEXPAT_OBJS': '\\',
  'LIBHACL_CFLAGS': '-I../Modules/_hacl/include -D_BSD_SOURCE -D_DEFAULT_SOURCE '
-                   '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                   '-mabi=purecap-benchmark -std=c11 -Wextra '
-                   '-Wno-unused-parameter -Wno-missing-field-initializers '
-                   '-Wstrict-prototypes -Werror=implicit-function-declaration '
+                   '-fno-strict-overflow -g -Og -Wall -mabi=purecap-benchmark '
+                   '-std=c11 -Werror=implicit-function-declaration '
                    '-fvisibility=hidden  -I../Include/internal -IObjects '
                    '-IInclude -IPython -I. -I../Include '
-                   '-mabi=purecap-benchmark -I/usr/local64cb/include -fPIC',
+                   '-I/usr/local64cb/include -fPIC',
  'LIBHACL_HEADERS': '\\',
  'LIBHACL_SHA2_A': 'Modules/_hacl/libHacl_Hash_SHA2.a',
  'LIBHACL_SHA2_HEADERS': '\\',
@@ -661,13 +654,11 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBMPDEC_A': 'Modules/_decimal/libmpdec/libmpdec.a',
  'LIBMPDEC_CFLAGS': '-I../Modules/_decimal/libmpdec -DTEST_COVERAGE '
                     '-DCONFIG_64=1 -DANSI=1 -DHAVE_UINT128_T=1 '
-                    '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                    '-mabi=purecap-benchmark -std=c11 -Wextra '
-                    '-Wno-unused-parameter -Wno-missing-field-initializers '
-                    '-Wstrict-prototypes -Werror=implicit-function-declaration '
+                    '-fno-strict-overflow -g -Og -Wall -mabi=purecap-benchmark '
+                    '-std=c11 -Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
                     '-IInclude -IPython -I. -I../Include '
-                    '-mabi=purecap-benchmark -I/usr/local64cb/include -fPIC',
+                    '-I/usr/local64cb/include -fPIC',
  'LIBMPDEC_HEADERS': '\\',
  'LIBMPDEC_OBJS': '\\',
  'LIBOBJDIR': 'Python/',
@@ -679,7 +670,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'LIBRARY_DEPS': 'libpython3.12d.a',
  'LIBRARY_OBJS': '\\',
  'LIBRARY_OBJS_OMIT_FROZEN': '\\',
- 'LIBS': '-ldl  -lutil',
+ 'LIBS': '-lintl -ldl  -lutil',
  'LIBSUBDIRS': 'asyncio \\',
  'LINKCC': 'cc -pthread',
  'LINKFORSHARED': '-Wl,--export-dynamic',
@@ -712,14 +703,14 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '_crypt  fcntl  grp  mmap  nis  ossaudiodev  '
                    '_posixsubprocess  resource  select  _socket  syslog  '
                    'termios  _posixshmem  _multiprocessing  _ctypes  _curses  '
-                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  xxsubtype  '
-                   '_xxtestfuzz  _testbuffer  _testinternalcapi  _testcapi  '
-                   '_testclinic  _testimportmultiple  _testmultiphase  '
-                   '_testsinglephase  _ctypes_test  xxlimited  xxlimited_35  '
-                   'atexit  faulthandler  posix  _signal  _tracemalloc  '
-                   '_codecs  _collections  errno  _io  itertools  _sre  '
-                   '_thread  time  _typing  _weakref  _abc  _functools  '
-                   '_locale  _operator  _stat  _symtable  pwd',
+                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  _tkinter  '
+                   'xxsubtype  _xxtestfuzz  _testbuffer  _testinternalcapi  '
+                   '_testcapi  _testclinic  _testimportmultiple  '
+                   '_testmultiphase  _testsinglephase  _ctypes_test  '
+                   'xxlimited  xxlimited_35  atexit  faulthandler  posix  '
+                   '_signal  _tracemalloc  _codecs  _collections  errno  _io  '
+                   'itertools  _sre  _thread  time  _typing  _weakref  _abc  '
+                   '_functools  _locale  _operator  _stat  _symtable  pwd',
  'MODDISABLED_NAMES': '',
  'MODLIBS': '',
  'MODOBJS': 'Modules/atexitmodule.o  Modules/faulthandler.o  '
@@ -746,9 +737,10 @@ build_time_vars = {'ABIFLAGS': 'd',
                     'ossaudiodev _posixsubprocess resource select _socket '
                     'syslog termios _posixshmem _multiprocessing _ctypes '
                     '_curses _curses_panel _sqlite3 _ssl _hashlib _uuid '
-                    'xxsubtype _xxtestfuzz _testbuffer _testinternalcapi '
-                    '_testcapi _testclinic _testimportmultiple _testmultiphase '
-                    '_testsinglephase _ctypes_test xxlimited xxlimited_35',
+                    '_tkinter xxsubtype _xxtestfuzz _testbuffer '
+                    '_testinternalcapi _testcapi _testclinic '
+                    '_testimportmultiple _testmultiphase _testsinglephase '
+                    '_ctypes_test xxlimited xxlimited_35',
  'MODULE_ARRAY_STATE': 'yes',
  'MODULE_ATEXIT_LDFLAGS': '',
  'MODULE_AUDIOOP_LDFLAGS': '-lm',
@@ -980,7 +972,13 @@ build_time_vars = {'ABIFLAGS': 'd',
  'MODULE__TESTINTERNALCAPI_STATE': 'yes',
  'MODULE__TESTMULTIPHASE_STATE': 'yes',
  'MODULE__THREAD_LDFLAGS': '',
- 'MODULE__TKINTER_STATE': 'missing',
+ 'MODULE__TKINTER_CFLAGS': '-I/usr/local64cb/include/tcl8.6 '
+                           '-I/usr/local64cb/include  -I/usr/local64cb/include '
+                           '-D_THREAD_SAFE  -Wno-strict-prototypes '
+                           '-DWITH_APPINIT=1',
+ 'MODULE__TKINTER_LDFLAGS': '-L/usr/local64cb/lib -ltk8.6 -ltkstub8.6 -ltcl86 '
+                            '-ltclstub86  -L/usr/local64cb/lib -lX11',
+ 'MODULE__TKINTER_STATE': 'yes',
  'MODULE__TRACEMALLOC_LDFLAGS': '',
  'MODULE__TYPING_LDFLAGS': '',
  'MODULE__TYPING_STATE': 'yes',
@@ -1032,34 +1030,24 @@ build_time_vars = {'ABIFLAGS': 'd',
  'PYTHON_HEADERS': '\\',
  'PYTHON_OBJS': '\\',
  'PY_BUILTIN_HASHLIB_HASHES': '"md5,sha1,sha2,sha3,blake2"',
- 'PY_BUILTIN_MODULE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                             '-mabi=purecap-benchmark -std=c11 -Wextra '
-                             '-Wno-unused-parameter '
-                             '-Wno-missing-field-initializers '
-                             '-Wstrict-prototypes '
+ 'PY_BUILTIN_MODULE_CFLAGS': '-fno-strict-overflow -g -Og -Wall '
+                             '-mabi=purecap-benchmark -std=c11 '
                              '-Werror=implicit-function-declaration '
                              '-fvisibility=hidden  -I../Include/internal '
                              '-IObjects -IInclude -IPython -I. -I../Include '
-                             '-mabi=purecap-benchmark -I/usr/local64cb/include '
-                             '-DPy_BUILD_CORE_BUILTIN',
- 'PY_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-              '-mabi=purecap-benchmark',
- 'PY_CFLAGS_NODIST': '-std=c11 -Wextra -Wno-unused-parameter '
-                     '-Wno-missing-field-initializers -Wstrict-prototypes '
-                     '-Werror=implicit-function-declaration '
+                             '-I/usr/local64cb/include -DPy_BUILD_CORE_BUILTIN',
+ 'PY_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap-benchmark',
+ 'PY_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                      '-fvisibility=hidden  -I../Include/internal',
  'PY_COERCE_C_LOCALE': 1,
- 'PY_CORE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                   '-mabi=purecap-benchmark -std=c11 -Wextra '
-                   '-Wno-unused-parameter -Wno-missing-field-initializers '
-                   '-Wstrict-prototypes -Werror=implicit-function-declaration '
+ 'PY_CORE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap-benchmark '
+                   '-std=c11 -Werror=implicit-function-declaration '
                    '-fvisibility=hidden  -I../Include/internal -IObjects '
                    '-IInclude -IPython -I. -I../Include '
-                   '-mabi=purecap-benchmark -I/usr/local64cb/include '
-                   '-DPy_BUILD_CORE',
+                   '-I/usr/local64cb/include -DPy_BUILD_CORE',
  'PY_CORE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
  'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
-                '-mabi=purecap-benchmark -I/usr/local64cb/include',
+                '-I/usr/local64cb/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
  'PY_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
@@ -1069,14 +1057,12 @@ build_time_vars = {'ABIFLAGS': 'd',
  'PY_SQLITE_HAVE_SERIALIZE': 1,
  'PY_SSL_DEFAULT_CIPHERS': 1,
  'PY_SSL_DEFAULT_CIPHER_STRING': 0,
- 'PY_STDMODULE_CFLAGS': '-fno-strict-overflow -Wsign-compare -g -Og -Wall '
-                        '-mabi=purecap-benchmark -std=c11 -Wextra '
-                        '-Wno-unused-parameter -Wno-missing-field-initializers '
-                        '-Wstrict-prototypes '
+ 'PY_STDMODULE_CFLAGS': '-fno-strict-overflow -g -Og -Wall '
+                        '-mabi=purecap-benchmark -std=c11 '
                         '-Werror=implicit-function-declaration '
                         '-fvisibility=hidden  -I../Include/internal -IObjects '
                         '-IInclude -IPython -I. -I../Include '
-                        '-mabi=purecap-benchmark -I/usr/local64cb/include',
+                        '-I/usr/local64cb/include',
  'PY_SUPPORT_TIER': 0,
  'Py_DEBUG': 1,
  'Py_ENABLE_SHARED': 0,
@@ -1142,6 +1128,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                'Modules/_curses_panel.cpython-312d.so '
                'Modules/_sqlite3.cpython-312d.so Modules/_ssl.cpython-312d.so '
                'Modules/_hashlib.cpython-312d.so Modules/_uuid.cpython-312d.so '
+               'Modules/_tkinter.cpython-312d.so '
                'Modules/xxsubtype.cpython-312d.so '
                'Modules/_xxtestfuzz.cpython-312d.so '
                'Modules/_testbuffer.cpython-312d.so '
@@ -1155,7 +1142,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                'Modules/xxlimited.cpython-312d.so '
                'Modules/xxlimited_35.cpython-312d.so',
  'SHELL': '/bin/sh -e',
- 'SHLIBS': '-ldl  -lutil',
+ 'SHLIBS': '-lintl -ldl  -lutil',
  'SHLIB_SUFFIX': '.so',
  'SIGNED_RIGHT_SHIFT_ZERO_FILLS': 0,
  'SITEPATH': '',
@@ -1221,7 +1208,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'WITH_DYLD': 0,
  'WITH_EDITLINE': 0,
  'WITH_FREELISTS': 1,
- 'WITH_LIBINTL': 0,
+ 'WITH_LIBINTL': 1,
  'WITH_NEXT_FRAMEWORK': 0,
  'WITH_PYMALLOC': 1,
  'WITH_VALGRIND': 0,

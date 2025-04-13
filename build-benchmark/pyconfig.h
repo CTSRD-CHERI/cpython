@@ -92,7 +92,7 @@
 #define HAVE_BIND 1
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
-/* #undef HAVE_BIND_TEXTDOMAIN_CODESET */
+#define HAVE_BIND_TEXTDOMAIN_CODESET 1
 
 /* Define to 1 if you have the <bluetooth/bluetooth.h> header file. */
 /* #undef HAVE_BLUETOOTH_BLUETOOTH_H */
@@ -684,7 +684,7 @@
 /* #undef HAVE_LIBIEEE */
 
 /* Define to 1 if you have the <libintl.h> header file. */
-/* #undef HAVE_LIBINTL_H */
+#define HAVE_LIBINTL_H 1
 
 /* Define to 1 if you have the `resolv' library (-lresolv). */
 /* #undef HAVE_LIBRESOLV */
@@ -1823,7 +1823,7 @@
 #define WITH_FREELISTS 1
 
 /* Define to 1 if libintl is needed for locale functions. */
-/* #undef WITH_LIBINTL */
+#define WITH_LIBINTL 1
 
 /* Define if you want to produce an OpenStep/Rhapsody framework (shared
    library plus accessory files). */

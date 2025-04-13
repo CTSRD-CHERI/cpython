@@ -80,13 +80,13 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
 OPT=		-g -Og -Wall
-BASECFLAGS=	 -fno-strict-overflow -Wsign-compare
+BASECFLAGS=	 -fno-strict-overflow
 BASECPPFLAGS=	-IObjects -IInclude -IPython
 CONFIGURE_CFLAGS=	-mabi=purecap-benchmark
 # CFLAGS_NODIST is used for building the interpreter and stdlib C extensions.
 # Use it when a compiler flag should _not_ be part of the distutils CFLAGS
 # once Python is installed (Issue #21121).
-CONFIGURE_CFLAGS_NODIST= -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration -fvisibility=hidden
+CONFIGURE_CFLAGS_NODIST= -std=c11 -Werror=implicit-function-declaration -fvisibility=hidden
 # LDFLAGS_NODIST is used in the same manner as CFLAGS_NODIST.
 # Use it when a linker flag should _not_ be part of the distutils LDFLAGS
 # once Python is installed (bpo-35257)
@@ -94,7 +94,7 @@ CONFIGURE_LDFLAGS_NODIST=
 # LDFLAGS_NOLTO is an extra flag to disable lto. It is used to speed up building
 # of _bootstrap_python and _freeze_module tools, which don't need LTO.
 CONFIGURE_LDFLAGS_NOLTO=
-CONFIGURE_CPPFLAGS=	-mabi=purecap-benchmark -I/usr/local64cb/include
+CONFIGURE_CPPFLAGS=	-I/usr/local64cb/include
 CONFIGURE_LDFLAGS=	-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd
 # Avoid assigning CFLAGS, LDFLAGS, etc. so users can use them on the
 # command line to append to these values without stomping the pre-set
@@ -326,7 +326,9 @@ MODULE_READLINE_LDFLAGS=-L/usr/local64cb/lib -lreadline
 MODULE__SQLITE3_STATE=yes
 MODULE__SQLITE3_CFLAGS=-I/usr/local64cb/include  -I$(srcdir)/Modules/_sqlite
 MODULE__SQLITE3_LDFLAGS=-L/usr/local64cb/lib -lsqlite3 
-MODULE__TKINTER_STATE=missing
+MODULE__TKINTER_STATE=yes
+MODULE__TKINTER_CFLAGS=-I/usr/local64cb/include/tcl8.6 -I/usr/local64cb/include  -I/usr/local64cb/include -D_THREAD_SAFE  -Wno-strict-prototypes -DWITH_APPINIT=1
+MODULE__TKINTER_LDFLAGS=-L/usr/local64cb/lib -ltk8.6 -ltkstub8.6 -ltcl86 -ltclstub86  -L/usr/local64cb/lib -lX11 
 MODULE__UUID_STATE=yes
 MODULE__UUID_CFLAGS=
 MODULE__UUID_LDFLAGS=
@@ -372,7 +374,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 'CFLAGS=-mabi=purecap-benchmark' 'CPPFLAGS=-mabi=purecap-benchmark -I/usr/local64cb/include' 'PKG_CONFIG=/usr/local64cb/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-benchmark' 'build_alias=aarch64-unknown-freebsd' 'CC=cc'
+CONFIG_ARGS=	 'CFLAGS=-mabi=purecap-benchmark' 'CPPFLAGS=-I/usr/local64cb/include' 'PKG_CONFIG=/usr/local64cb/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-benchmark' 'build_alias=aarch64-unknown-freebsd' 'CC=cc'
 
 
 # Subdirectories with code
@@ -405,7 +407,7 @@ PY_ENABLE_SHARED=	0
 STATIC_LIBPYTHON=	1
 
 
-LIBS=		-ldl  -lutil
+LIBS=		-lintl -ldl  -lutil
 LIBM=		-lm
 LIBC=		
 SYSLIBS=	$(LIBM) $(LIBC)

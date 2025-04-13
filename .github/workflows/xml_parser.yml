@@ -1,0 +1,24 @@
+name: xml_parser 
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        #- name: Set up Python
+        #uses: actions/setup-python@v2
+        #with:
+        #  python-version: '3.12'
+        #- name: Install dependencies
+        #run: pip install -r requirements.txt
+          # - name: Run tests
+          #  run: pytest --junitxml=reports/junit-report.xml
+      - name: Process test report
+        # e.g., a third-party action to parse JUnit XML and display a summary
+        uses: dorny/test-reporter@v1
+        with:
+          name: 'Pyi Regression test results'
+          path: '.'
+          reportFilePattern: 'build-*/*.xml'
+

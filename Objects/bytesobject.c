@@ -17,7 +17,6 @@
 
 #include <stddef.h>
 
-#include <stdio.h>           // printf()
 
 /*[clinic input]
 class bytes "PyBytesObject *" "&PyBytes_Type"
@@ -3478,9 +3477,9 @@ _PyBytesWriter_Alloc(_PyBytesWriter *writer, Py_ssize_t size)
     writer->allocated = sizeof(writer->small_buffer);
 #endif
 
-    #ifdef DEBUG
-        fprintf(stderr, "Requested size: %zd, allocated size: %zd\n", size, writer->allocated);
-    #endif
+    //#ifdef DEBUG
+        //fprintf(stderr, "Requested size: %zd, allocated size: %zd\n", size, writer->allocated);
+    //#endif
     
     return _PyBytesWriter_Prepare(writer, writer->small_buffer, size);
 }

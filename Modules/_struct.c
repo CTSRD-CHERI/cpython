@@ -14,8 +14,6 @@
 #include "structmember.h"         // PyMemberDef
 #include <ctype.h>
 
-#include <stdio.h>
-
 /*[clinic input]
 class Struct "PyStructObject *" "&PyStructType"
 [clinic start generated code]*/
@@ -2268,14 +2266,14 @@ cache_struct_converter(PyObject *module, PyObject *fmt, PyStructObject **ptr)
 
     s_object = PyDict_GetItemWithError(state->cache, fmt);
 
-    fprintf(stdout, "DEBUG: fmt = ");
-    PyObject_Print(fmt, stdout, 0);
-    fprintf(stdout, "\nDEBUG: s_object = ");
-    if (s_object)
-        PyObject_Print(s_object, stdout, 0);
-    else
-        fprintf(stdout, "NULL");
-    fprintf(stdout, "\n");
+//  fprintf(stdout, "DEBUG: fmt = ");
+ //    PyObject_Print(fmt, stdout, 0);
+ ////    fprintf(stdout, "\nDEBUG: s_object = ");
+ //    if (s_object)
+ //        PyObject_Print(s_object, stdout, 0);
+ //    else
+ //        fprintf(stdout, "NULL");
+ //    fprintf(stdout, "\n");
 
 
     if (s_object != NULL) {

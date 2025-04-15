@@ -2266,16 +2266,6 @@ cache_struct_converter(PyObject *module, PyObject *fmt, PyStructObject **ptr)
 
     s_object = PyDict_GetItemWithError(state->cache, fmt);
 
-//  fprintf(stdout, "DEBUG: fmt = ");
- //    PyObject_Print(fmt, stdout, 0);
- ////    fprintf(stdout, "\nDEBUG: s_object = ");
- //    if (s_object)
- //        PyObject_Print(s_object, stdout, 0);
- //    else
- //        fprintf(stdout, "NULL");
- //    fprintf(stdout, "\n");
-
-
     if (s_object != NULL) {
         *ptr = (PyStructObject *)Py_NewRef(s_object);
         return Py_CLEANUP_SUPPORTED;
@@ -2349,15 +2339,6 @@ pack(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     if (!cache_struct_converter(module, format, (PyStructObject **)&s_object)) {
         return NULL;
     }
-
-//	fprintf(stderr, "DEBUG: fmt = ");
-//	PyObject_Print(format, stderr, 0);
-//	fprintf(stderr, "\nDEBUG: s_object = ");
-//	if (s_object)
-//		PyObject_Print(s_object, stderr, 0);
-//	else
-		 //fprintf(stderr, "NULL");
-	 //fprintf(stderr, "\n");
 
     result = s_pack(s_object, args + 1, nargs - 1);
     Py_DECREF(s_object);

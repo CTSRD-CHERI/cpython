@@ -5,10 +5,10 @@
 typedef struct {
     PyObject_VAR_HEAD
     Py_DEPRECATED(3.11) Py_hash_t ob_shash;
-#ifdef __CHERI_PURE_CAPABILITY__
+// #ifdef __CHERI_PURE_CAPABILITY__
     _Alignas(void *)
-#endif
-    char ob_sval[1] __attribute__((aligned(16)));
+// #endif
+    char ob_sval[1]; 
 
     /* Invariants:
      *     ob_sval contains space for 'ob_size+1' elements.
@@ -75,10 +75,10 @@ typedef struct {
 
     /* Stack buffer */
     int use_small_buffer;
-#ifdef __CHERI_PURE_CAPABILITY__
+// #ifdef __CHERI_PURE_CAPABILITY__
     _Alignas(void *)
-#endif
-    char small_buffer[512] __attribute__((aligned(16)));
+// #endif
+    char small_buffer[512]; 
 } _PyBytesWriter;
 
 /* Initialize a bytes writer

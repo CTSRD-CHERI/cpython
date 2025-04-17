@@ -249,6 +249,15 @@ class c_void_p(_SimpleCData):
 c_voidp = c_void_p # backwards compatibility (to a bug)
 _check_size(c_void_p)
 
+class c_uintptr(_SimpleCData):
+    _type_ = "Pu"
+_check_size(c_uintptr, "Pu")
+
+class c_intptr(_SimpleCData):
+    _type_ = "Ps"
+_check_size(c_uintptr, "Ps")
+
+
 class c_bool(_SimpleCData):
     _type_ = "?"
 
@@ -495,6 +504,10 @@ elif sizeof(c_ulong) == sizeof(c_void_p):
 elif sizeof(c_ulonglong) == sizeof(c_void_p):
     c_size_t = c_ulonglong
     c_ssize_t = c_longlong
+elif 2 * sizeof(c_ulonglong) == sizeof(c_void_p): 
+    # CHERI pointers (128‑bit)
+    c_size_t = c_uintptr #TODO
+    c_ssize_t = c_intptr
 
 # functions
 

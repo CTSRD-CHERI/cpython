@@ -52,7 +52,7 @@ PyAPI_FUNC(PyObject *) PyLong_GetInfo(void);
 
 PyAPI_FUNC(double) PyLong_AsDouble(PyObject *);
 Py_DEPRECATED(3.8) PyAPI_FUNC(PyObject *) PyLong_FromVoidPtr(void *);
-// Py_DEPRECATED(3.8) PyAPI_FUNC(void *) PyLong_AsVoidPtr(PyObject *);
+Py_DEPRECATED(3.8) PyAPI_FUNC(void *) PyLong_AsVoidPtr(PyObject *);
 
 PyAPI_FUNC(PyObject *) PyLong_FromLongLong(long long);
 PyAPI_FUNC(PyObject *) PyLong_FromUnsignedLongLong(unsigned long long);

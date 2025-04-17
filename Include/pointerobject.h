@@ -11,6 +11,8 @@ extern "C" {
 
 
 PyAPI_DATA(PyTypeObject) _PyNativePointer_Type;
+extern PyTypeObject *c_void_p_type; // for bltinmodule.c to cache ctypes.c_void_p
+
 #define PyNativePointer_CheckExact(x) (Py_TYPE(x) == &_PyNativePointer_Type)
 #define PyNativePointer_Check(x) (PyNativePointer_CheckExact(x) || PyNativePointer_IsNull(x))
 

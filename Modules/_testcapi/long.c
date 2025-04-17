@@ -736,19 +736,19 @@ pylong_asdouble(PyObject *module, PyObject *arg)
     return PyFloat_FromDouble(value);
 }
 
-/* static PyObject * */
-/* pylong_asvoidptr(PyObject *module, PyObject *arg) */
-/* { */
-/*     NULLABLE(arg); */
-/*     void *value = PyLong_AsVoidPtr(arg); */
-/*     if (value == NULL) { */
-/*         if (PyErr_Occurred()) { */
-/*             return NULL; */
-/*         } */
-/*         Py_RETURN_NONE; */
-/*     } */
-/*     return Py_NewRef((PyObject *)value); */
-/* } */
+static PyObject *
+pylong_asvoidptr(PyObject *module, PyObject *arg)
+{
+    NULLABLE(arg); 
+    void *value = (void *) PyLong_AsVoidPtr(arg);
+    if (value == NULL) { 
+        if (PyErr_Occurred()) { 
+            return NULL; 
+        } 
+        Py_RETURN_NONE; 
+    } 
+    return Py_NewRef((PyObject *)value); 
+} 
 
 static PyMethodDef test_methods[] = {
     {"test_long_and_overflow",  test_long_and_overflow,          METH_NOARGS},
@@ -777,7 +777,7 @@ static PyMethodDef test_methods[] = {
     {"pylong_as_ssize_t",           pylong_as_ssize_t,          METH_O},
     {"pylong_as_size_t",            pylong_as_size_t,           METH_O},
     {"pylong_asdouble",             pylong_asdouble,            METH_O},
-    /* {"pylong_asvoidptr",            pylong_asvoidptr,           METH_O}, */
+    {"pylong_asvoidptr",            pylong_asvoidptr,           METH_O},
     {NULL},
 };
 

@@ -698,15 +698,15 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '_crypt  fcntl  grp  mmap  nis  ossaudiodev  '
                    '_posixsubprocess  resource  select  _socket  syslog  '
                    'termios  _posixshmem  _multiprocessing  _ctypes  _curses  '
-                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  _tkinter  '
-                   'xxsubtype  _xxtestfuzz  _testbuffer  _testinternalcapi  '
-                   '_testcapi  _testclinic  _testimportmultiple  '
-                   '_testmultiphase  _testsinglephase  _ctypes_test  '
-                   'xxlimited  xxlimited_35  atexit  faulthandler  posix  '
-                   '_signal  _tracemalloc  _codecs  _collections  errno  _io  '
-                   'itertools  _sre  _thread  time  _typing  _weakref  _abc  '
-                   '_functools  _locale  _operator  _stat  _symtable  pwd',
- 'MODDISABLED_NAMES': '',
+                   '_curses_panel  _sqlite3  _ssl  _hashlib  _uuid  xxsubtype  '
+                   '_xxtestfuzz  _testbuffer  _testinternalcapi  _testcapi  '
+                   '_testclinic  _testimportmultiple  _testmultiphase  '
+                   '_testsinglephase  _ctypes_test  xxlimited  xxlimited_35  '
+                   'atexit  faulthandler  posix  _signal  _tracemalloc  '
+                   '_codecs  _collections  errno  _io  itertools  _sre  '
+                   '_thread  time  _typing  _weakref  _abc  _functools  '
+                   '_locale  _operator  _stat  _symtable  pwd',
+ 'MODDISABLED_NAMES': '_tkinter',
  'MODLIBS': '',
  'MODOBJS': 'Modules/atexitmodule.o  Modules/faulthandler.o  '
             'Modules/posixmodule.o  Modules/signalmodule.o  '
@@ -732,10 +732,9 @@ build_time_vars = {'ABIFLAGS': 'd',
                     'ossaudiodev _posixsubprocess resource select _socket '
                     'syslog termios _posixshmem _multiprocessing _ctypes '
                     '_curses _curses_panel _sqlite3 _ssl _hashlib _uuid '
-                    '_tkinter xxsubtype _xxtestfuzz _testbuffer '
-                    '_testinternalcapi _testcapi _testclinic '
-                    '_testimportmultiple _testmultiphase _testsinglephase '
-                    '_ctypes_test xxlimited xxlimited_35',
+                    'xxsubtype _xxtestfuzz _testbuffer _testinternalcapi '
+                    '_testcapi _testclinic _testimportmultiple _testmultiphase '
+                    '_testsinglephase _ctypes_test xxlimited xxlimited_35',
  'MODULE_ARRAY_STATE': 'yes',
  'MODULE_ATEXIT_LDFLAGS': '',
  'MODULE_AUDIOOP_LDFLAGS': '-lm',
@@ -1119,7 +1118,6 @@ build_time_vars = {'ABIFLAGS': 'd',
                'Modules/_curses_panel.cpython-312d.so '
                'Modules/_sqlite3.cpython-312d.so Modules/_ssl.cpython-312d.so '
                'Modules/_hashlib.cpython-312d.so Modules/_uuid.cpython-312d.so '
-               'Modules/_tkinter.cpython-312d.so '
                'Modules/xxsubtype.cpython-312d.so '
                'Modules/_xxtestfuzz.cpython-312d.so '
                'Modules/_testbuffer.cpython-312d.so '

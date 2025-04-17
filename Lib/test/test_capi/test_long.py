@@ -94,9 +94,9 @@ class LongTests(unittest.TestCase):
         obj = object()
         x = fromvoidptr(obj)
         y = fromvoidptr(NULL)
-        self.assertIsInstance(x, int)
+        self.assertIsInstance(int(x), int)
         self.assertGreaterEqual(x, 0)
-        self.assertIsInstance(y, int)
+        self.assertIsInstance(int(y), int)
         self.assertEqual(y, 0)
         self.assertNotEqual(x, y)
 
@@ -394,6 +394,7 @@ class LongTests(unittest.TestCase):
         if y >= M//2:
             self.assertIs(asvoidptr(y - M), NULL)
 
+        # should not accept other than true integer objects or integer subclasses
         self.assertRaises(TypeError, asvoidptr, Index(x))
         self.assertRaises(TypeError, asvoidptr, object())
         self.assertRaises(OverflowError, asvoidptr, 2**1000)

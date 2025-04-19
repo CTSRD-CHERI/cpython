@@ -136,10 +136,18 @@ test_sizeof_c_types(PyObject *self, PyObject *Py_UNUSED(ignored))
     CHECK_SIGNNESS(uint64_t, 0);
 
     /* pointer/size types */
+#ifdef __CHERI_PURE_CAPABILITY__
+	CHECK_SIZEOF(size_t, 8);
+#else
     CHECK_SIZEOF(size_t, sizeof(void *));
-    CHECK_SIGNNESS(size_t, 0);
-    CHECK_SIZEOF(Py_ssize_t, sizeof(void *));
-    CHECK_SIGNNESS(Py_ssize_t, 1);
+#endif
+	CHECK_SIGNNESS(size_t, 0);
+#ifdef __CHERI_PURE_CAPABILITY__
+    CHECK_SIZEOF(Py_ssize_t, 8);
+#else
+	CHECK_SIZEOF(Py_ssize_t, sizeof(void *));
+#endif
+	CHECK_SIGNNESS(Py_ssize_t, 1);
 
     CHECK_SIZEOF(uintptr_t, sizeof(void *));
     CHECK_SIGNNESS(uintptr_t, 0);
@@ -3986,6 +3994,7 @@ PyInit__testcapi(void)
     PyModule_AddObject(m, "SIZEOF_WCHAR_T", PyLong_FromSsize_t(sizeof(wchar_t)));
     PyModule_AddObject(m, "SIZEOF_VOID_P", PyLong_FromSsize_t(sizeof(void*)));
     PyModule_AddObject(m, "SIZEOF_TIME_T", PyLong_FromSsize_t(sizeof(time_t)));
+	PyModule_AddObject(m, "SIZEOF_PY_ADDRESS", PyLong_FromSsize_t(SIZEOF_PY_ADDRESS));
     PyModule_AddObject(m, "Py_Version", PyLong_FromUnsignedLong(Py_Version));
     Py_INCREF(&PyInstanceMethod_Type);
     PyModule_AddObject(m, "instancemethod", (PyObject *)&PyInstanceMethod_Type);

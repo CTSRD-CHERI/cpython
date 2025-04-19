@@ -8,7 +8,7 @@ typedef struct {
 // #ifdef __CHERI_PURE_CAPABILITY__
     _Alignas(void *)
 // #endif
-    char ob_sval[1]; 
+    char ob_sval[1] __attribute__((aligned(sizeof(void *)))); 
 
     /* Invariants:
      *     ob_sval contains space for 'ob_size+1' elements.
@@ -78,7 +78,7 @@ typedef struct {
 // #ifdef __CHERI_PURE_CAPABILITY__
     _Alignas(void *)
 // #endif
-    char small_buffer[512]; 
+    char small_buffer[512] __attribute__((aligned(sizeof(void *)))); 
 } _PyBytesWriter;
 
 /* Initialize a bytes writer

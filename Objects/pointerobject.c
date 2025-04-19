@@ -223,7 +223,7 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 		if (addr == (Py_addr_t)-1 && PyErr_Occurred())
 			return NULL;
 
-		//fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG\n");
+		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (uintptr_t)addr);
 
 		/* Previous Comment: Probably not correct since it's not a valid pointer... */
 		return (void*)(uintptr_t)addr;

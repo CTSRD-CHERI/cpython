@@ -2,6 +2,8 @@ import unittest
 from test.support import import_helper
 from test.support import warnings_helper
 
+import sys
+
 # Skip this test if the _testcapi module isn't available.
 import_helper.import_module('_testcapi')
 from _testcapi import (_test_structmembersType_OldAPI,

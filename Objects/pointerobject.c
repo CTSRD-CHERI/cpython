@@ -219,15 +219,23 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 	}
 	// #ifdef WONT_WORK_ON_CHERI
 	if (PyLong_Check(vv)){
+
 		Py_addr_t addr = PyLong_AsPyAddr(vv);
 		if (addr == (Py_addr_t)-1 && PyErr_Occurred())
 			return NULL;
 
 		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (uintptr_t)addr);
 
-		/* Previous Comment: Probably not correct since it's not a valid pointer... */
-		return (void*)(uintptr_t)addr;
+		/* Probably not correct since it's not a valid capability on CHERI128... */
+#ifdef __CHERI_PURE_CAPABILITY__
+	if (!__builtin_cheri_tag_get((void *)(uintptr_t)addr)) {
+		PyErr_Format(PyExc_TypeError, "%s: a valid pointer or a NULL pointer is required, got %p", __func__, vv);
+		return NULL;
 	}
+#else
+		return (void*)(uintptr_t)addr;
+#endif
+			}
 	// #else
 	//fprintf(stderr, "[DEBUG] AsVoidPointer: branch TYPE_ERROR\n");
 

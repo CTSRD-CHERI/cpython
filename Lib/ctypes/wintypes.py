@@ -45,6 +45,9 @@ if ctypes.sizeof(ctypes.c_long) == ctypes.sizeof(ctypes.c_void_p):
 elif ctypes.sizeof(ctypes.c_longlong) == ctypes.sizeof(ctypes.c_void_p):
     WPARAM = ctypes.c_ulonglong
     LPARAM = ctypes.c_longlong
+elif 2 * ctypes.sizeof(ctypes.c_longlong) == ctypes.sizeof(ctypes.c_void_p): # CHERI
+    WPARAM = ctypes.c_uintptr_t
+    LPARAM = ctypes.c_intptr_t
 
 ATOM = WORD
 LANGID = WORD

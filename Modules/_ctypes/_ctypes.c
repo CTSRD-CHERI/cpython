@@ -3681,6 +3681,8 @@ PyCFuncPtr_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     StgDictObject *dict;
     CThunkObject *thunk;
 
+	fprintf(stderr, "num args: %d\n", PyTuple_GET_SIZE(args));
+
     if (PyTuple_GET_SIZE(args) == 0)
         return GenericPyCData_new(type, args, kwds);
 
@@ -3708,7 +3710,8 @@ PyCFuncPtr_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 
     if (!PyArg_ParseTuple(args, "O", &callable))
         return NULL;
-    if (!PyCallable_Check(callable)) {
+
+    if (!PyCallable_Check(callable)) { // do not allow create native pointer from integer
         PyErr_SetString(PyExc_TypeError,
                         "argument must be callable or function address");
         return NULL;

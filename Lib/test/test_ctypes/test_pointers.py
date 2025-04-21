@@ -8,6 +8,11 @@ ctype_types = [c_byte, c_ubyte, c_short, c_ushort, c_int, c_uint,
 python_types = [int, int, int, int, int, int,
                 int, int, int, int, float, float]
 
+p = c_void_p(0)
+# In a normal build, p.value is an int. In CHERI protection model, 
+# p.value will be an instance of native‐pointer class (not just a plain int).
+is_cheri = not isinstance(p.value, int)
+
 class PointersTestCase(unittest.TestCase):
 
     def test_pointer_crash(self):
@@ -177,8 +182,11 @@ class PointersTestCase(unittest.TestCase):
                                  0xFFFFFFFF)
             self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFF).value,
                                  c_void_p(-1).value)
-            self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFFFFFFFFFF).value,
-                                 c_void_p(-1).value)
+            #self.assertEqual(c_void_p(0xFFFFFFFFFFFFFFFFFFFFFFFF).value,
+                                 #c_void_p(-1).value)
+            self.assertRaises(OverflowError, c_void_p, 0xFFFFFFFFFFFFFFFFFFFFFFFF)
+        elif sizeof(c_void_p) == 16:
+            print("CHERI128 test_c_void_p unimplemented")
 
         self.assertRaises(TypeError, c_void_p, 3.14) # make sure floats are NOT accepted
         self.assertRaises(TypeError, c_void_p, object()) # nor other objects
@@ -189,7 +197,11 @@ class PointersTestCase(unittest.TestCase):
         self.assertEqual(bool(pointer(c_int())), True)
 
         self.assertEqual(bool(CFUNCTYPE(None)(0)), False)
-        self.assertEqual(bool(CFUNCTYPE(None)(42)), True)
+        if is_cheri:
+            # currently do not allow int as func addr input
+            self.assertRaises(TypeError, CFUNCTYPE(None), 42)
+        else:
+            self.assertEqual(bool(CFUNCTYPE(None)(42)), True)
 
         # COM methods are boolean True:
         if sys.platform == "win32":

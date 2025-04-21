@@ -393,7 +393,7 @@ class LongTests(unittest.TestCase):
         self.assertIs(asvoidptr(y), NULL)
         if _testcapi.SIZEOF_VOID_P == 16:
             #self.assertIs(asvoidptr(fromvoidptr()
-            pass
+            self.assertRaises(TypeError, asvoidptr, IntSubclass(x))
         else:
             print("test IntSubclass")
             self.assertIs(asvoidptr(IntSubclass(x)), obj)

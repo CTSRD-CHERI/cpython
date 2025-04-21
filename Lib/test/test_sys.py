@@ -19,6 +19,10 @@ import textwrap
 import unittest
 import warnings
 
+import _testcapi
+if _testcapi.SIZEOF_VOID_P == 16:
+    isCHERI128 = True
+
 try:
     from test.support import interpreters
 except ImportError:
@@ -1378,7 +1382,7 @@ class SizeofTest(unittest.TestCase):
         self.assertEqual(sys.getsizeof(True, -1), size('') + self.longdigit)
 
     def test_objecttypes(self):
-        # check all types defined in Objects/
+        # check all types defined in Objects
         calcsize = struct.calcsize
         size = test.support.calcobjsize
         vsize = test.support.calcvobjsize
@@ -1393,8 +1397,13 @@ class SizeofTest(unittest.TestCase):
         # bytearray
         samples = [b'', b'u'*100000]
         for sample in samples:
+            print("sample", sample)
             x = bytearray(sample)
-            check(x, vsize('n2Pi') + x.__alloc__())
+            print("x", x, "x.alloc", x.__alloc__() , "gc", self.gc_headsize)
+            if isCHERI128:
+                check(x, vsize('P2Pn') + x.__alloc__()) # each non-last field is 16B aligned
+            else:
+                check(x, vsize('n2Pi') + x.__alloc__())
         # bytearray_iterator
         check(iter(bytearray()), size('nP'))
         # bytes

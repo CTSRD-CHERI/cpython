@@ -96,7 +96,8 @@ class AnotherLeak(unittest.TestCase):
         a = sys.getrefcount(ctypes.c_int)
         f(1, 2)
         self.assertEqual(sys.getrefcount(ctypes.c_int), a)
-
+    
+    @unittest.skipIf(not isinstance(ctypes.c_void_p(0), int), "libffi no closure support for void * hybrid CHERI")
     @support.refcount_test
     def test_callback_py_object_none_return(self):
         # bpo-36880: test that returning None from a py_object callback

@@ -20,6 +20,7 @@ import unittest
 import warnings
 
 import _testcapi
+isCHERI128 = False
 if _testcapi.SIZEOF_VOID_P == 16:
     isCHERI128 = True
 
@@ -1397,9 +1398,9 @@ class SizeofTest(unittest.TestCase):
         # bytearray
         samples = [b'', b'u'*100000]
         for sample in samples:
-            print("sample", sample)
+            #print("sample", sample)
             x = bytearray(sample)
-            print("x", x, "x.alloc", x.__alloc__() , "gc", self.gc_headsize)
+            #print("x", x, "x.alloc", x.__alloc__() , "gc", self.gc_headsize)
             if isCHERI128:
                 check(x, vsize('P2Pn') + x.__alloc__()) # each non-last field is 16B aligned
             else:

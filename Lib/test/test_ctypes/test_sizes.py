@@ -23,10 +23,16 @@ class SizesTestCase(unittest.TestCase):
         self.assertEqual(8, sizeof(c_uint64))
 
     def test_size_t(self):
-        self.assertEqual(sizeof(c_void_p), sizeof(c_size_t))
+        if sizeof(c_void_p) == 2 * sizeof(c_ulonglong):
+            self.assertEqual(sizeof(c_void_p), sizeof(c_uintptr_t))
+        else:
+            self.assertEqual(sizeof(c_void_p), sizeof(c_size_t))
 
     def test_ssize_t(self):
-        self.assertEqual(sizeof(c_void_p), sizeof(c_ssize_t))
+        if sizeof(c_void_p) == 2 * sizeof(c_ulonglong):
+            self.assertEqual(sizeof(c_void_p), sizeof(c_intptr_t))
+        else:
+            self.assertEqual(sizeof(c_void_p), sizeof(c_ssize_t))
 
     def test_time_t(self):
         self.assertEqual(sizeof(c_time_t), SIZEOF_TIME_T)

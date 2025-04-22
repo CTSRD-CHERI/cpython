@@ -35,7 +35,12 @@ class PointersTestCase(unittest.TestCase):
         i = c_int(12345678)
 ##        func.argtypes = (POINTER(c_int),)
         address = func(byref(i))
-        self.assertEqual(c_int.from_address(address).value, 12345678)
+        if is_cheri: 
+            # cannot convert int into pointer under CHERI protection model
+            # c_void_p(address) returns uintptr_t
+            self.assertRaises(TypeError, c_int.from_address, address)
+        else:
+            self.assertEqual(c_int.from_address(address).value, 12345678)
 
         func.restype = POINTER(c_int)
         res = func(pointer(i))
@@ -68,6 +73,7 @@ class PointersTestCase(unittest.TestCase):
         x.value = -99
         self.assertEqual(res.contents.value, -99)
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_callbacks_with_pointers(self):
         # a function type receiving a pointer
         PROTOTYPE = CFUNCTYPE(c_int, POINTER(c_int))
@@ -191,6 +197,7 @@ class PointersTestCase(unittest.TestCase):
         self.assertRaises(TypeError, c_void_p, 3.14) # make sure floats are NOT accepted
         self.assertRaises(TypeError, c_void_p, object()) # nor other objects
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_pointers_bool(self):
         # NULL pointers have a boolean False value, non-NULL pointers True.
         self.assertEqual(bool(POINTER(c_int)()), False)
@@ -220,10 +227,19 @@ class PointersTestCase(unittest.TestCase):
         large_string = 'T' * 2 ** 25
         P = POINTER(large_string)
         self.assertTrue(P)
+        
 
         # to not leak references, we must clean _pointer_type_cache
         from ctypes import _pointer_type_cache
-        del _pointer_type_cache[id(P)]
+        from _ctypes import _get_id
+
+#        if _get_id(P) not in _pointer_type_cache:
+#            print("oh nooooo!")
+#        else:
+#            print("yes!")
+
+        #del _pointer_type_cache[id(P)]
+        del _pointer_type_cache[_get_id(P)]
 
     def test_abstract(self):
         from ctypes import _Pointer

@@ -232,9 +232,8 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 		PyErr_Format(PyExc_TypeError, "%s: a valid pointer or a NULL pointer is required, got %p", __func__, vv);
 		return NULL;
 	}
-#else
-		return (void*)(uintptr_t)addr;
 #endif
+		return (void*)(uintptr_t)addr;
 			}
 	// #else
 	//fprintf(stderr, "[DEBUG] AsVoidPointer: branch TYPE_ERROR\n");

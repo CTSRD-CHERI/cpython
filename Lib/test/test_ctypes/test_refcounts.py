@@ -3,6 +3,11 @@ from test import support
 import ctypes
 import gc
 
+import _testcapi
+if _testcapi.SIZEOF_VOID_P == 16:
+    raise unittest.SkipTest("libffi closures not supported on CHERI128")
+
+
 MyCallback = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int)
 OtherCallback = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_ulonglong)
 

@@ -57,7 +57,7 @@ class PythonAPITestCase(unittest.TestCase):
         ref = grc(s)
         # id(python-object) is the address
         # XXX: FIXME: this no longer works with pointers, use non-id() call
-        pyobj = PyObj_FromPtr(id(s))
+        pyobj = PyObj_FromPtr(id(s)) 
         # pyobj = PyObj_FromPtr(c_void_p(s))
         self.assertIs(s, pyobj)
 
@@ -65,6 +65,7 @@ class PythonAPITestCase(unittest.TestCase):
         del pyobj
         self.assertEqual(grc(s), ref)
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi CheriBSD vsnprintf capability tag fault")
     def test_PyOS_snprintf(self):
         PyOS_snprintf = pythonapi.PyOS_snprintf
         PyOS_snprintf.argtypes = POINTER(c_char), c_size_t, c_char_p

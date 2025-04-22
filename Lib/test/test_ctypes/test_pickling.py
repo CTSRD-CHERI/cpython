@@ -49,6 +49,7 @@ class PickleTest:
         self.assertEqual(memoryview(y).tobytes(),
                              memoryview(x).tobytes())
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_unpickable(self):
         # ctypes objects that are pointers or contain pointers are
         # unpickable.

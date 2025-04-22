@@ -160,7 +160,7 @@ class SimpleTypesTestCase(unittest.TestCase):
 
     def test_noctypes_argtype(self):
         import _ctypes_test
-        from ctypes import CDLL, c_void_p, ArgumentError
+        from ctypes import CDLL, c_void_p, ArgumentError, sizeof
 
         func = CDLL(_ctypes_test.__file__)._testfunc_p_p
         func.restype = c_void_p
@@ -182,7 +182,10 @@ class SimpleTypesTestCase(unittest.TestCase):
         func.argtypes = (Adapter(),)
         # don't know how to convert parameter 1
         self.assertRaises(ArgumentError, func, object())
-        self.assertEqual(func(c_void_p(42)), 42)
+        if sizeof(c_void_p) == 16: # CHERI128 do not accept int func args
+            self.assertRaises(TypeError, func, c_void_p(42))
+        else:
+            self.assertEqual(func(c_void_p(42)), 42)
 
         class Adapter:
             def from_param(cls, obj):

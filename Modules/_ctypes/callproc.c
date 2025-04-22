@@ -1913,9 +1913,11 @@ POINTER(PyObject *self, PyObject *cls)
                                        "N(O){}",
                                        name,
                                        &PyCPointer_Type);
+		//fprintf(stderr, "result is %p\n", result);
         if (result == NULL)
             return result;
         key = PyNativePointer_FromVoidPointer(result);
+		//fprintf(stderr, "key is %p\n", key);
         if (key == NULL) {
             Py_DECREF(result);
             return NULL;
@@ -1936,10 +1938,12 @@ POINTER(PyObject *self, PyObject *cls)
         return NULL;
     }
     if (-1 == PyDict_SetItem(_ctypes_ptrtype_cache, key, result)) {
+		fprintf(stderr, "PyDict_SetItem failed\n");
         Py_DECREF(result);
         Py_DECREF(key);
         return NULL;
     }
+	//fprintf(stderr, "POINTER succeeded\n");
     Py_DECREF(key);
     return result;
 }
@@ -1992,6 +1996,26 @@ buffer_info(PyObject *self, PyObject *arg)
     return Py_BuildValue("siN", dict->format, dict->ndim, shape);
 }
 
+PyObject *
+_ctypes_get_id(PyObject *self, PyObject *ptrtype)
+{
+	PyObject *key = PyNativePointer_FromVoidPointer(ptrtype);
+	if (key == NULL)
+		return NULL;
+// PyObject *res = PyDict_GetItemWithError(_ctypes_ptrtype_cache, key);
+//	Py_DECREF(key);
+//	if (res) {
+//		Py_INCREF(res);
+//		return res;
+//	}
+	/* Check if that key exists in the dict: */
+	if (PyDict_Contains(_ctypes_ptrtype_cache, key) < 0) {
+		Py_DECREF(key);
+		Py_RETURN_NONE;
+	}
+	Py_INCREF(key);
+	return key;
+}
 
 
 PyMethodDef _ctypes_module_methods[] = {
@@ -2023,6 +2047,7 @@ PyMethodDef _ctypes_module_methods[] = {
     {"sizeof", sizeof_func, METH_O, sizeof_doc},
     {"byref", byref, METH_VARARGS, byref_doc},
     {"addressof", addressof, METH_O, addressof_doc},
+	{"_get_id", _ctypes_get_id, METH_O, PyDoc_STR("get_pointer_target(ptrtype) -> the Structure/Subclass passed to SetPointerType, or None")},
     {"call_function", call_function, METH_VARARGS },
     {"call_cdeclfunction", call_cdeclfunction, METH_VARARGS },
     {"PyObj_FromPtr", My_PyObj_FromPtr, METH_VARARGS },

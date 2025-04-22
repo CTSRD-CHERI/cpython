@@ -3681,7 +3681,7 @@ PyCFuncPtr_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
     StgDictObject *dict;
     CThunkObject *thunk;
 
-	fprintf(stderr, "num args: %d\n", PyTuple_GET_SIZE(args));
+	//fprintf(stderr, "num args: %d\n", PyTuple_GET_SIZE(args));
 
     if (PyTuple_GET_SIZE(args) == 0)
         return GenericPyCData_new(type, args, kwds);

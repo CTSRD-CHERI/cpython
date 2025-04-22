@@ -803,38 +803,32 @@ def check_cflags_pgo():
         pgo_options.append(PGO_PROF_USE_FLAG)
     return any(option in cflags_nodist for option in pgo_options)
 
-_header = 'nP'
-_align = '0n'
+#_align = '0n'
+_align = '0P' # align to pointer size rather than Py_ssize_T
+_header = 'nP' + _align
+_vheader = _header + 'n' + _align
+
 if hasattr(sys, "getobjects"):
     _header = '2P' + _header
     _align = '0P'
-_vheader = _header + 'n'
 
-import _testcapi
-if _testcapi.SIZEOF_VOID_P == 16:
-    _header = '2P'
-    _vheader = '3P' 
+#import _testcapi
+#if _testcapi.SIZEOF_VOID_P == 16:
+#    _header = '2P'
+#    _vheader = '3P' 
 
 def calcobjsize(fmt):
     import struct
-    #if fmt == '':
-    #    _header = '2P' # pad _header in CHERI128
-    #else:
-    #    _header = 'nP'
 
-    _align = '0P' # only constant sized obj align to pointer size
+    #_align = '0P' # only constant sized obj align to pointer size
     return struct.calcsize(_header + fmt + _align)
 
 def calcvobjsize(fmt):
     import struct
-    #if fmt == '':
-    #    _vheader = "3P" # pad _header in CHERI128 
-    #else:
-    #    _vheader = 'nPn'
     
-    print("fmt size", struct.calcsize(fmt)) 
-    print("vheader size", struct.calcsize(_vheader))
-    _align = '0P' # variant sized obj align to Py_ssize_T
+    #print("fmt size", struct.calcsize(fmt)) 
+    #print("vheader size", struct.calcsize(_vheader))
+    
     return struct.calcsize(_vheader + fmt + _align)
 
 

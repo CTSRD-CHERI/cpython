@@ -109,9 +109,9 @@ def native_type_range(fmt):
     else:
         for exp in (128, 127, 64, 63, 32, 31, 16, 15, 8, 7):
             try:
-                print(fmt)
+                #print(fmt)
                 struct.pack(fmt, (1<<exp)-1)
-                print(fmt, "success")
+                #print(fmt, "success")
                 break
             except struct.error:
                 pass

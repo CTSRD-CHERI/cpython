@@ -57,8 +57,9 @@ class PythonAPITestCase(unittest.TestCase):
         ref = grc(s)
         # id(python-object) is the address
         # XXX: FIXME: this no longer works with pointers, use non-id() call
-        pyobj = PyObj_FromPtr(id(s)) 
-        # pyobj = PyObj_FromPtr(c_void_p(s))
+        #pyobj = PyObj_FromPtr(id(s)) 
+        #pyobj = PyObj_FromPtr(c_void_p(s))
+        pyobj = PyObj_FromPtr(_native_pointer(s))
         self.assertIs(s, pyobj)
 
         self.assertEqual(grc(s), ref + 1)

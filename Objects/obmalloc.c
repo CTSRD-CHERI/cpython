@@ -10,9 +10,9 @@
 #include <stdlib.h>               // malloc()
 #include <stdbool.h>
 
-#ifdef __CHERI_PURE_CAPABILITY__
+//#ifdef __CHERI_PURE_CAPABILITY__
 // #include <cheriintrin.h>
-#endif
+//#endif
 
 
 #undef  uint
@@ -1559,7 +1559,7 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
     }
 
 //#ifdef __CHERI_PURE_CAPABILITY__
-//	return (void *)__builtin_cheri_bounds_set(bp, nbytes); 
+//	return (void *)cheri_setbounds(bp, nbytes); 
 //#else
     return (void *)bp;
 //#endif
@@ -1802,7 +1802,10 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
     }
 #endif
 
-    poolp pool = POOL_ADDR(p);
+    poolp pool = POOL_ADDR(p); // in CHERI C/C++, pool inherits bound of p
+// TODO : replace pool with one derived from arena (has larger bounds)
+//
+
     if (UNLIKELY(!address_in_range(state, p, pool))) {
         return 0;
     }
@@ -1815,6 +1818,12 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
      * list in any case).
      */
     assert(pool->ref.count > 0);            /* else it was empty */
+#ifdef __CHERI_PURE_CAPABILITY__
+	//void *arena_cap = (void *)allarenas[pool->arenaindex].address; 
+	/* does not work because pool is out of bounds */
+	//fprintf(stderr, "arena_cap %p\n", arena_cap);
+	//p = cheri_setaddress(arena_cap, cheri_getaddress(p));	
+#endif
     pymem_block *lastfree = pool->freeblock;
     *(pymem_block **)p = lastfree;
     pool->freeblock = (pymem_block *)p;

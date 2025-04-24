@@ -4,11 +4,19 @@
 #include "cpython/longintrepr.h"
 #include "pointerobject.h"
 
+#ifdef __CHERI_PURE_CAPABILITY__
+//#include <cheri/cheric.h>
+//or 
+#include <cheriintrin.h>
+#endif
+
 /* The type object for C pointers.  Note that this cannot be subclassed! */
 typedef struct {
 	PyObject_HEAD
 		/* TODO: store the type of the pointer + whether it's valid? */
+
 	void* pointer;
+	//PyObject *keeper;
 } PyNativePointerObject;
 
 PyTypeObject *c_void_p_type = NULL;
@@ -79,8 +87,43 @@ pointer_repr(PyObject *v)
 {
 	assert(PyNativePointer_CheckExact(v));
 	PyNativePointerObject *cp = (PyNativePointerObject *)v;
-	/* TODO: print CHERI permissions? */
-	return PyUnicode_FromFormat("<native pointer:%p>", cp->pointer);
+
+	/* print CHERI permissions */
+#ifdef __CHERI_PURE_CAPABILITY__
+	if (!cheri_tag_get(cp->pointer)){
+		PyErr_Format(PyExc_TypeError, 
+				"%s: a valid pointer or a null pointer is required, got %p", 
+						__func__, cp->pointer); 
+	}
+	uintptr_t addr  = cheri_address_get(cp->pointer);
+	size_t len = cheri_length_get(cp->pointer);
+	uintptr_t base  = cheri_base_get(cp->pointer);
+	uintptr_t top  = base + len;
+	//size_t    off   = cheri_offset_get(cp->pointer);
+    _Bool tag   = cheri_tag_get(cp->pointer);
+
+	size_t      perms = cheri_perms_get(cp->pointer);
+	char pstr[6];
+	int  pi = 0;
+	if (perms & CHERI_PERM_LOAD)      pstr[pi++] = 'r';
+	if (perms & CHERI_PERM_STORE)     pstr[pi++] = 'w';
+	if (perms & CHERI_PERM_LOAD_CAP)  pstr[pi++] = 'R';
+	if (perms & CHERI_PERM_STORE_CAP) pstr[pi++] = 'L';
+	if (perms & CHERI_PERM_EXECUTE)   pstr[pi++] = 'x';
+	pstr[pi] = '\0';
+
+	PyObject *res = PyUnicode_FromFormat(
+			" [%s,0x%016x-0x%016x] 0x%016x",
+			pstr,
+			(uintptr_t)base,
+			(uintptr_t)top,
+			(uintptr_t)addr
+			);
+	return res;
+#else
+	return PyUnicode_FromFormat("<native pointer:%p> ", cp->pointer);
+#endif
+
 }
 
 
@@ -93,19 +136,42 @@ static PyNumberMethods pointer_as_number = {
 static PyObject *
 pointer_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
+	PyObject *source;
 	PyNativePointerObject *self = (PyNativePointerObject *) type->tp_alloc(type, 0);
+	
 	if (self != NULL) {
-		self->pointer = NULL;
+		if (!PyArg_ParseTuple(args, "O:pointer", &source)){
+			self->pointer = NULL;
+			//self->keeper = NULL;
+		} else {
+		#ifdef __CHERI_PURE_CAPABILITY__
+			if (!cheri_tag_get(source)) {
+				PyErr_Format(PyExc_TypeError,
+						"%s: a valid pointer or a null pointer is required, got %p", 
+						__func__, source);
+				return NULL;
+			}
+		#endif
+			//self->keeper = source;
+			self->pointer = (void *) source;
+			//Py_INCREF(self);
+
+			fprintf(stderr, "source addr %p\n", source);
+		}
+		return (PyObject *) self;
+
 	}
-	return (PyObject *) self;
+	return NULL;
 }
 
 static void
 pointer_dealloc(PyObject *obj)
 {
-	// PyNativePointerObject *self = (PyNativePointerObject *)obj;
+	PyNativePointerObject *self = (PyNativePointerObject *)obj;
 	// fprintf(stderr, "releasing c pointer %p\n", self->pointer);
-	Py_TYPE(obj)->tp_free(obj);
+	//Py_XDECREF(self->keeper);
+	Py_TYPE(self)->tp_free((PyObject*)obj);
+	//Py_TYPE(obj)->tp_free(obj);
 }
 
 static PyObject *
@@ -123,7 +189,7 @@ static PyMethodDef pointer_methods[] = {
 
 PyTypeObject _PyNativePointer_Type = {
 	PyVarObject_HEAD_INIT(NULL, 0)
-		.tp_name = "_native_pointer",
+	.tp_name = "_native_pointer",
 	.tp_doc = "native pointer",
 	.tp_basicsize = sizeof(PyNativePointerObject),
 	.tp_itemsize = 0,
@@ -204,7 +270,7 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 	if (c_void_p_type != NULL
 			    && PyObject_TypeCheck(vv, (PyTypeObject*)c_void_p_type)){
 		if (PyObject_HasAttrString(vv, "value")) {
-			// fprintf(stderr, "[DEBUG] AsVoidPointer: branch CTYPES.VALUE\n");
+			fprintf(stderr, "[DEBUG] AsVoidPointer: branch CTYPES.VALUE\n");
 			PyObject* pv = PyObject_GetAttrString(vv, "value");
 			if (pv == NULL)
 				return NULL;
@@ -224,7 +290,7 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 		if (addr == (Py_addr_t)-1 && PyErr_Occurred())
 			return NULL;
 
-		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (uintptr_t)addr);
+		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (void *)(uintptr_t)addr);
 
 		/* Probably not correct since it's not a valid capability on CHERI128... */
 #ifdef __CHERI_PURE_CAPABILITY__

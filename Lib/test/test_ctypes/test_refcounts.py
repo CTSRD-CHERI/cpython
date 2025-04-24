@@ -27,11 +27,21 @@ class RefcountTestCase(unittest.TestCase):
         def callback(value):
             #print "called back with", value
             return value
-
+        
+        #f_np_callback = _native_pointer(callback)
+        #print(f_np_callback) # callback types different from int func pointers
         self.assertEqual(grc(callback), 2)
+        #self.assertEqual(grc(_native_pointer(callback).pointer), 2)
+        #self.assertEqual(grc(f_np_callback), 2)
+        
         cb = MyCallback(callback)
+        #cb = MyCallback(_native_pointer(callback))
+        #cb = MyCallback(f_np_callback)
 
         self.assertGreater(grc(callback), 2)
+        #self.assertGreater(grc(_native_pointer(callback)), 2)
+        #self.assertGreater(grc(f_np_callback), 2)
+
         result = f(-10, cb)
         self.assertEqual(result, -18)
         cb = None

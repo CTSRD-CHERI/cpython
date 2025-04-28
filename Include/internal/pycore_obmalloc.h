@@ -619,6 +619,9 @@ struct _obmalloc_mgmt {
 typedef struct {
     int32_t tail_hi;
     int32_t tail_lo;
+#ifdef __CHERI_PURE_CAPABILITY__
+	uintptr_t arena_cap;
+#endif
 } arena_coverage_t;
 
 typedef struct arena_map_bot {

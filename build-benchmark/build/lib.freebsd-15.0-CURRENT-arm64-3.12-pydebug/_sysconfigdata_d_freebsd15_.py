@@ -38,19 +38,19 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGURE_CFLAGS': '-mabi=purecap-benchmark',
  'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
- 'CONFIGURE_CPPFLAGS': '-I/usr/local64cb/include',
+ 'CONFIGURE_CPPFLAGS': '-I/usr/local64cb/include -I/usr/include',
  'CONFIGURE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
- 'CONFIG_ARGS': "'CFLAGS=-mabi=purecap-benchmark' "
-                "'CPPFLAGS=-I/usr/local64cb/include' "
-                "'PKG_CONFIG=/usr/local64cb/bin/pkg-config' "
-                "'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' "
-                "'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' "
-                "'--with-pydebug' '--build=aarch64-unknown-freebsd' "
+ 'CONFIG_ARGS': "'--with-pydebug' '--build=aarch64-unknown-freebsd' "
                 "'--with-assertions' "
                 "'--prefix=/home/qianhuiwang/cpython/build-benchmark' "
-                "'build_alias=aarch64-unknown-freebsd' 'CC=cc'",
+                "'build_alias=aarch64-unknown-freebsd' "
+                "'PKG_CONFIG=/usr/local64cb/bin/pkg-config' "
+                "'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'CC=cc' "
+                "'CFLAGS=-mabi=purecap-benchmark' "
+                "'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' "
+                "'CPPFLAGS=-I/usr/local64cb/include -I/usr/include'",
  'CONFINCLUDEDIR': '/home/qianhuiwang/cpython/build-benchmark/include',
  'CONFINCLUDEPY': '/home/qianhuiwang/cpython/build-benchmark/include/python3.12d',
  'COREPYTHONPATH': '',
@@ -61,7 +61,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                             '--title "CPython 3.12 LCOV report [commit $(shell '
                             'git --git-dir ../.git rev-parse --short HEAD)]"',
  'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
-             '-I/usr/local64cb/include',
+             '-I/usr/local64cb/include -I/usr/include',
  'CXX': 'c++ -pthread',
  'DEEPFREEZE_C': 'Python/deepfreeze/deepfreeze.c',
  'DEEPFREEZE_DEPS': '../Tools/build/deepfreeze.py _bootstrap_python '
@@ -637,7 +637,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                     '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
                     '-IInclude -IPython -I. -I../Include '
-                    '-I/usr/local64cb/include -fPIC',
+                    '-I/usr/local64cb/include -I/usr/include -fPIC',
  'LIBEXPAT_HEADERS': '\\',
  'LIBEXPAT_OBJS': '\\',
  'LIBHACL_CFLAGS': '-I../Modules/_hacl/include -D_BSD_SOURCE -D_DEFAULT_SOURCE '
@@ -645,7 +645,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '-std=c11 -Werror=implicit-function-declaration '
                    '-fvisibility=hidden  -I../Include/internal -IObjects '
                    '-IInclude -IPython -I. -I../Include '
-                   '-I/usr/local64cb/include -fPIC',
+                   '-I/usr/local64cb/include -I/usr/include -fPIC',
  'LIBHACL_HEADERS': '\\',
  'LIBHACL_SHA2_A': 'Modules/_hacl/libHacl_Hash_SHA2.a',
  'LIBHACL_SHA2_HEADERS': '\\',
@@ -658,7 +658,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                     '-std=c11 -Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
                     '-IInclude -IPython -I. -I../Include '
-                    '-I/usr/local64cb/include -fPIC',
+                    '-I/usr/local64cb/include -I/usr/include -fPIC',
  'LIBMPDEC_HEADERS': '\\',
  'LIBMPDEC_OBJS': '\\',
  'LIBOBJDIR': 'Python/',
@@ -1035,7 +1035,8 @@ build_time_vars = {'ABIFLAGS': 'd',
                              '-Werror=implicit-function-declaration '
                              '-fvisibility=hidden  -I../Include/internal '
                              '-IObjects -IInclude -IPython -I. -I../Include '
-                             '-I/usr/local64cb/include -DPy_BUILD_CORE_BUILTIN',
+                             '-I/usr/local64cb/include -I/usr/include '
+                             '-DPy_BUILD_CORE_BUILTIN',
  'PY_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap-benchmark',
  'PY_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                      '-fvisibility=hidden  -I../Include/internal',
@@ -1044,10 +1045,10 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '-std=c11 -Werror=implicit-function-declaration '
                    '-fvisibility=hidden  -I../Include/internal -IObjects '
                    '-IInclude -IPython -I. -I../Include '
-                   '-I/usr/local64cb/include -DPy_BUILD_CORE',
+                   '-I/usr/local64cb/include -I/usr/include -DPy_BUILD_CORE',
  'PY_CORE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
  'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
-                '-I/usr/local64cb/include',
+                '-I/usr/local64cb/include -I/usr/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
  'PY_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
@@ -1062,7 +1063,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                         '-Werror=implicit-function-declaration '
                         '-fvisibility=hidden  -I../Include/internal -IObjects '
                         '-IInclude -IPython -I. -I../Include '
-                        '-I/usr/local64cb/include',
+                        '-I/usr/local64cb/include -I/usr/include',
  'PY_SUPPORT_TIER': 0,
  'Py_DEBUG': 1,
  'Py_ENABLE_SHARED': 0,

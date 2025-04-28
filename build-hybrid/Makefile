@@ -81,13 +81,13 @@ MAKESETUP=      $(srcdir)/Modules/makesetup
 
 # Compiler options
 OPT=		-g -Og -Wall
-BASECFLAGS=	 -fno-strict-overflow -Wsign-compare
+BASECFLAGS=	 -fno-strict-overflow
 BASECPPFLAGS=	-IObjects -IInclude -IPython
 CONFIGURE_CFLAGS=	-mabi=aapcs
 # CFLAGS_NODIST is used for building the interpreter and stdlib C extensions.
 # Use it when a compiler flag should _not_ be part of the distutils CFLAGS
 # once Python is installed (Issue #21121).
-CONFIGURE_CFLAGS_NODIST= -std=c11 -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration -fvisibility=hidden
+CONFIGURE_CFLAGS_NODIST= -std=c11 -Werror=implicit-function-declaration -fvisibility=hidden
 # LDFLAGS_NODIST is used in the same manner as CFLAGS_NODIST.
 # Use it when a linker flag should _not_ be part of the distutils LDFLAGS
 # once Python is installed (bpo-35257)
@@ -95,8 +95,8 @@ CONFIGURE_LDFLAGS_NODIST=
 # LDFLAGS_NOLTO is an extra flag to disable lto. It is used to speed up building
 # of _bootstrap_python and _freeze_module tools, which don't need LTO.
 CONFIGURE_LDFLAGS_NOLTO=
-CONFIGURE_CPPFLAGS=	-mabi=aapcs -I/usr/local64/include
-CONFIGURE_LDFLAGS=	-mabi=aapcs -L/usr/local64/lib
+CONFIGURE_CPPFLAGS=	-I/usr/local64/include -I/usr/include
+CONFIGURE_LDFLAGS=	-mabi=aapcs -L/usr/local64/lib -lmd
 # Avoid assigning CFLAGS, LDFLAGS, etc. so users can use them on the
 # command line to append to these values without stomping the pre-set
 # values.
@@ -375,7 +375,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 'CFLAGS=-mabi=aapcs' 'CPPFLAGS=-mabi=aapcs -I/usr/local64/include' 'PKG_CONFIG=/usr/local64/bin/pkg-config' 'LDFLAGS=-mabi=aapcs -L/usr/local64/lib' '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-hybrid' 'build_alias=aarch64-unknown-freebsd' 'CC=cc'
+CONFIG_ARGS=	 '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-hybrid' 'build_alias=aarch64-unknown-freebsd' 'PKG_CONFIG=/usr/local64/bin/pkg-config' 'CC=cc' 'CFLAGS=-mabi=aapcs' 'LDFLAGS=-mabi=aapcs -L/usr/local64/lib -lmd' 'CPPFLAGS=-I/usr/local64/include -I/usr/include'
 
 
 # Subdirectories with code

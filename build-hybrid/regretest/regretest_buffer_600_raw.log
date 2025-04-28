@@ -1,0 +1,321 @@
+== CPython 3.12.2+ (heads/cheri-3.12-dirty:7932e00bce, Apr 14 2025, 17:58:21) [Clang 14.0.0 ]
+== FreeBSD-15.0-CURRENT-arm64-aarch64c-64bit-ELF little-endian
+== Python build: debug
+== cwd: /home/qianhuiwang/cpython/build-hybrid/build/test_python_worker_40570æ
+== CPU count: 4
+== encodings: locale=UTF-8 FS=utf-8
+== resources: all test resources are disabled, use -u option to unskip tests
+
+Using random seed: 1892429390
+0:00:00 load avg: 8.09 Run 1 test sequentially (timeout: 10 min)
+0:00:00 load avg: 8.09 [1/1] test_buffer
+DEBUG: fmt = 'Q'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f226f0>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'P'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'P'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'h'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'H'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'l'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'L'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'i'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'f'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'd'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'q'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'B'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'b'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'c'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'P'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d190>
+DEBUG: fmt = 'P'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d190>
+DEBUG: fmt = 'Q'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'b'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ef90>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'B'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6edb0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'h'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d4f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'H'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d7f0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'i'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6deb0>
+DEBUG: fmt = 'I'
+DEBUG: s_objecDEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'L'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ddf0>
+DEBUG: fmt = 'L'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ddf0>
+DEBUG: fmt = 'L'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ddf0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'N'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e3f0>
+DEBUG: fmt = 'N'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e3f0>
+DEBUG: fmt = 'N'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e3f0>
+DEBUG: fmt = 'P'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d190>
+Assertion failed: (_Py_IS_ALIGNED(p, _Alignof(void *))), function np_void_p, file ../Modules/_struct.c, line 806.
+t = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'I'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6e3f0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'l'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6daf0>
+DEBUG: fmt = 'L'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ddf0>
+DEBUG: fmt = 'L'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ddf0>
+DEBUG: fmt = 'L'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6ddf0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'n'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e2d0>
+DEBUG: fmt = 'N'
+DEBUG: s_object = NULL
+DEBUG: fmt = 'N'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e3f0>
+DEBUG: fmt = 'N'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f9e3f0>
+DEBUG: fmt = 'P'
+DEBUG: s_object = <_struct.Struct object at 0x15c187f6d190>
+Fatal Python error: Aborted
+
+Current thread 0x000015c186c12000 (most recent call first):
+  File "/home/qianhuiwang/cpython/Lib/test/test_buffer.py", line 113 in native_type_range
+  File "/home/qianhuiwang/cpython/Lib/test/test_buffer.py", line 132 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 996 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1387 in _gcd_import
+  File "/home/qianhuiwang/cpython/Lib/importlib/__init__.py", line 90 in import_module
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/single.py", line 125 in _load_run_test
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/single.py", line 178 in _runtest_env_changed_exc
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/single.py", line 278 in _runtest
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/single.py", line 306 in run_single_test
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/main.py", line 296 in run_test
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/main.py", line 331 in run_tests_sequentially
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/main.py", line 470 in _run_tests
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/main.py", line 501 in run_tests
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/main.py", line 664 in main
+  File "/home/qianhuiwang/cpython/Lib/test/libregrtest/main.py", line 672 in main
+  File "/home/qianhuiwang/cpython/Lib/test/__main__.py", line 2 in <module>
+  File "/home/qianhuiwang/cpython/Lib/runpy.py", line 88 in _run_code
+  File "/home/qianhuiwang/cpython/Lib/runpy.py", line 198 in _run_module_as_main
+
+Extension modules: _testbuffer, _testcapi (total: 2)

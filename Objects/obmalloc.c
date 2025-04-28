@@ -10,14 +10,12 @@
 #include <stdlib.h>               // malloc()
 #include <stdbool.h>
 
-//#ifdef __CHERI_PURE_CAPABILITY__
-// #include <cheriintrin.h>
-//#endif
-
-
 #undef  uint
 #define uint pymem_uint
 
+#ifdef __CHERI_PURE_CAPABILITY__
+#include <cheri/cheric.h>
+#endif
 
 /* Defined in tracemalloc.c */
 extern void _PyMem_DumpTraceback(int fd, const void *ptr);
@@ -379,11 +377,58 @@ _PyMem_SetupAllocators(PyMemAllocatorName allocator)
     return res;
 }
 
+#ifdef __CHERI_PURE_CAPABILITY__
+#include <fcntl.h>
+#include <unistd.h>
+
+static void
+debug_ptr(void *a, void *b)
+{	
+	size_t a_len = __builtin_cheri_length_get(a);
+	uintptr_t a_base  = __builtin_cheri_base_get(a);
+	uintptr_t a_top  = a_base + a_len;
+	uintptr_t a_addr  = __builtin_cheri_address_get(a);
+
+
+	size_t b_len = __builtin_cheri_length_get(b);
+	uintptr_t b_base  = __builtin_cheri_base_get(b);
+	uintptr_t b_top  = b_base + b_len;
+	uintptr_t b_addr  = __builtin_cheri_address_get(b);
+
+
+	int fd = open("/tmp/pymalloc_debug.log",
+                  O_WRONLY|O_CREAT|O_APPEND, 0644);
+
+	if (fd >=0) {
+		//dprintf(fd, "a=0x%016x[0x%016x-0x%016x] b=0x%016x[[0x%016x-0x%016x]\n", 
+		dprintf(fd, "a=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR "] b=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR "]\n",
+				(uintptr_t)a_addr, (uintptr_t)a_base, (uintptr_t)a_top, 
+			(uintptr_t)b_addr, (uintptr_t)b_base, (uintptr_t)b_top);
+		close(fd);
+	}
+}
+
+
+static int
+ptr_eq(void *a, void *b)
+{
+	// debug_ptr(a, b);
+	return __builtin_cheri_address_get(a) == __builtin_cheri_address_get(b);
+}
+#endif
 
 static int
 pymemallocator_eq(PyMemAllocatorEx *a, PyMemAllocatorEx *b)
 {
-    return (memcmp(a, b, sizeof(PyMemAllocatorEx)) == 0);
+#ifdef __CHERI_PURE_CAPABILITY__
+	return (ptr_eq(a->ctx,  b->ctx) && 
+		ptr_eq(a->malloc,  b->malloc) &&
+		ptr_eq(a->calloc,  b->calloc) &&
+		ptr_eq(a->realloc, b->realloc) &&
+		ptr_eq(a->free,    b->free));
+#else
+	return (memcmp(a, b, sizeof(PyMemAllocatorEx)) == 0);
+#endif
 }
 
 
@@ -424,7 +469,7 @@ get_current_allocator_name_unlocked(void)
             pymemallocator_eq(&_PyMem_Debug.obj.alloc, &malloc_alloc))
         {
             return "malloc_debug";
-        }
+	}
 #ifdef WITH_PYMALLOC
         if (pymemallocator_eq(&_PyMem_Debug.raw.alloc, &malloc_alloc) &&
             pymemallocator_eq(&_PyMem_Debug.mem.alloc, &pymalloc) &&
@@ -1079,16 +1124,23 @@ arena_map_mark_used(OMState *state, uintptr_t arena_base, int is_used)
     /* sanity check that IGNORE_BITS is correct */
     assert(HIGH_BITS(arena_base) == HIGH_BITS(&arena_map_root));
     arena_map_bot_t *n_hi = arena_map_get(
-            state, (pymem_block *)arena_base, is_used);
+            state, (pymem_block *)arena_base, is_used);// is_used -> create
     if (n_hi == NULL) {
         assert(is_used); /* otherwise node should already exist */
         return 0; /* failed to allocate space for node */
     }
     int i3 = MAP_BOT_INDEX((pymem_block *)arena_base);
+
+	#ifdef __CHERI_PURE_CAPABILITY__
+		n_hi->arenas[i3].arena_cap = is_used? arena_base : (uintptr_t) NULL;
+	#endif
+
     int32_t tail = (int32_t)(arena_base & ARENA_SIZE_MASK);
-    if (tail == 0) {
+    
+	// tail_lo and tail_hi are used to indicate spill/unaligned arena_base
+	if (tail == 0) {
         /* is ideal arena address */
-        n_hi->arenas[i3].tail_hi = is_used ? -1 : 0;
+        n_hi->arenas[i3].tail_hi = is_used ? -1 : 0; 
     }
     else {
         /* arena_base address is not ideal (aligned to arena size) and
@@ -1133,6 +1185,45 @@ arena_map_is_used(OMState *state, pymem_block *p)
     int32_t tail = (int32_t)(AS_UINT(p) & ARENA_SIZE_MASK);
     return (tail < lo) || (tail >= hi && hi != 0);
 }
+
+#ifdef __CHERI_PURE_CAPABILITY__
+static uintptr_t
+arena_cap_get(OMState *state, pymem_block *p)
+{	
+	arena_map_bot_t *n = arena_map_get(state, p, 0);
+    if (n == NULL) {
+        return (uintptr_t) NULL;
+    }
+    int i3 = MAP_BOT_INDEX(p);
+	//int32_t hi = n->arenas[i3].tail_hi;
+    int32_t lo = n->arenas[i3].tail_lo; 
+    int32_t tail = (int32_t)(AS_UINT(p) & ARENA_SIZE_MASK);
+
+	if (tail < lo) { // spill, go back to previous bottom node to look for arena_base
+		uintptr_t arena_base_pre = (uintptr_t) p - ARENA_SIZE;
+		arena_map_bot_t *n2 = arena_map_get(state, (pymem_block *) arena_base_pre, 0);
+		if (n2 == NULL) {
+			fprintf(stderr, "!!pre arena not allocated--WRONG\n");
+			return (uintptr_t) NULL;
+		}
+		int i3_pre = MAP_BOT_INDEX(arena_base_pre);
+		uintptr_t arena_cap_pre = n2->arenas[i3_pre].arena_cap;
+		if (arena_cap_pre == (uintptr_t) NULL){
+			fprintf(stderr, "!!pre arena null arena_cap\n");
+			return (uintptr_t) NULL;
+		}
+		return arena_cap_pre;
+	}
+
+	uintptr_t arena_cap = n->arenas[i3].arena_cap;
+	if (arena_cap == (uintptr_t) NULL){
+		fprintf(stderr, "!!null arena_cap\n");
+		return (uintptr_t) NULL;
+	}
+
+	return arena_cap;
+}
+#endif
 
 /* end of radix tree logic */
 /*==========================================================================*/
@@ -1501,7 +1592,8 @@ allocate_from_new_pool(OMState *state, uint size)
     bp = (pymem_block *)pool + POOL_OVERHEAD;
     pool->nextoffset = POOL_OVERHEAD + (size << 1);
     pool->maxnextoffset = POOL_SIZE - size;
-    pool->freeblock = bp + size;
+    pool->freeblock = bp + size; // outside pool header bound
+								 // uintptr_t arithmetics is fine, but deref crashes
     *(pymem_block **)(pool->freeblock) = NULL;
     return bp;
 }
@@ -1558,11 +1650,11 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
         bp = allocate_from_new_pool(state, size);
     }
 
-//#ifdef __CHERI_PURE_CAPABILITY__
-//	return (void *)cheri_setbounds(bp, nbytes); 
-//#else
+#ifdef __CHERI_PURE_CAPABILITY__
+	return (void *)cheri_setbounds(bp, nbytes); 
+#else
     return (void *)bp;
-//#endif
+#endif
 	
 }
 
@@ -1801,16 +1893,35 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
         return 0;
     }
 #endif
+   
+	poolp pool = POOL_ADDR(p); // in CHERI C/C++, pool inherits bound of p
+	if (UNLIKELY(!address_in_range(state, p, pool))) {
+		return 0;
+	}
+	/* We allocated this address. */
+	/* pymalloc is in charge of this block */
 
-    poolp pool = POOL_ADDR(p); // in CHERI C/C++, pool inherits bound of p
-// TODO : replace pool with one derived from arena (has larger bounds)
-//
+#ifdef __CHERI_PURE_CAPABILITY__
+	uintptr_t arena_cap = arena_cap_get(state, p);
+	// replace pool with one derived from arena (has larger bounds)
+	pool = (poolp) 
+		cheri_setbounds(
+			cheri_setaddress((void *)arena_cap,
+				cheri_getaddress(POOL_ADDR(p)))
+			, POOL_SIZE);
+			//cheri_getaddress((void *)pool)), sizeof(struct pool_header));
 
-    if (UNLIKELY(!address_in_range(state, p, pool))) {
-        return 0;
-    }
-    /* We allocated this address. */
+    size_t size = INDEX2SIZE(pool->szidx);
 
+	p = cheri_setbounds(
+			cheri_setaddress((void *)arena_cap, 
+				cheri_getaddress((void *)p))
+			, size)
+		;
+	//void *arena_cap = (void *)allarenas[pool->arenaindex].address; 
+	/* does not work because pool is out of bounds */
+#endif
+	
     /* Link p to the start of the pool's freeblock list.  Since
      * the pool had at least the p block outstanding, the pool
      * wasn't empty (so it's already in a usedpools[] list, or
@@ -1818,12 +1929,6 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
      * list in any case).
      */
     assert(pool->ref.count > 0);            /* else it was empty */
-#ifdef __CHERI_PURE_CAPABILITY__
-	//void *arena_cap = (void *)allarenas[pool->arenaindex].address; 
-	/* does not work because pool is out of bounds */
-	//fprintf(stderr, "arena_cap %p\n", arena_cap);
-	//p = cheri_setaddress(arena_cap, cheri_getaddress(p));	
-#endif
     pymem_block *lastfree = pool->freeblock;
     *(pymem_block **)p = lastfree;
     pool->freeblock = (pymem_block *)p;
@@ -1918,8 +2023,28 @@ pymalloc_realloc(OMState *state, void *ctx,
         return 0;
     }
 
-    /* pymalloc is in charge of this block */
+#ifdef __CHERI_PURE_CAPABILITY__
+	uintptr_t arena_cap = arena_cap_get(state, p);
+	// replace pool with one derived from arena (has larger bounds)
+	pool = (poolp) 
+		cheri_setbounds(
+			cheri_setaddress((void *)arena_cap,
+				cheri_getaddress(POOL_ADDR(p)))
+			, POOL_SIZE);
+	
+	if (nbytes <= SMALL_REQUEST_THRESHOLD){ // reallocated still inside pymalloc
+	
+		p = cheri_setbounds(
+				cheri_setaddress((void *)arena_cap, 
+					cheri_getaddress((void *)p))
+				, nbytes)
+			;
+	}
+#endif
+
+/* pymalloc is in charge of this block */
     size = INDEX2SIZE(pool->szidx);
+
     if (nbytes <= size) {
         /* The block is staying the same or shrinking.
 
@@ -1938,7 +2063,19 @@ pymalloc_realloc(OMState *state, void *ctx,
 
     bp = _PyObject_Malloc(ctx, nbytes);
     if (bp != NULL) {
-        memcpy(bp, p, size);
+		if (nbytes > SMALL_REQUEST_THRESHOLD) { // size
+			int full_block_size = INDEX2SIZE(pool->szidx);
+#ifdef __CHERI_PURE_CAPABILITY__
+			p = cheri_setbounds(
+					cheri_setaddress((void *)arena_cap, 
+						cheri_getaddress((void *)p))
+					, full_block_size)
+				;
+#endif
+			memcpy(bp, p, full_block_size);	
+		} else {
+			memcpy(bp, p, size);
+		}
         _PyObject_Free(ctx, p);
     }
     *newptr_p = bp;

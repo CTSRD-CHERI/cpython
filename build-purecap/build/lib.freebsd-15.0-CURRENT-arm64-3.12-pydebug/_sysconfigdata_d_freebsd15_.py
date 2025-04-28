@@ -16,7 +16,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'BINDIR': '/home/qianhuiwang/cpython/build-purecap/bin',
  'BINLIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
  'BLDLIBRARY': 'libpython3.12d.a',
- 'BLDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib',
+ 'BLDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib -lmd',
  'BOOTSTRAP_HEADERS': '\\',
  'BUILDEXE': '',
  'BUILDPYTHON': 'python',
@@ -37,17 +37,19 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGURE_CFLAGS': '-mabi=purecap',
  'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
- 'CONFIGURE_CPPFLAGS': '-I/usr/local/include',
- 'CONFIGURE_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
+ 'CONFIGURE_CPPFLAGS': '-I/usr/local/include -I/usr/include',
+ 'CONFIGURE_LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
- 'CONFIG_ARGS': "'CFLAGS=-mabi=purecap' 'CPPFLAGS=-I/usr/local/include' "
-                "'PKG_CONFIG=/usr/local/bin/pkg-config' "
-                "'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' "
-                "'LDFLAGS=-mabi=purecap -L/usr/local/lib' '--with-pydebug' "
-                "'--build=aarch64-unknown-freebsd' '--with-assertions' "
+ 'CONFIG_ARGS': "'--with-pydebug' '--build=aarch64-unknown-freebsd' "
+                "'--with-assertions' "
                 "'--prefix=/home/qianhuiwang/cpython/build-purecap' "
-                "'build_alias=aarch64-unknown-freebsd' 'CC=cc'",
+                "'build_alias=aarch64-unknown-freebsd' "
+                "'PKG_CONFIG=/usr/local/bin/pkg-config' "
+                "'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' 'CC=cc' "
+                "'CFLAGS=-mabi=purecap' 'LDFLAGS=-mabi=purecap "
+                "-L/usr/local/lib -lmd' 'CPPFLAGS=-I/usr/local/include "
+                "-I/usr/include'",
  'CONFINCLUDEDIR': '/home/qianhuiwang/cpython/build-purecap/include',
  'CONFINCLUDEPY': '/home/qianhuiwang/cpython/build-purecap/include/python3.12d',
  'COREPYTHONPATH': '',
@@ -58,7 +60,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                             '--title "CPython 3.12 LCOV report [commit $(shell '
                             'git --git-dir ../.git rev-parse --short HEAD)]"',
  'CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
-             '-I/usr/local/include',
+             '-I/usr/local/include -I/usr/include',
  'CXX': 'c++ -pthread',
  'DEEPFREEZE_C': 'Python/deepfreeze/deepfreeze.c',
  'DEEPFREEZE_DEPS': '../Tools/build/deepfreeze.py _bootstrap_python '
@@ -618,11 +620,11 @@ build_time_vars = {'ABIFLAGS': 'd',
  'IO_H': 'Modules/_io/_iomodule.h',
  'IO_OBJS': '\\',
  'LDCXXSHARED': 'c++ -pthread -shared',
- 'LDFLAGS': '-mabi=purecap -L/usr/local/lib',
+ 'LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
  'LDFLAGS_NODIST': '',
  'LDLIBRARY': 'libpython3.12d.a',
  'LDLIBRARYDIR': '',
- 'LDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib',
+ 'LDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib -lmd',
  'LDVERSION': '3.12d',
  'LIBC': '',
  'LIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
@@ -633,14 +635,14 @@ build_time_vars = {'ABIFLAGS': 'd',
                     '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
                     '-IInclude -IPython -I. -I../Include -I/usr/local/include '
-                    '-fPIC',
+                    '-I/usr/include -fPIC',
  'LIBEXPAT_HEADERS': '\\',
  'LIBEXPAT_OBJS': '\\',
  'LIBHACL_CFLAGS': '-I../Modules/_hacl/include -D_BSD_SOURCE -D_DEFAULT_SOURCE '
                    '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
                    '-Werror=implicit-function-declaration -fvisibility=hidden  '
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
-                   '-I../Include -I/usr/local/include -fPIC',
+                   '-I../Include -I/usr/local/include -I/usr/include -fPIC',
  'LIBHACL_HEADERS': '\\',
  'LIBHACL_SHA2_A': 'Modules/_hacl/libHacl_Hash_SHA2.a',
  'LIBHACL_SHA2_HEADERS': '\\',
@@ -653,7 +655,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                     '-Werror=implicit-function-declaration '
                     '-fvisibility=hidden  -I../Include/internal -IObjects '
                     '-IInclude -IPython -I. -I../Include -I/usr/local/include '
-                    '-fPIC',
+                    '-I/usr/include -fPIC',
  'LIBMPDEC_HEADERS': '\\',
  'LIBMPDEC_OBJS': '\\',
  'LIBOBJDIR': 'Python/',
@@ -1028,7 +1030,8 @@ build_time_vars = {'ABIFLAGS': 'd',
                              '-std=c11 -Werror=implicit-function-declaration '
                              '-fvisibility=hidden  -I../Include/internal '
                              '-IObjects -IInclude -IPython -I. -I../Include '
-                             '-I/usr/local/include -DPy_BUILD_CORE_BUILTIN',
+                             '-I/usr/local/include -I/usr/include '
+                             '-DPy_BUILD_CORE_BUILTIN',
  'PY_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap',
  'PY_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                      '-fvisibility=hidden  -I../Include/internal',
@@ -1036,15 +1039,16 @@ build_time_vars = {'ABIFLAGS': 'd',
  'PY_CORE_CFLAGS': '-fno-strict-overflow -g -Og -Wall -mabi=purecap -std=c11 '
                    '-Werror=implicit-function-declaration -fvisibility=hidden  '
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
-                   '-I../Include -I/usr/local/include -DPy_BUILD_CORE',
- 'PY_CORE_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
+                   '-I../Include -I/usr/local/include -I/usr/include '
+                   '-DPy_BUILD_CORE',
+ 'PY_CORE_LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
  'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
-                '-I/usr/local/include',
+                '-I/usr/local/include -I/usr/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
- 'PY_LDFLAGS': '-mabi=purecap -L/usr/local/lib',
+ 'PY_LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
  'PY_LDFLAGS_NODIST': '',
- 'PY_LDFLAGS_NOLTO': '-mabi=purecap -L/usr/local/lib',
+ 'PY_LDFLAGS_NOLTO': '-mabi=purecap -L/usr/local/lib -lmd',
  'PY_SQLITE_ENABLE_LOAD_EXTENSION': 0,
  'PY_SQLITE_HAVE_SERIALIZE': 1,
  'PY_SSL_DEFAULT_CIPHERS': 1,
@@ -1053,7 +1057,7 @@ build_time_vars = {'ABIFLAGS': 'd',
                         '-std=c11 -Werror=implicit-function-declaration '
                         '-fvisibility=hidden  -I../Include/internal -IObjects '
                         '-IInclude -IPython -I. -I../Include '
-                        '-I/usr/local/include',
+                        '-I/usr/local/include -I/usr/include',
  'PY_SUPPORT_TIER': 0,
  'Py_DEBUG': 1,
  'Py_ENABLE_SHARED': 0,

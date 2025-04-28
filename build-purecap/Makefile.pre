@@ -94,8 +94,8 @@ CONFIGURE_LDFLAGS_NODIST=
 # LDFLAGS_NOLTO is an extra flag to disable lto. It is used to speed up building
 # of _bootstrap_python and _freeze_module tools, which don't need LTO.
 CONFIGURE_LDFLAGS_NOLTO=
-CONFIGURE_CPPFLAGS=	-I/usr/local/include
-CONFIGURE_LDFLAGS=	-mabi=purecap -L/usr/local/lib
+CONFIGURE_CPPFLAGS=	-I/usr/local/include -I/usr/include
+CONFIGURE_LDFLAGS=	-mabi=purecap -L/usr/local/lib -lmd
 # Avoid assigning CFLAGS, LDFLAGS, etc. so users can use them on the
 # command line to append to these values without stomping the pre-set
 # values.
@@ -374,7 +374,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 'CFLAGS=-mabi=purecap' 'CPPFLAGS=-I/usr/local/include' 'PKG_CONFIG=/usr/local/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' 'LDFLAGS=-mabi=purecap -L/usr/local/lib' '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-purecap' 'build_alias=aarch64-unknown-freebsd' 'CC=cc'
+CONFIG_ARGS=	 '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-purecap' 'build_alias=aarch64-unknown-freebsd' 'PKG_CONFIG=/usr/local/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' 'CC=cc' 'CFLAGS=-mabi=purecap' 'LDFLAGS=-mabi=purecap -L/usr/local/lib -lmd' 'CPPFLAGS=-I/usr/local/include -I/usr/include'
 
 
 # Subdirectories with code

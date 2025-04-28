@@ -5,16 +5,13 @@
 #include "pointerobject.h"
 
 #ifdef __CHERI_PURE_CAPABILITY__
-//#include <cheri/cheric.h>
-//or 
 #include <cheriintrin.h>
 #endif
 
 /* The type object for C pointers.  Note that this cannot be subclassed! */
 typedef struct {
 	PyObject_HEAD
-		/* TODO: store the type of the pointer + whether it's valid? */
-
+/* TODO: store the type of the pointer + whether it's valid? */
 	void* pointer;
 	//PyObject *keeper;
 } PyNativePointerObject;

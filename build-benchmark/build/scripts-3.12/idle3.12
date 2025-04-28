@@ -1,4 +1,4 @@
-#!/home/qianhuiwang/cpython/build-benchmark2/bin/python3.12d
+#!/home/qianhuiwang/cpython/build-benchmark/bin/python3.12d
 
 from idlelib.pyshell import main
 if __name__ == '__main__':

@@ -152,6 +152,8 @@ build-purecap/*.core
 build-benchmark/*.core
 *.core
 .github/workflows/xml_parser.yml
+cscope/
+ctags/
 
 .git-rewrite/
 compile

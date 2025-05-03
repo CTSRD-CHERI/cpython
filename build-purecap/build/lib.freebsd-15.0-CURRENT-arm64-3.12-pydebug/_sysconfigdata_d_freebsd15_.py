@@ -16,7 +16,8 @@ build_time_vars = {'ABIFLAGS': 'd',
  'BINDIR': '/home/qianhuiwang/cpython/build-purecap/bin',
  'BINLIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
  'BLDLIBRARY': 'libpython3.12d.a',
- 'BLDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib -lmd',
+ 'BLDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib -L/usr/lib '
+              '-lmd -lcheri_caprevoke',
  'BOOTSTRAP_HEADERS': '\\',
  'BUILDEXE': '',
  'BUILDPYTHON': 'python',
@@ -38,7 +39,8 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
  'CONFIGURE_CPPFLAGS': '-I/usr/local/include -I/usr/include',
- 'CONFIGURE_LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
+ 'CONFIGURE_LDFLAGS': '-mabi=purecap -L/usr/local/lib -L/usr/lib -lmd '
+                      '-lcheri_caprevoke',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
  'CONFIG_ARGS': "'--with-pydebug' '--build=aarch64-unknown-freebsd' "
@@ -48,8 +50,8 @@ build_time_vars = {'ABIFLAGS': 'd',
                 "'PKG_CONFIG=/usr/local/bin/pkg-config' "
                 "'PKG_CONFIG_PATH=/usr/local/lib/pkgconfig' 'CC=cc' "
                 "'CFLAGS=-mabi=purecap' 'LDFLAGS=-mabi=purecap "
-                "-L/usr/local/lib -lmd' 'CPPFLAGS=-I/usr/local/include "
-                "-I/usr/include'",
+                "-L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke' "
+                "'CPPFLAGS=-I/usr/local/include -I/usr/include'",
  'CONFINCLUDEDIR': '/home/qianhuiwang/cpython/build-purecap/include',
  'CONFINCLUDEPY': '/home/qianhuiwang/cpython/build-purecap/include/python3.12d',
  'COREPYTHONPATH': '',
@@ -620,11 +622,12 @@ build_time_vars = {'ABIFLAGS': 'd',
  'IO_H': 'Modules/_io/_iomodule.h',
  'IO_OBJS': '\\',
  'LDCXXSHARED': 'c++ -pthread -shared',
- 'LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
+ 'LDFLAGS': '-mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke',
  'LDFLAGS_NODIST': '',
  'LDLIBRARY': 'libpython3.12d.a',
  'LDLIBRARYDIR': '',
- 'LDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib -lmd',
+ 'LDSHARED': 'cc -pthread -shared -mabi=purecap -L/usr/local/lib -L/usr/lib '
+             '-lmd -lcheri_caprevoke',
  'LDVERSION': '3.12d',
  'LIBC': '',
  'LIBDEST': '/home/qianhuiwang/cpython/build-purecap/lib/python3.12',
@@ -1041,14 +1044,17 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '-I../Include/internal -IObjects -IInclude -IPython -I. '
                    '-I../Include -I/usr/local/include -I/usr/include '
                    '-DPy_BUILD_CORE',
- 'PY_CORE_LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
+ 'PY_CORE_LDFLAGS': '-mabi=purecap -L/usr/local/lib -L/usr/lib -lmd '
+                    '-lcheri_caprevoke',
  'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
                 '-I/usr/local/include -I/usr/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
- 'PY_LDFLAGS': '-mabi=purecap -L/usr/local/lib -lmd',
+ 'PY_LDFLAGS': '-mabi=purecap -L/usr/local/lib -L/usr/lib -lmd '
+               '-lcheri_caprevoke',
  'PY_LDFLAGS_NODIST': '',
- 'PY_LDFLAGS_NOLTO': '-mabi=purecap -L/usr/local/lib -lmd',
+ 'PY_LDFLAGS_NOLTO': '-mabi=purecap -L/usr/local/lib -L/usr/lib -lmd '
+                     '-lcheri_caprevoke',
  'PY_SQLITE_ENABLE_LOAD_EXTENSION': 0,
  'PY_SQLITE_HAVE_SERIALIZE': 1,
  'PY_SSL_DEFAULT_CIPHERS': 1,

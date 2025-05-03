@@ -4,7 +4,7 @@
 setenv CFLAGS "-mabi=aapcs"
 setenv CPPFLAGS "-I/usr/local64/include -I/usr/include"
 setenv PKG_CONFIG "/usr/local64/bin/pkg-config"
-setenv LDFLAGS "-mabi=aapcs -L/usr/local64/lib -lmd"
+setenv LDFLAGS "-mabi=aapcs -L/usr/local64/lib -L/usr/lib64 -lmd"
 
 # === Configure CPython for hybrid build ===
 ../configure \

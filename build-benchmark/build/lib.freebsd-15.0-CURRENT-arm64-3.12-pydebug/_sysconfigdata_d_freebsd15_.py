@@ -17,7 +17,7 @@ build_time_vars = {'ABIFLAGS': 'd',
  'BINLIBDEST': '/home/qianhuiwang/cpython/build-benchmark/lib/python3.12',
  'BLDLIBRARY': 'libpython3.12d.a',
  'BLDSHARED': 'cc -pthread -shared -mabi=purecap-benchmark '
-              '-L/usr/local64cb/lib -lmd',
+              '-L/usr/local64cb/lib -L/usr/lib64cb -lmd -lcheri_caprevoke',
  'BOOTSTRAP_HEADERS': '\\',
  'BUILDEXE': '',
  'BUILDPYTHON': 'python',
@@ -39,7 +39,8 @@ build_time_vars = {'ABIFLAGS': 'd',
  'CONFIGURE_CFLAGS_NODIST': '-std=c11 -Werror=implicit-function-declaration '
                             '-fvisibility=hidden',
  'CONFIGURE_CPPFLAGS': '-I/usr/local64cb/include -I/usr/include',
- 'CONFIGURE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
+ 'CONFIGURE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib '
+                      '-L/usr/lib64cb -lmd -lcheri_caprevoke',
  'CONFIGURE_LDFLAGS_NODIST': '',
  'CONFIGURE_LDFLAGS_NOLTO': '',
  'CONFIG_ARGS': "'--with-pydebug' '--build=aarch64-unknown-freebsd' "
@@ -49,7 +50,8 @@ build_time_vars = {'ABIFLAGS': 'd',
                 "'PKG_CONFIG=/usr/local64cb/bin/pkg-config' "
                 "'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'CC=cc' "
                 "'CFLAGS=-mabi=purecap-benchmark' "
-                "'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' "
+                "'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib "
+                "-L/usr/lib64cb -lmd -lcheri_caprevoke' "
                 "'CPPFLAGS=-I/usr/local64cb/include -I/usr/include'",
  'CONFINCLUDEDIR': '/home/qianhuiwang/cpython/build-benchmark/include',
  'CONFINCLUDEPY': '/home/qianhuiwang/cpython/build-benchmark/include/python3.12d',
@@ -621,12 +623,13 @@ build_time_vars = {'ABIFLAGS': 'd',
  'IO_H': 'Modules/_io/_iomodule.h',
  'IO_OBJS': '\\',
  'LDCXXSHARED': 'c++ -pthread -shared',
- 'LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
+ 'LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -L/usr/lib64cb -lmd '
+            '-lcheri_caprevoke',
  'LDFLAGS_NODIST': '',
  'LDLIBRARY': 'libpython3.12d.a',
  'LDLIBRARYDIR': '',
  'LDSHARED': 'cc -pthread -shared -mabi=purecap-benchmark -L/usr/local64cb/lib '
-             '-lmd',
+             '-L/usr/lib64cb -lmd -lcheri_caprevoke',
  'LDVERSION': '3.12d',
  'LIBC': '',
  'LIBDEST': '/home/qianhuiwang/cpython/build-benchmark/lib/python3.12',
@@ -1046,14 +1049,17 @@ build_time_vars = {'ABIFLAGS': 'd',
                    '-fvisibility=hidden  -I../Include/internal -IObjects '
                    '-IInclude -IPython -I. -I../Include '
                    '-I/usr/local64cb/include -I/usr/include -DPy_BUILD_CORE',
- 'PY_CORE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
+ 'PY_CORE_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib '
+                    '-L/usr/lib64cb -lmd -lcheri_caprevoke',
  'PY_CPPFLAGS': '-IObjects -IInclude -IPython -I. -I../Include '
                 '-I/usr/local64cb/include -I/usr/include',
  'PY_ENABLE_SHARED': 0,
  'PY_HAVE_PERF_TRAMPOLINE': 0,
- 'PY_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
+ 'PY_LDFLAGS': '-mabi=purecap-benchmark -L/usr/local64cb/lib -L/usr/lib64cb '
+               '-lmd -lcheri_caprevoke',
  'PY_LDFLAGS_NODIST': '',
- 'PY_LDFLAGS_NOLTO': '-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd',
+ 'PY_LDFLAGS_NOLTO': '-mabi=purecap-benchmark -L/usr/local64cb/lib '
+                     '-L/usr/lib64cb -lmd -lcheri_caprevoke',
  'PY_SQLITE_ENABLE_LOAD_EXTENSION': 0,
  'PY_SQLITE_HAVE_SERIALIZE': 1,
  'PY_SSL_DEFAULT_CIPHERS': 1,

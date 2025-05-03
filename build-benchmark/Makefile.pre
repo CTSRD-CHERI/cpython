@@ -95,7 +95,7 @@ CONFIGURE_LDFLAGS_NODIST=
 # of _bootstrap_python and _freeze_module tools, which don't need LTO.
 CONFIGURE_LDFLAGS_NOLTO=
 CONFIGURE_CPPFLAGS=	-I/usr/local64cb/include -I/usr/include
-CONFIGURE_LDFLAGS=	-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd
+CONFIGURE_LDFLAGS=	-mabi=purecap-benchmark -L/usr/local64cb/lib -L/usr/lib64cb -lmd -lcheri_caprevoke
 # Avoid assigning CFLAGS, LDFLAGS, etc. so users can use them on the
 # command line to append to these values without stomping the pre-set
 # values.
@@ -374,7 +374,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-benchmark' 'build_alias=aarch64-unknown-freebsd' 'PKG_CONFIG=/usr/local64cb/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'CC=cc' 'CFLAGS=-mabi=purecap-benchmark' 'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -lmd' 'CPPFLAGS=-I/usr/local64cb/include -I/usr/include'
+CONFIG_ARGS=	 '--with-pydebug' '--build=aarch64-unknown-freebsd' '--with-assertions' '--prefix=/home/qianhuiwang/cpython/build-benchmark' 'build_alias=aarch64-unknown-freebsd' 'PKG_CONFIG=/usr/local64cb/bin/pkg-config' 'PKG_CONFIG_PATH=/usr/local64cb/lib/pkgconfig' 'CC=cc' 'CFLAGS=-mabi=purecap-benchmark' 'LDFLAGS=-mabi=purecap-benchmark -L/usr/local64cb/lib -L/usr/lib64cb -lmd -lcheri_caprevoke' 'CPPFLAGS=-I/usr/local64cb/include -I/usr/include'
 
 
 # Subdirectories with code

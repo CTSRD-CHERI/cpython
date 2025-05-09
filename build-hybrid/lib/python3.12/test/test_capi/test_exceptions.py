@@ -213,7 +213,11 @@ class Test_ErrSetAndRestore(unittest.TestCase):
         self.assertRaises(SystemError, setstring, list, b'error')
         # CRASHES setstring(ZeroDivisionError, NULL)
         # CRASHES setstring(NULL, b'error')
-
+   
+    @unittest.skipIf(
+            "purecap" in sys.executable or "benchmark" in sys.executable,
+            "broken on aarch64c because libffi no capability support for variadic arguments va_arg()"
+            )
     def test_format(self):
         """Test PyErr_Format()"""
         import_helper.import_module('ctypes')

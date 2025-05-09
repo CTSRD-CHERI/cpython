@@ -17,6 +17,7 @@ class LibTest(unittest.TestCase):
         import math
         self.assertEqual(lib.my_sqrt(2.0), math.sqrt(2.0))
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_qsort(self):
         comparefunc = CFUNCTYPE(c_int, POINTER(c_char), POINTER(c_char))
         lib.my_qsort.argtypes = c_void_p, c_size_t, c_size_t, comparefunc

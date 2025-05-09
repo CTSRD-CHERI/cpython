@@ -49,6 +49,7 @@ class CharPointersTestCase(unittest.TestCase):
         func.restype = c_long
         func.argtypes = None
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_paramflags(self):
         # function returns c_void_p result,
         # and has a required parameter named 'input'
@@ -204,6 +205,8 @@ class WCharPointersTestCase(unittest.TestCase):
         self.assertEqual("a", func(byref(ca))[0])
 
 class ArrayTest(unittest.TestCase):
+
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test(self):
         func = testdll._testfunc_ai8
         func.restype = POINTER(c_int)

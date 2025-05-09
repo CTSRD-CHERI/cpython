@@ -12,6 +12,7 @@ from _ctypes import __version__ as _ctypes_version
 from _ctypes import RTLD_LOCAL, RTLD_GLOBAL
 from _ctypes import ArgumentError
 from _ctypes import SIZEOF_TIME_T
+from _ctypes import _get_id
 
 from struct import calcsize as _calcsize
 
@@ -247,7 +248,7 @@ _check_size(c_char_p, "P")
 class c_void_p(_SimpleCData):
     _type_ = "P"
 c_voidp = c_void_p # backwards compatibility (to a bug)
-_check_size(c_void_p)
+_check_size(c_void_p, "P")
 
 class c_bool(_SimpleCData):
     _type_ = "?"
@@ -306,11 +307,14 @@ def create_unicode_buffer(init, size=None):
 def SetPointerType(pointer, cls):
     if _pointer_type_cache.get(cls, None) is not None:
         raise RuntimeError("This type already exists in the cache")
-    if id(pointer) not in _pointer_type_cache:
+    pointer_id = _get_id(pointer)
+    #if id(pointer) not in _pointer_type_cache:
+    if pointer_id not in _pointer_type_cache:
         raise RuntimeError("What's this???")
     pointer.set_type(cls)
     _pointer_type_cache[cls] = pointer
-    del _pointer_type_cache[id(pointer)]
+    #del _pointer_type_cache[id(pointer)]
+    del _pointer_type_cache[pointer_id]
 
 # XXX Deprecated
 def ARRAY(typ, len):
@@ -495,6 +499,18 @@ elif sizeof(c_ulong) == sizeof(c_void_p):
 elif sizeof(c_ulonglong) == sizeof(c_void_p):
     c_size_t = c_ulonglong
     c_ssize_t = c_longlong
+elif 2 * sizeof(c_ulonglong) == sizeof(c_void_p): 
+    # CHERI pointers (128‑bit)
+    class c_uintptr_t(_SimpleCData): # probably no need these
+        _type_ = "P"
+    _check_size(c_uintptr_t, "P")
+
+    class c_intptr_t(_SimpleCData):
+        _type_ = "P"
+    _check_size(c_uintptr_t, "P")
+    
+    c_size_t = c_ulonglong #size_t still 8 bytes, no need c_uintptr 
+    c_ssize_t = c_longlong  # c_intptr
 
 # functions
 

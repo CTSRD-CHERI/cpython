@@ -819,16 +819,10 @@ if hasattr(sys, "getobjects"):
 
 def calcobjsize(fmt):
     import struct
-
-    #_align = '0P' # only constant sized obj align to pointer size
     return struct.calcsize(_header + fmt + _align)
 
 def calcvobjsize(fmt):
     import struct
-    
-    #print("fmt size", struct.calcsize(fmt)) 
-    #print("vheader size", struct.calcsize(_vheader))
-    
     return struct.calcsize(_vheader + fmt + _align)
 
 

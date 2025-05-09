@@ -154,6 +154,13 @@ build-benchmark/*.core
 .github/workflows/xml_parser.yml
 cscope/
 ctags/
+build-hybrid/
+build-purecap/
+build-benchmark/
+san-hybrid/
+van-hybrid/
+van-purecap/
+
 
 .git-rewrite/
 compile

@@ -13,6 +13,7 @@ class Test(unittest.TestCase):
         self.assertEqual(MyInt(3), MyInt(3))
         self.assertNotEqual(MyInt(42), MyInt(43))
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_ignore_retval(self):
         # Test if the return value of a callback is ignored
         # if restype is None
@@ -23,7 +24,7 @@ class Test(unittest.TestCase):
         cb = proto(func)
         self.assertEqual(None, cb())
 
-
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_int_callback(self):
         args = []
         def func(arg):

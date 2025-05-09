@@ -679,9 +679,9 @@ struct _obmalloc_usage {
 #define DESCRIPTOR_SLAB_ENTRIES     (10000)
 
 /* Minimum heap size (bytes) before we start a revocation scan */
-#define MIN_REVOKE_HEAP_SIZE        (4 * 1024 * 1024) // 4MB
+#define MIN_REVOKE_HEAP_SIZE        (8 * 1024 * 1024) // 8MB
 
-#define QUARANTINE_HIGHWATER 		(4 * 1024 * 1024) // 4MB 
+#define QUARANTINE_HIGHWATER 		(8 * 1024 * 1024) // 8MB 
 
 struct mrs_descriptor_slab_entry {
 	void *ptr;

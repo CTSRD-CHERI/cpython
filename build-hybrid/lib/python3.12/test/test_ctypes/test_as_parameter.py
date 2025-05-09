@@ -3,6 +3,9 @@ from ctypes import *
 from test.test_ctypes import need_symbol
 import _ctypes_test
 
+if sizeof(c_void_p) == 16:
+    raise unittest.SkipTest("libffi closure not supported for CHERI128")
+
 dll = CDLL(_ctypes_test.__file__)
 
 try:

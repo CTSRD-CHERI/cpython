@@ -1,5 +1,0 @@
-#!/home/qianhuiwang/cpython/build-benchmark2/bin/python3.12d
-
-import pydoc
-if __name__ == '__main__':
-    pydoc.cli()

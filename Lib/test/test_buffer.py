@@ -2513,15 +2513,17 @@ class TestBufferProtocol(unittest.TestCase):
     def test_memoryview_sizeof(self):
         check = self.check_sizeof
         vsize = support.calcvobjsize
-        base_struct = 'Pnin 2P2n2i5P P'
+        base_struct = 'Pnin 2P2n2i5P P' 
         per_dim = '3n'
 
+        import struct
+
         items = list(range(8))
-        check(memoryview(b''), vsize(base_struct + 1 * per_dim))
+        check(memoryview(b''), vsize(base_struct) + struct.calcsize(1 * per_dim))
         a = ndarray(items, shape=[2, 4], format="b")
-        check(memoryview(a), vsize(base_struct + 2 * per_dim))
+        check(memoryview(a), vsize(base_struct) + struct.calcsize(2 * per_dim))
         a = ndarray(items, shape=[2, 2, 2], format="b")
-        check(memoryview(a), vsize(base_struct + 3 * per_dim))
+        check(memoryview(a), vsize(base_struct) + struct.calcsize(3 * per_dim))
 
     def test_memoryview_struct_module(self):
 
@@ -2552,7 +2554,7 @@ class TestBufferProtocol(unittest.TestCase):
             nd = ndarray(items, shape=[10], format=fmt, flags=ND_WRITABLE)
             m = memoryview(ex)
             
-            print(fmt, "line=2553")
+            #print(fmt, "line=2553")
 
             struct.pack_into(fmt, nd, 0, item)
             m[0] = item
@@ -2565,7 +2567,7 @@ class TestBufferProtocol(unittest.TestCase):
             for v in values:
                 struct_err = None
                 try:
-                    print(fmt, "line=2566")
+                    # print(fmt, "line=2566")
                     struct.pack_into(fmt, nd, itemsize, v)
                 except struct.error:
                     struct_err = struct.error

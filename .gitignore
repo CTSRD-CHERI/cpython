@@ -158,8 +158,10 @@ build-hybrid/
 build-purecap/
 build-benchmark/
 san-hybrid/
-van-hybrid/
-van-purecap/
+val-hybrid/
+val-purecap/
+
+
 
 .git-rewrite/
 compile

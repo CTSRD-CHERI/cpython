@@ -1,4 +1,0 @@
-#!/home/qianhuiwang/cpython/build-benchmark/python -u
-# EASY-INSTALL-SCRIPT: 'dulwich==0.20.23','dul-receive-pack'
-__requires__ = 'dulwich==0.20.23'
-__import__('pkg_resources').run_script('dulwich==0.20.23', 'dul-receive-pack')

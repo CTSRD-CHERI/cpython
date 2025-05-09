@@ -36,7 +36,7 @@ def requires_subinterpreters(func):
     return deco(func)
 
 
-DICT_KEY_STRUCT_FORMAT = 'n2BI2n'
+DICT_KEY_STRUCT_FORMAT = 'n3BI2n' + '0P'
 
 class DisplayHookTest(unittest.TestCase):
 
@@ -1446,11 +1446,11 @@ class SizeofTest(unittest.TestCase):
         # empty dict
         check({}, size('nQ2P'))
         # dict (string key)
-        check({"a": 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 8 + (8*2//3)*calcsize('2P'))
+        check({"a": 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT + '8B0P') + (8*2//3)*calcsize('2P'))
         longdict = {str(i): i for i in range(8)}
-        check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 16 + (16*2//3)*calcsize('2P'))
+        check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) +  16 + (16*2//3)*calcsize('2P'))
         # dict (non-string key)
-        check({1: 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 8 + (8*2//3)*calcsize('n2P'))
+        check({1: 1}, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT + '8B0P') + (8*2//3)*calcsize('n2P'))
         longdict = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
         check(longdict, size('nQ2P') + calcsize(DICT_KEY_STRUCT_FORMAT) + 16 + (16*2//3)*calcsize('n2P'))
         # dictionary-keyview
@@ -1496,7 +1496,8 @@ class SizeofTest(unittest.TestCase):
         def func():
             return sys._getframe()
         x = func()
-        check(x, size('3Pi3c7P2ic??2P'))
+        #check(x, size('3Pi3c7P2ic??2P'))
+        check(x, size('3Pi3c7PiHc0P??2P'))
         # function
         def func(): pass
         check(func, size('15Pi'))
@@ -1513,7 +1514,8 @@ class SizeofTest(unittest.TestCase):
             check(bar, size('PP'))
         # generator
         def get_gen(): yield 1
-        check(get_gen(), size('PP4P4c7P2ic??2P'))
+        #check(get_gen(), size('PP4P4c7P2ic??2P'))
+        check(get_gen(), size('PP4P4c7PiHc0P??2P'))
         # iterator
         check(iter('abc'), size('lP'))
         # callable-iterator
@@ -1629,7 +1631,8 @@ class SizeofTest(unittest.TestCase):
                    '\u0100'*40, '\uffff'*100,
                    '\U00010000'*30, '\U0010ffff'*100]
         # also update field definitions in test_unicode.test_raiseMemError
-        asciifields = "nnb"
+        asciifields = "nnb" + '0P'
+        print(size('nnb'))
         compactfields = asciifields + "nP"
         unicodefields = compactfields + "P"
         for s in samples:

@@ -947,6 +947,12 @@ _obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 
 	qa_mgmt->app_quarantine_lock = PyThread_allocate_lock();
 	qa_mgmt->quarantining = true;
+#ifdef NOQA
+	fprintf(stderr, "disabled QA\n");
+	qa_mgmt->quarantining = false;
+#else 
+	//fprintf(stderr, "enabled QA\n");
+#endif
 	
 	qa_mgmt->revoke_every_free = false;
 	qa_mgmt->revoke_async = true;
@@ -2252,6 +2258,9 @@ alloc_descriptor_slab(OMState *state)
 
 		void *ret = _PyObject_Arena.alloc(_PyObject_Arena.ctx, 
 				sizeof(struct mrs_descriptor_slab));
+		
+		//fprintf(stderr, "allocated new slab %lu KB\n", sizeof(struct mrs_descriptor_slab) / 1024 );
+
 		return (ret);
 
 	} else {
@@ -2261,6 +2270,7 @@ alloc_descriptor_slab(OMState *state)
 		while (!atomic_compare_exchange_weak(&free_descriptor_slabs,
 					&ret, ret->next))
 			;
+		//fprintf(stderr, "reused slab\n");
 
 		ret->num_descriptors = 0;
 		return (ret);
@@ -2380,7 +2390,7 @@ pymalloc_release(OMState *state, void *p)
 			, POOL_SIZE);
 
     size_t size = INDEX2SIZE(pool->szidx);
-
+	assert(size == cheri_getlen(p));
 	//p = cheri_setbounds(
 //			cheri_setaddress((void *)arena_cap, 
 //				cheri_getaddress((void *)p))
@@ -2431,14 +2441,19 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 			atomic_thread_fence(memory_order_release);
 			
 			/* release back memory to pool freelists */
-			//fprintf(stderr, "we flush ");
 			if (!pymalloc_release(state, iter->slab[i].ptr)){
 				_Py_FatalErrorFunc(__func__,
 						"blocks not released back from quarantine!");
 			}
 		}
+		//iter->num_descriptors = 0;
+
 		prev = iter;
 	}
+
+//	fprintf(stderr, "flush #max arenas %u #arenas not freed %u, \
+//#ntimes_arena_allocated %u, #arenas highwater %u\n", 
+//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater);
 
 	if (prev != NULL) {
 		/* Free the quarantined descriptors. */

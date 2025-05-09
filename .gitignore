@@ -160,8 +160,12 @@ build-benchmark/
 san-hybrid/
 val-hybrid/
 val-purecap/
-
-
+command.sh
+xml_preprocess.csh
+xml_preprocess.sh
+inspect_snapshot.py
+sitecustomize.py
+tracemalloc_snapshot.snap
 
 .git-rewrite/
 compile

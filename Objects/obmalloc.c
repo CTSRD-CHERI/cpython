@@ -1760,7 +1760,7 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
 		_Py_FatalErrorFunc(__func__,
 				"bp without SW_VMEM");
 	}
-	return (void *)cheri_setbounds(bp, nbytes); 
+	return (void *)cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM); 
 #else
     return (void *)bp;
 #endif

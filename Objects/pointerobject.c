@@ -13,7 +13,6 @@ typedef struct {
 	PyObject_HEAD
 /* TODO: store the type of the pointer + whether it's valid? */
 	void* pointer;
-	//PyObject *keeper;
 } PyNativePointerObject;
 
 PyTypeObject *c_void_p_type = NULL;
@@ -97,7 +96,7 @@ pointer_repr(PyObject *v)
 	uintptr_t base  = cheri_base_get(cp->pointer);
 	uintptr_t top  = base + len;
 	//size_t    off   = cheri_offset_get(cp->pointer);
-    _Bool tag   = cheri_tag_get(cp->pointer);
+    //_Bool tag   = cheri_tag_get(cp->pointer);
 
 	size_t      perms = cheri_perms_get(cp->pointer);
 	char pstr[6];
@@ -139,22 +138,52 @@ pointer_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	if (self != NULL) {
 		if (!PyArg_ParseTuple(args, "O:pointer", &source)){
 			self->pointer = NULL;
-			//self->keeper = NULL;
 		} else {
-		#ifdef __CHERI_PURE_CAPABILITY__
+			if (PyLong_Check(source)){
+//#ifdef __CHERI_PURE_CAPABILITY__
+//				if (PyErr_WarnEx(PyExc_DeprecationWarning, "Creating native C pointers "
+//							"from integer constants is deprecated.", 1)) {
+//					return NULL;
+//				}
+//#endif
+//				//return (void *) PyNativePointer_AsUIntPtr(source);
+//				long x;
+//			
+//				//if (_PyLong_IsNegative((PyLongObject *)source)) {
+//					x = PyLong_AsLongLong(source);
+////				}
+////				else {
+////					x = PyLong_AsUnsignedLongLong(source);
+////				}
+//				if (x == -1 && PyErr_Occurred())
+//					return NULL;
+//
+//				self->pointer = (void *)(uintptr_t)x; // has problem
+					//(void *) source;
+					//PyNativePointer_AsUIntPtr(source);
+				self->pointer = (void *) source;
+				Py_INCREF(source);
+
+				fprintf(stderr, "source addr %p\n", self->pointer);
+
+				return (PyObject *) self;
+
+			}
+	
+
+#ifdef __CHERI_PURE_CAPABILITY__
 			if (!cheri_tag_get(source)) {
 				PyErr_Format(PyExc_TypeError,
 						"%s: a valid pointer or a null pointer is required, got %p", 
 						__func__, source);
 				return NULL;
 			}
-		#endif
-			//self->keeper = source;
+#endif
 			self->pointer = (void *) source;
-			//Py_INCREF(self);
 
 			fprintf(stderr, "source addr %p\n", source);
 		}
+	
 		return (PyObject *) self;
 
 	}
@@ -165,10 +194,7 @@ static void
 pointer_dealloc(PyObject *obj)
 {
 	PyNativePointerObject *self = (PyNativePointerObject *)obj;
-	// fprintf(stderr, "releasing c pointer %p\n", self->pointer);
-	//Py_XDECREF(self->keeper);
 	Py_TYPE(self)->tp_free((PyObject*)obj);
-	//Py_TYPE(obj)->tp_free(obj);
 }
 
 static PyObject *
@@ -252,34 +278,32 @@ void *
 PyNativePointer_AsVoidPointer(PyObject *vv)
 {
 	if (PyNativePointer_CheckExact(vv)) {
-		// fprintf(stderr, "[DEBUG] AsVoidPointer: branch NATIVE_POINTER\n");
 		assert(!PyErr_Occurred());
 		return ((PyNativePointerObject*)vv)->pointer;
 	}
 
 	if (PyNativePointer_IsNull(vv)) {
-		// fprintf(stderr, "[DEBUG] AsVoidPointer: branch NULL_POINTER\n");
 		assert(!PyErr_Occurred());
 		return NULL;
 	}
 
-	/* Handle the ctypes.c_void_p type: */
-	if (c_void_p_type != NULL
-			    && PyObject_TypeCheck(vv, (PyTypeObject*)c_void_p_type)){
-		if (PyObject_HasAttrString(vv, "value")) {
-			fprintf(stderr, "[DEBUG] AsVoidPointer: branch CTYPES.VALUE\n");
-			PyObject* pv = PyObject_GetAttrString(vv, "value");
-			if (pv == NULL)
-				return NULL;
-			/* We could also check that _type_ is "P" */
-			if (PyNativePointer_CheckExact(pv)) {
-				void* result = ((PyNativePointerObject*)pv)->pointer;
-				Py_DECREF(pv);
-				return result;
-			}
-			Py_DECREF(pv);
-		}
-	}
+//	/* Handle the ctypes.c_void_p type: */
+//	if (c_void_p_type != NULL
+//			    && PyObject_TypeCheck(vv, (PyTypeObject*)c_void_p_type)){
+//		if (PyObject_HasAttrString(vv, "value")) {
+//			fprintf(stderr, "[DEBUG] AsVoidPointer: branch CTYPES.VALUE\n");
+//			PyObject* pv = PyObject_GetAttrString(vv, "value");
+//			if (pv == NULL)
+//				return NULL;
+//			/* We could also check that _type_ is "P" */
+//			if (PyNativePointer_CheckExact(pv)) {
+//				void* result = ((PyNativePointerObject*)pv)->pointer;
+//				Py_DECREF(pv);
+//				return result;
+//			}
+//			Py_DECREF(pv);
+//		}
+//	}
 	// #ifdef WONT_WORK_ON_CHERI
 	if (PyLong_Check(vv)){
 
@@ -287,17 +311,28 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 		if (addr == (Py_addr_t)-1 && PyErr_Occurred())
 			return NULL;
 
-		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (void *)(uintptr_t)addr);
 
-		/* Probably not correct since it's not a valid capability on CHERI128... */
-#ifdef __CHERI_PURE_CAPABILITY__
-	if (!__builtin_cheri_tag_get((void *)(uintptr_t)addr)) {
-		PyErr_Format(PyExc_TypeError, "%s: a valid pointer or a NULL pointer is required, got %p", __func__, vv);
-		return NULL;
-	}
-#endif
+//#ifdef __CHERI_PURE_CAPABILITY__
+//
+//		/* Probably not correct since it's not a valid capability on CHERI128... */
+//	if (!__builtin_cheri_tag_get((void *)(uintptr_t)addr)) {
+//		PyErr_Format(PyExc_TypeError, "%s: a valid pointer or a NULL pointer is required, got %p", __func__, vv);
+//		return NULL;
+//	}
+//#endif
+		/*
+         * Warn when creating pointers from int constants. This will not work
+         * on architectures such as CHERI where pointers and integers are
+         * distinct types.
+         */
+        if (PyErr_WarnEx(PyExc_DeprecationWarning, "Creating native C pointers "
+                         "from integer constants is deprecated.", 1)) {
+            return NULL;
+		}
+	
+		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (void *)(uintptr_t)addr);
 		return (void*)(uintptr_t)addr;
-			}
+	}
 	// #else
 	//fprintf(stderr, "[DEBUG] AsVoidPointer: branch TYPE_ERROR\n");
 

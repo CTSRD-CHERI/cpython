@@ -520,7 +520,7 @@ nu_void_p(_structmodulestate *state, const char *p, const formatdef *f)
 {
     void *x;
 
-    assert(_Py_IS_ALIGNED(p, _Alignof(void *)));
+    //assert(_Py_IS_ALIGNED(p, _Alignof(void *)));
     memcpy((char *)&x, p, sizeof x);
     // Allows untagged uintptr_t
     return PyNativePointer_FromUIntPtr((uintptr_t)x);

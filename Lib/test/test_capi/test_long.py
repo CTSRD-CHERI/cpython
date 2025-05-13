@@ -397,13 +397,17 @@ class LongTests(unittest.TestCase):
             self.assertIs(asvoidptr(_native_pointer(z)), z)
             self.assertIs(type(asvoidptr(_native_pointer(IntSubclass(x)))), type(IntSubclass(x)))
 
-            #self.assertIs(asvoidptr(_native_pointer(IntSubclass(x))), IntSubclass(x))
-            #self.assertIs(asvoidptr(_native_pointer(IntSubclass(x))), obj)
-            _native_pointer(IntSubclass(x))
-            asvoidptr(_native_pointer(IntSubclass(x)))
+            self.assertIsNot(asvoidptr(_native_pointer(IntSubclass(x))), obj)
+            #_native_pointer(IntSubclass(x))
+            #asvoidptr(_native_pointer(IntSubclass(x)))
+            asvoidptr(_native_pointer(42))
         else:
             self.assertIs(asvoidptr(IntSubclass(x)), obj)
-        #print("x", x)
+            z = IntSubclass(x)
+            self.assertIs(asvoidptr(_native_pointer(z)), z)
+            self.assertIs(type(asvoidptr(_native_pointer(IntSubclass(x)))), type(IntSubclass(x)))
+
+
         #print("IntSubclass(x)", IntSubclass(x))
         #if _testcapi.SIZEOF_VOID_P != 16:
         #    print("asvoidptr(IntSubclass(x)))", asvoidptr(IntSubclass(x)))

@@ -164,7 +164,7 @@ pointer_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 				self->pointer = (void *) source;
 				Py_INCREF(source);
 
-				fprintf(stderr, "source addr %p\n", self->pointer);
+				fprintf(stderr, "PyNativePointer source addr %p\n", self->pointer);
 
 				return (PyObject *) self;
 
@@ -181,7 +181,7 @@ pointer_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 #endif
 			self->pointer = (void *) source;
 
-			fprintf(stderr, "source addr %p\n", source);
+			fprintf(stderr, "PyNativePointer source addr %p\n", source);
 		}
 	
 		return (PyObject *) self;
@@ -325,12 +325,14 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
          * on architectures such as CHERI where pointers and integers are
          * distinct types.
          */
-        if (PyErr_WarnEx(PyExc_DeprecationWarning, "Creating native C pointers "
-                         "from integer constants is deprecated.", 1)) {
+        if (PyErr_WarnFormat(PyExc_DeprecationWarning, 1, "Creating native C pointers "
+                         "from integer constants is deprecated.\n"
+						 "[DEBUG] PyNativePointer_AsVoidPointer: branch PYLONG %p", 
+						 (void *)(uintptr_t)addr)) {
             return NULL;
 		}
 	
-		fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (void *)(uintptr_t)addr);
+		//fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (void *)(uintptr_t)addr);
 		return (void*)(uintptr_t)addr;
 	}
 	// #else

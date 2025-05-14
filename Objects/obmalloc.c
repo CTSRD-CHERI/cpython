@@ -1023,6 +1023,7 @@ _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 #define cri (state->qa_mgmt.cri)
 #define entire_shadow (state->qa_mgmt.entire_shadow)
 #define free_descriptor_slabs (state->qa_mgmt.free_descriptor_slabs)
+#define allocated_size (state->qa_mgmt.allocated_size)
 static inline void
 check_and_perform_flush(OMState *state, bool is_free);
 static inline int 
@@ -1663,6 +1664,12 @@ allocate_from_new_pool(OMState *state, uint size)
             }
         }
     }
+#ifdef __CHERI_PURE_CAPABILITY__
+	pool = //cheri_andperm(
+			cheri_setbounds(pool, POOL_SIZE)
+			//, ~CHERI_PERM_SW_VMEM)
+			;
+#endif
 
     /* Frontlink to used pools. */
     pymem_block *bp;
@@ -1678,12 +1685,6 @@ allocate_from_new_pool(OMState *state, uint size)
          * and free list are already initialized.
          */
         bp = pool->freeblock;
-//#ifdef __CHERI_PURE_CAPABILITY__
-//		if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) == 0) {
-//			_Py_FatalErrorFunc(__func__,
-//				"bp without SW_VMEM");
-//		}
-//#endif
         assert(bp != NULL);
         pool->freeblock = *(pymem_block **)bp;
         return bp;
@@ -1764,8 +1765,18 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
 #ifdef __CHERI_PURE_CAPABILITY__
 	if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) == 0) {
 		_Py_FatalErrorFunc(__func__,
-				"bp without SW_VMEM");
+				"bp should have SW_VMEM");
 	}
+	
+	allocated_size += cheri_getlen(bp);
+
+//	bp = cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM);
+//	if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) != 0) {
+//		_Py_FatalErrorFunc(__func__,
+//				"bp removes SW_VMEM unsuccessful");
+//	}
+
+	//return (void *)bp;
 	return (void *)cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM); 
 #else
     return (void *)bp;
@@ -2017,6 +2028,11 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
 	/* pymalloc is in charge of this block */
 
 #ifdef __CHERI_PURE_CAPABILITY__
+	if ((cheri_getperm(p) & CHERI_PERM_SW_VMEM) != 0) {
+		_Py_FatalErrorFunc(__func__,
+				"bp should be without SW_VMEM");
+	}
+
 	uintptr_t arena_cap = arena_cap_get(state, p);
 	/* rederive pool capability from arena (larger bounds) */
 	pool = (poolp) 
@@ -2164,10 +2180,12 @@ pymalloc_realloc(OMState *state, void *ctx,
         if (4 * nbytes > 3 * size) {
             /* It's the same, or shrinking and new/old > 3/4. */
 #ifdef __CHERI_PURE_CAPABILITY__
-			p = cheri_setbounds(
-					cheri_setaddress((void *)arena_cap, 
-						cheri_getaddress((void *)p))
-					, nbytes)
+			p = cheri_andperm(
+					cheri_setbounds(
+						cheri_setaddress((void *)arena_cap, 
+							cheri_getaddress((void *)p))
+						, nbytes), 
+				~CHERI_PERM_SW_VMEM)
 				;
 #endif
             *newptr_p = p;
@@ -2246,8 +2264,6 @@ _Py_FinalizeAllocatedBlocks(_PyRuntimeState *Py_UNUSED(runtime))
 
 #ifdef WITH_PYMALLOC
 #if defined(__CHERI_PURE_CAPABILITY__) 
-//\
-//&& defined(QUARANTINE)
 static struct mrs_descriptor_slab *
 alloc_descriptor_slab(OMState *state)
 {
@@ -2358,11 +2374,13 @@ quarantine_should_flush(OMState *state, struct mrs_quarantine *quarantine, bool 
 #else
 	/* QUARANTINE_RATIO */
 #if !defined(QUARANTINE_RATIO)
- #  define QUARANTINE_RATIO 8
+ #  define QUARANTINE_RATIO 2
+	
 #endif
-	return ((quarantine->size * QUARANTINE_RATIO) >= 
-			(narenas_currently_allocated * ARENA_SIZE));
-
+	//return ((quarantine->size * QUARANTINE_RATIO) >= 
+	//		(narenas_currently_allocated * ARENA_SIZE));
+	return ((allocated_size >= MIN_REVOKE_HEAP_SIZE) &&
+			((quarantine->size * QUARANTINE_RATIO) >= allocated_size));
 #endif
 }
 
@@ -2400,6 +2418,8 @@ pymalloc_release(OMState *state, void *p)
     pymem_block *lastfree = pool->freeblock;
 	
 	//memset(lastfree, PYMEM_CLEANBYTE, size);
+	//p = cheri_andperm(p, ~CHERI_PERM_SW_VMEM);
+
 
     *(pymem_block **)p = lastfree;
     pool->freeblock = (pymem_block *)p;
@@ -2446,15 +2466,18 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 						"blocks not released back from quarantine!");
 			}
 		}
-		//iter->num_descriptors = 0;
 
 		prev = iter;
 	}
 
-//	fprintf(stderr, "flush #max arenas %u #arenas not freed %u, \
-//#ntimes_arena_allocated %u, #arenas highwater %u\n", 
-//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater);
-
+#ifdef STATS
+	fprintf(stderr, "flush #max arenas %u #arenas not freed %u, \
+#ntimes_arena_allocated %u, #arenas highwater %u\n"
+			"allocated_size %u\n", 
+			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+			allocated_size);
+#endif
+	
 	if (prev != NULL) {
 		/* Free the quarantined descriptors. */
 		prev->next = free_descriptor_slabs;
@@ -2463,7 +2486,8 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 		while (!atomic_compare_exchange_weak(&free_descriptor_slabs,
 					&prev->next, quarantine->list))
 			;
-
+		
+		allocated_size -= quarantine->size;
 		quarantine->list = NULL;
 		quarantine->size = 0;
 	}

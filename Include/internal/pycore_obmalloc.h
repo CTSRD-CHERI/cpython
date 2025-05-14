@@ -681,7 +681,7 @@ struct _obmalloc_usage {
 /* Minimum heap size (bytes) before we start a revocation scan */
 #define MIN_REVOKE_HEAP_SIZE        (8 * 1024 * 1024) // 8MB
 
-#define QUARANTINE_HIGHWATER 		(8 * 1024 * 1024) // 8MB 
+//#define QUARANTINE_HIGHWATER 		(8 * 1024 * 1024) // 8MB 
 
 struct mrs_descriptor_slab_entry {
 	void *ptr;
@@ -714,6 +714,8 @@ struct mrs_quarantine_list {
 //_Static_assert(APP_QUARANTINE_ARENAS >= 2,
 //		    "APP_QUARANTINE_ARENAS must be at least 2");
 struct _obmalloc_quarantine_mgmt {
+	size_t _Atomic allocated_size;
+
 	struct mrs_descriptor_slab * _Atomic free_descriptor_slabs;
 
 	struct mrs_quarantine app_quarantine_store[APP_QUARANTINE_ARENAS];

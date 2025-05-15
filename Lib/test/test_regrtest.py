@@ -1174,15 +1174,15 @@ class ArgsTestCase(BaseTestCase):
         self.check_leak(code, 'references', run_workers=run_workers)
 
     def test_huntrleaks(self):
-        from ctypes import c_void_p, sizeof
-        if sizeof(c_void_p) == 16:
-            self.fail("CHERI quarantine halt")
+#        from ctypes import c_void_p, sizeof
+#        if sizeof(c_void_p) == 16:
+#            self.fail("CHERI quarantine halt")
         self.check_huntrleaks(run_workers=False)
 
     def test_huntrleaks_mp(self):
-        from ctypes import c_void_p, sizeof
-        if sizeof(c_void_p) == 16:
-            self.fail("CHERI quarantine halt")
+#        from ctypes import c_void_p, sizeof
+#        if sizeof(c_void_p) == 16:
+#            self.fail("CHERI quarantine halt")
         self.check_huntrleaks(run_workers=True)
 
     @unittest.skipUnless(support.Py_DEBUG, 'need a debug build')
@@ -2165,9 +2165,9 @@ class ArgsTestCase(BaseTestCase):
         self.assertNotIn('SPAM SPAM SPAM', output)
        
 
-        from ctypes import c_void_p, sizeof
-        if sizeof(c_void_p) == 16:
-            self.fail("CHERI quarantine halt")
+#        from ctypes import c_void_p, sizeof
+#        if sizeof(c_void_p) == 16:
+#            self.fail("CHERI quarantine halt")
        
         # -R option needs a debug build
         if support.Py_DEBUG:

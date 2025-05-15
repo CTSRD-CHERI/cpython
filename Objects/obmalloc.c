@@ -1726,6 +1726,12 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
     }
 #endif
 
+#ifdef __CHERI_PURE_CAPABILITY__
+	/* here to flush again */
+	//check_and_perform_flush(state, false);
+	check_flush(state);
+#endif
+
     if (UNLIKELY(nbytes == 0)) {
         return NULL;
     }
@@ -1736,12 +1742,6 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
     uint size = (uint)(nbytes - 1) >> ALIGNMENT_SHIFT;
     poolp pool = usedpools[size + size];
     pymem_block *bp;
-
-#ifdef __CHERI_PURE_CAPABILITY__
-	/* here to flush again */
-	//check_and_perform_flush(state, false);
-	check_flush(state);
-#endif
 
     if (LIKELY(pool != pool->nextpool)) {
         /*
@@ -2374,6 +2374,8 @@ quarantine_should_flush(OMState *state, struct mrs_quarantine *quarantine, bool 
 {
 	if (is_free && revoke_every_free) return true;
 
+	//if (!is_free) return false;
+
 #if defined(QUARANTINE_HIGHWATER)
 	/* QUARANTINE_HIGHWATER */
 	return (quarantine->size >= QUARANTINE_HIGHWATER);
@@ -2490,11 +2492,11 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 //		_Py_FatalErrorFunc(__func__,
 //				"allocated_size less than 0!");
 //	}
-//	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
-//			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
-//			"quarantine_size %lu\n",
-//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
-//			quarantine->size);
+	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+			"quarantine_size %lu\n",
+			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+			quarantine->size);
 
 	
 	if (prev != NULL) {
@@ -2539,7 +2541,7 @@ app_quarantine_revoke_async(OMState *state)
 	
 	PyThread_release_lock(app_quarantine_lock);
 
-	(void)cheri_revoke(CHERI_REVOKE_ASYNC, curr->epoch, NULL);
+	(void)cheri_revoke(CHERI_REVOKE_ASYNC, epoch, NULL);
 
 	if (cheri_revoke_epoch_clears(cri->epochs.dequeue, epoch)) {
 		struct mrs_quarantine tmp;
@@ -2561,6 +2563,7 @@ app_quarantine_revoke_async(OMState *state)
 		app_quarantine_remove(state, &tmp, next);
 		
 		quarantine_flush(state, &tmp);
+		
 		PyThread_release_lock(app_quarantine_lock);
 		
 		//quarantine_flush(state, &tmp);
@@ -2592,6 +2595,7 @@ check_flush(OMState *state) {
 	app_quarantine_remove(state, &tmp, next);
 
 	quarantine_flush(state, &tmp);
+	
 	PyThread_release_lock(app_quarantine_lock);
 
 	//quarantine_flush(state, &tmp);

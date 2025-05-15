@@ -145,7 +145,6 @@ Tools/msi/obj
 Tools/ssl/amd64
 Tools/ssl/win32
 Tools/freeze/test/outdir
-# build-*/python.core
 build-*/build/test_python_*
 build-hybrid/*.core
 build-purecap/*.core

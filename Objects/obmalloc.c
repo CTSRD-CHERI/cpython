@@ -947,12 +947,12 @@ _obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 
 	qa_mgmt->app_quarantine_lock = PyThread_allocate_lock();
 	qa_mgmt->quarantining = true;
-#ifdef NOQA
-	fprintf(stderr, "disabled QA\n");
-	qa_mgmt->quarantining = false;
-#else 
-	//fprintf(stderr, "enabled QA\n");
-#endif
+//#ifdef NOQA
+//	fprintf(stderr, "disabled QA\n");
+//	qa_mgmt->quarantining = false;
+//#else 
+//	//fprintf(stderr, "enabled QA\n");
+//#endif
 	
 	qa_mgmt->revoke_every_free = false;
 	qa_mgmt->revoke_async = true;
@@ -1030,7 +1030,8 @@ static inline int
 validate_freed_pointer(OMState *state, void *ptr);
 static void
 pymalloc_revoke(OMState *state, void *ptr);
-
+static inline void
+check_flush(OMState *state); 
 #endif
 
 Py_ssize_t
@@ -1736,10 +1737,11 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
     poolp pool = usedpools[size + size];
     pymem_block *bp;
 
-//#ifdef __CHERI_PURE_CAPABILITY__
-//	/* here to flush again */
-//	check_and_perform_flush(state, false);
-//#endif
+#ifdef __CHERI_PURE_CAPABILITY__
+	/* here to flush again */
+	//check_and_perform_flush(state, false);
+	check_flush(state);
+#endif
 
     if (LIKELY(pool != pool->nextpool)) {
         /*
@@ -1759,6 +1761,12 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
         /* There isn't a pool of the right size class immediately
          * available:  use a free pool.
          */
+//#ifdef __CHERI_PURE_CAPABILITY__
+//		/* here to flush again */
+//		check_flush(state);
+//#endif
+
+
 		bp = allocate_from_new_pool(state, size);
     }
 
@@ -1768,13 +1776,13 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
 				"bp should have SW_VMEM");
 	}
 	
-	allocated_size += cheri_getlen(bp);
+	//allocated_size += cheri_getlen(bp);
 
 //	bp = cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM);
 //	if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) != 0) {
 //		_Py_FatalErrorFunc(__func__,
 //				"bp removes SW_VMEM unsuccessful");
-//	}
+//	} 
 
 	//return (void *)bp;
 	return (void *)cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM); 
@@ -2330,6 +2338,11 @@ validate_freed_pointer(OMState *state, void *ptr)
 	if (!cheri_gettag(ptr)) {
 		_Py_FatalErrorFunc(__func__,
 				"ptr to be revoked no valid tag!");
+//		PyErr_WarnFormat(PyExc_RuntimeWarning,
+//				1,
+//				"%s : ptr to be revoked no valid tag",
+//				__func__);	
+//		return 1;
 
 	}
 	/* bitmap painting */
@@ -2478,16 +2491,18 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 //			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
 //			allocated_size);
 //#endif
-	allocated_size = allocated_size - quarantine->size;
-	if (allocated_size < 0) {
-		_Py_FatalErrorFunc(__func__,
-				"allocated_size less than 0!");
-	}
-	fprintf(stderr, "flush #max arenas %u #arenas not freed %lu, \
-			ntimes_arena_allocated %zu, #arenas highwater %lu\n"
-			"allocated_size %lu quarantine_size %lu\n", 
+//	allocated_size = allocated_size - quarantine->size;
+//	if (allocated_size < 0) {
+//		_Py_FatalErrorFunc(__func__,
+//				"allocated_size less than 0!");
+//	}
+	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,"
+			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+			//"allocated_size %lu quarantine_size %lu\n", 
+			"quarantine_size %lu\n",
 			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
-			allocated_size, quarantine->size);
+			//allocated_size, quarantine->size);
+			quarantine->size);
 
 	
 	if (prev != NULL) {
@@ -2532,7 +2547,7 @@ app_quarantine_revoke_async(OMState *state)
 	
 	PyThread_release_lock(app_quarantine_lock);
 
-	(void)cheri_revoke(CHERI_REVOKE_ASYNC, epoch, NULL);
+	(void)cheri_revoke(CHERI_REVOKE_ASYNC, curr->epoch, NULL);
 
 	if (cheri_revoke_epoch_clears(cri->epochs.dequeue, epoch)) {
 		struct mrs_quarantine tmp;
@@ -2558,6 +2573,34 @@ app_quarantine_revoke_async(OMState *state)
 		quarantine_flush(state, &tmp);
 
 	}
+
+}
+
+static inline void
+check_flush(OMState *state) {
+	struct mrs_quarantine *next;
+	cheri_revoke_epoch_t epoch;
+
+	struct mrs_quarantine tmp;
+	PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
+
+	next = mrs_q_first(&app_quarantine_revoke_list);
+	if (next == NULL) {
+		PyThread_release_lock(app_quarantine_lock);
+		return;
+	}
+	assert(next->revoking);
+	if (!cheri_revoke_epoch_clears(cri->epochs.dequeue,
+				next->epoch)) {
+		PyThread_release_lock(app_quarantine_lock);
+		return;
+	}
+
+	app_quarantine_remove(state, &tmp, next);
+
+	PyThread_release_lock(app_quarantine_lock);
+
+	quarantine_flush(state, &tmp);
 
 }
 

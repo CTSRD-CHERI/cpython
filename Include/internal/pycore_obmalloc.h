@@ -711,8 +711,8 @@ struct mrs_quarantine_list {
 }; 
 
 #define APP_QUARANTINE_ARENAS 3 
-//_Static_assert(APP_QUARANTINE_ARENAS >= 2,
-//		    "APP_QUARANTINE_ARENAS must be at least 2");
+_Static_assert(APP_QUARANTINE_ARENAS >= 2,
+		    "APP_QUARANTINE_ARENAS must be at least 2");
 struct _obmalloc_quarantine_mgmt {
 	size_t _Atomic allocated_size;
 

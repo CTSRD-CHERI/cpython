@@ -1,0 +1,16 @@
+
+[dev]
+coverage
+flake8
+lxml
+lxml-stubs
+memray
+mypy
+psutil
+sphinx
+tox
+xmlschema>=4.0.1
+
+[docs]
+sphinx
+readthedocs-sphinx-search

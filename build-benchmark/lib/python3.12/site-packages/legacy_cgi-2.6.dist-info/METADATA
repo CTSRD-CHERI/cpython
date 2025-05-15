@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: legacy-cgi
+Version: 2.6
+Summary: Fork of the standard library cgi and cgitb modules, being deprecated in PEP-594
+Home-page: https://github.com/jackrosenthal/python-cgi
+License: PSF-2.0
+Author: Michael McLay
+Author-email: mclay@eeel.nist.gov
+Requires-Python: >=3.10,<4.0
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Project-URL: Repository, https://github.com/jackrosenthal/python-cgi
+Description-Content-Type: text/x-rst
+
+Python CGI
+==========
+
+This is a fork of the standard library modules ``cgi`` and ``cgitb``.
+They are slated to be removed from the Python standard libary in
+Python 3.13 by PEP-594_.
+
+.. _PEP-594: https://peps.python.org/pep-0594/
+
+Installation
+------------
+
+Install the ``legacy-cgi`` package from PyPI::
+
+  $ pip install legacy-cgi
+
+Purpose
+-------
+
+The purpose of this fork is to support existing CGI scripts using
+these modules.  Thus, compatibility is the primary goal.
+
+Contributions are accepted, but should be focused on bug fixes instead
+of new features or major refactoring.
+
+New applications should look at the WSGI_ ecosystem.  There's a number
+of highly-polished web frameworks available, and it's significantly
+faster in a typical deployment given a new Python process does not
+need created for each request.
+
+.. _WSGI: https://wsgi.readthedocs.io
+

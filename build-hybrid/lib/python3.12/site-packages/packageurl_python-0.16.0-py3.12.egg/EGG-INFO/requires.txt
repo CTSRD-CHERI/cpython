@@ -1,0 +1,15 @@
+
+[build]
+setuptools
+wheel
+
+[lint]
+isort
+black
+mypy
+
+[sqlalchemy]
+sqlalchemy>=2.0.0
+
+[test]
+pytest

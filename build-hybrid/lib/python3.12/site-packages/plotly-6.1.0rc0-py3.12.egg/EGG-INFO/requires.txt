@@ -1,0 +1,11 @@
+narwhals>=1.15.1
+packaging
+
+[dev]
+black==25.1.0
+
+[express]
+numpy
+
+[kaleido]
+kaleido==1.0.0rc13

@@ -1,0 +1,17 @@
+soupsieve>1.2
+typing-extensions>=4.0.0
+
+[cchardet]
+cchardet
+
+[chardet]
+chardet
+
+[charset-normalizer]
+charset-normalizer
+
+[html5lib]
+html5lib
+
+[lxml]
+lxml

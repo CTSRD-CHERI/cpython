@@ -2374,13 +2374,14 @@ quarantine_should_flush(OMState *state, struct mrs_quarantine *quarantine, bool 
 #else
 	/* QUARANTINE_RATIO */
 #if !defined(QUARANTINE_RATIO)
- #  define QUARANTINE_RATIO 2
+ #  define QUARANTINE_RATIO 4 
 	
 #endif
-	//return ((quarantine->size * QUARANTINE_RATIO) >= 
-	//		(narenas_currently_allocated * ARENA_SIZE));
-	return ((allocated_size >= MIN_REVOKE_HEAP_SIZE) &&
-			((quarantine->size * QUARANTINE_RATIO) >= allocated_size));
+	return ((quarantine->size >= MIN_REVOKE_HEAP_SIZE) &&
+			(quarantine->size * QUARANTINE_RATIO) >= 
+			(narenas_currently_allocated * ARENA_SIZE));
+//	return ((allocated_size >= MIN_REVOKE_HEAP_SIZE) &&
+//			((quarantine->size * QUARANTINE_RATIO) >= allocated_size));
 #endif
 }
 
@@ -2470,13 +2471,24 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 		prev = iter;
 	}
 
-#ifdef STATS
-	fprintf(stderr, "flush #max arenas %u #arenas not freed %u, \
-#ntimes_arena_allocated %u, #arenas highwater %u\n"
-			"allocated_size %u\n", 
+//#ifdef STATS
+//	fprintf(stderr, "flush #max arenas %u #arenas not freed %u, \
+//#ntimes_arena_allocated %u, #arenas highwater %u\n"
+//			"allocated_size %u\n", 
+//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+//			allocated_size);
+//#endif
+	allocated_size = allocated_size - quarantine->size;
+	if (allocated_size < 0) {
+		_Py_FatalErrorFunc(__func__,
+				"allocated_size less than 0!");
+	}
+	fprintf(stderr, "flush #max arenas %u #arenas not freed %lu, \
+			ntimes_arena_allocated %zu, #arenas highwater %lu\n"
+			"allocated_size %lu quarantine_size %lu\n", 
 			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
-			allocated_size);
-#endif
+			allocated_size, quarantine->size);
+
 	
 	if (prev != NULL) {
 		/* Free the quarantined descriptors. */
@@ -2487,7 +2499,7 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 					&prev->next, quarantine->list))
 			;
 		
-		allocated_size -= quarantine->size;
+		//allocated_size -= quarantine->size;
 		quarantine->list = NULL;
 		quarantine->size = 0;
 	}

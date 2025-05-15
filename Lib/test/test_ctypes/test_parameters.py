@@ -160,7 +160,7 @@ class SimpleTypesTestCase(unittest.TestCase):
 
     def test_noctypes_argtype(self):
         import _ctypes_test
-        from ctypes import CDLL, c_void_p, ArgumentError, sizeof
+        from ctypes import CDLL, c_void_p, ArgumentError, sizeof, cast, py_object
 
         func = CDLL(_ctypes_test.__file__)._testfunc_p_p
         func.restype = c_void_p
@@ -180,12 +180,15 @@ class SimpleTypesTestCase(unittest.TestCase):
                 return obj
 
         func.argtypes = (Adapter(),)
-        # don't know how to convert parameter 1
         self.assertRaises(ArgumentError, func, object())
-        if sizeof(c_void_p) == 16: # CHERI128 do not accept int func args
-            self.assertRaises(TypeError, func, c_void_p(42))
-        else:
-            self.assertEqual(func(c_void_p(42)), 42)
+        if sizeof(c_void_p) == 16: 
+            #self.assertEqual(func(c_void_p(42)), 42)
+            self.assertRaises(TypeError, func, c_void_p(0x42))
+            # 42 -> uintptr_t -> uintptr_t (void *) -> PyNativePointer ERROR
+            # TypeError: PyNativePointer_FromVoidPointer: a valid pointer or a NULL pointer is required, got 0x42
+            
+        self.assertEqual(cast(func(c_void_p(_native_pointer(42))),py_object).value,42)
+        # 42 -> pynativepointer -> void * -> void * -> pynativepointer -> py_obj value
 
         class Adapter:
             def from_param(cls, obj):
@@ -247,6 +250,8 @@ class SimpleTypesTestCase(unittest.TestCase):
             c_char_p,
             c_wchar_p,
             c_void_p,
+            cast,
+            py_object
         )
         self.assertRegex(repr(c_bool.from_param(True)), r"^<cparam '\?' at 0x[A-Fa-f0-9]+>$")
         self.assertEqual(repr(c_char.from_param(97)), "<cparam 'c' ('a')>")
@@ -268,6 +273,11 @@ class SimpleTypesTestCase(unittest.TestCase):
         self.assertRegex(repr(c_char_p.from_param(b'hihi')), r"^<cparam 'z' \(0x[A-Fa-f0-9]+\)>$")
         self.assertRegex(repr(c_wchar_p.from_param('hihi')), r"^<cparam 'Z' \(0x[A-Fa-f0-9]+\)>$")
         self.assertRegex(repr(c_void_p.from_param(0x12)), r"^<cparam 'P' \(0x0*12\)>$")
+        self.assertRegex(repr(c_void_p.from_param(_native_pointer(0x12))), r"^<cparam 'P' \(0x[A-Fa-f0-9]+\)>$")
+        #self.assertRegex(repr(cast(c_void_p.from_param(_native_pointer(0x12)), py_object)), r"^<cparam 'P' \(0x0*12\)>$")
+        # py_object(18)
+        #self.assertRegex(repr(cast(c_void_p.from_param(_native_pointer(0x12)), py_object).value), r"^<cparam 'P' \(0x0*12\)>$")
+        # 18
 
     @test.support.cpython_only
     def test_from_param_result_refcount(self):

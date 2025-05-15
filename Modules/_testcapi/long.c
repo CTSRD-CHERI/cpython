@@ -746,7 +746,13 @@ pylong_asvoidptr(PyObject *module, PyObject *arg)
             return NULL; 
         } 
         Py_RETURN_NONE; 
-    } 
+    }
+#ifdef __CHERI_PURE_CAPABILITY__
+	if (!__builtin_cheri_tag_get(value)) {
+		PyErr_Format(PyExc_TypeError, "%s: a valid pointer or a NULL pointer is required, got %p", __func__, value);
+		return NULL;
+	}
+#endif
     return Py_NewRef((PyObject *)value); 
 } 
 

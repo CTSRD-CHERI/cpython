@@ -378,30 +378,40 @@ class LongTests(unittest.TestCase):
         self.assertRaises(TypeError, asdouble, '3')
         self.assertRaises(SystemError, asdouble, NULL)
     
-#    @unittest.skipIf(
-#            "purecap" in sys.executable or "benchmark" in sys.executable,
-#            "broken on aarch64c for now"
-#            )
     def test_long_asvoidptr(self):
         # Test PyLong_AsVoidPtr()
         fromvoidptr = _testcapi.pylong_fromvoidptr
         asvoidptr = _testcapi.pylong_asvoidptr
+        from ctypes import cast, py_object
         obj = object()
-        x = fromvoidptr(obj) #native pointer
-        y = fromvoidptr(NULL)
+        x = fromvoidptr(obj) #PyNativePointer
+        y = fromvoidptr(NULL) #PyNativePointer
         self.assertIs(asvoidptr(x), obj)
         self.assertIs(asvoidptr(y), NULL)
+        print("test IntSubclass")
         if _testcapi.SIZEOF_VOID_P == 16:
-            #self.assertIs(asvoidptr(fromvoidptr()
             self.assertRaises(TypeError, asvoidptr, IntSubclass(x))
+            #self.assertIs(asvoidptr(IntSubclass(x)), obj) 
+            # capability tag fault, cannot create new ref from untagged address
+            z = IntSubclass(x)
+            self.assertIs(asvoidptr(_native_pointer(z)), z)
+            self.assertIs(type(asvoidptr(_native_pointer(IntSubclass(x)))), type(IntSubclass(x)))
+
+            self.assertIsNot(asvoidptr(_native_pointer(IntSubclass(x))), obj)
+            #_native_pointer(IntSubclass(x))
+            #asvoidptr(_native_pointer(IntSubclass(x)))
+            asvoidptr(_native_pointer(42))
         else:
-            print("test IntSubclass")
             self.assertIs(asvoidptr(IntSubclass(x)), obj)
-        print("x", x)
-        print("IntSubclass(x)", IntSubclass(x))
-        if _testcapi.SIZEOF_VOID_P != 16:
-            print("asvoidptr(IntSubclass(x)))", asvoidptr(IntSubclass(x)))
-        print("obj", obj)
+            z = IntSubclass(x)
+            self.assertIs(asvoidptr(_native_pointer(z)), z)
+            self.assertIs(type(asvoidptr(_native_pointer(IntSubclass(x)))), type(IntSubclass(x)))
+
+
+        #print("IntSubclass(x)", IntSubclass(x))
+        #if _testcapi.SIZEOF_VOID_P != 16:
+        #    print("asvoidptr(IntSubclass(x)))", asvoidptr(IntSubclass(x)))
+        #print("obj", obj)
         
         # negative values
         M = (1 << _testcapi.SIZEOF_PY_ADDRESS * 8)

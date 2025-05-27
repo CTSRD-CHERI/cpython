@@ -164,6 +164,7 @@ class Printer:
                 self.write("PyObject_VAR_HEAD")
                 self.write("Py_hash_t ob_shash;")
                 self.write(f"_Alignas(void *) char ob_sval[{len(b) + 1}];")
+                #self.write(f"char ob_sval[{len(b) + 1}];")
         with self.block(f"{name} =", ";"):
             self.object_var_head("PyBytes_Type", len(b))
             self.write(".ob_shash = -1,")

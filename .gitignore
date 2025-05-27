@@ -153,9 +153,9 @@ build-benchmark/*.core
 .github/workflows/xml_parser.yml
 cscope/
 ctags/
-build-hybrid/
-build-purecap/
-build-benchmark/
+build-hybrid*/
+build-purecap*/
+build-benchmark*/
 san-hybrid/
 val-hybrid/
 val-purecap/
@@ -165,6 +165,7 @@ xml_preprocess.sh
 inspect_snapshot.py
 sitecustomize.py
 tracemalloc_snapshot.snap
+.vimrc
 
 .git-rewrite/
 compile

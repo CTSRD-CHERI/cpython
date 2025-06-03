@@ -672,6 +672,39 @@ struct _obmalloc_usage {
 #include <cheri/libcaprevoke.h>
 #include "pycore_atomic.h"
 
+//static bool mrs_utrace;
+#define WITH_MRS_UTRACE 0
+
+
+#if WITH_MRS_UTRACE > 0 
+#include <sys/param.h>
+#include <sys/time.h>
+#include <sys/uio.h>
+#include <sys/ktrace.h>
+
+#define MRS_UTRACE_SIG_SZ	4
+#define MRS_UTRACE_SIG		"MRS "
+
+struct utrace_mrs {
+	char sig[MRS_UTRACE_SIG_SZ];
+	int event;
+	/* current quarantine size */
+	size_t app_quarantine_size;
+	/* all quarantined size */
+	size_t quarantined_size;	
+	/* Number of arenas allocated that haven't been free()'d. */
+    size_t narenas_curr;
+
+	size_t freelist_size;
+
+    /* Total number of times malloc() called to allocate an arena. */
+	//size_t ntimes_arena_allocated;
+    /* High water mark (max value ever seen) for narenas_currently_allocated. */
+    size_t narenas_high;
+
+};
+#endif
+
 /* Alignment requirement for caps so we can paint the caprevoke bitmap */
 #define CAPREVOKE_BITMAP_ALIGNMENT  (sizeof(void *))
 
@@ -790,6 +823,8 @@ mrs_q_remove(struct mrs_quarantine_list *ql, struct mrs_quarantine *q) {
 	else {
 		ql->tail = q->prev;
 	}
+	q->prev = NULL;
+	q->next = NULL;
 	/* q is now standalone */
 }
 

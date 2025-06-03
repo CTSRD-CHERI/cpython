@@ -287,24 +287,6 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 		return NULL;
 	}
 
-//	/* Handle the ctypes.c_void_p type: */
-//	if (c_void_p_type != NULL
-//			    && PyObject_TypeCheck(vv, (PyTypeObject*)c_void_p_type)){
-//		if (PyObject_HasAttrString(vv, "value")) {
-//			fprintf(stderr, "[DEBUG] AsVoidPointer: branch CTYPES.VALUE\n");
-//			PyObject* pv = PyObject_GetAttrString(vv, "value");
-//			if (pv == NULL)
-//				return NULL;
-//			/* We could also check that _type_ is "P" */
-//			if (PyNativePointer_CheckExact(pv)) {
-//				void* result = ((PyNativePointerObject*)pv)->pointer;
-//				Py_DECREF(pv);
-//				return result;
-//			}
-//			Py_DECREF(pv);
-//		}
-//	}
-	// #ifdef WONT_WORK_ON_CHERI
 	if (PyLong_Check(vv)){
 
 		Py_addr_t addr = PyLong_AsPyAddr(vv);
@@ -320,7 +302,7 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 //		return NULL;
 //	}
 //#endif
-		/*
+	/*
          * Warn when creating pointers from int constants. This will not work
          * on architectures such as CHERI where pointers and integers are
          * distinct types.
@@ -335,12 +317,10 @@ PyNativePointer_AsVoidPointer(PyObject *vv)
 		//fprintf(stderr, "[DEBUG] AsVoidPointer: branch PYLONG %p\n", (void *)(uintptr_t)addr);
 		return (void*)(uintptr_t)addr;
 	}
-	// #else
 	//fprintf(stderr, "[DEBUG] AsVoidPointer: branch TYPE_ERROR\n");
 
 	PyErr_Format(PyExc_TypeError, "%s: a valid pointer or a NULL pointer is required, got %R", __func__, vv);
 	return NULL;
-	// #endif
 }
 
 PyObject *

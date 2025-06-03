@@ -414,7 +414,8 @@ debug_ptr(void *a, void *b)
 
 	if (fd >=0) {
 		//dprintf(fd, "a=0x%016x[0x%016x-0x%016x] b=0x%016x[[0x%016x-0x%016x]\n", 
-		dprintf(fd, "a=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR "] b=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR "]\n",
+		dprintf(fd, "a=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR 
+				"] b=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR "]\n",
 				(uintptr_t)a_addr, (uintptr_t)a_base, (uintptr_t)a_top, 
 			(uintptr_t)b_addr, (uintptr_t)b_base, (uintptr_t)b_top);
 		close(fd);
@@ -424,8 +425,10 @@ debug_ptr(void *a, void *b)
 
 static int
 ptr_eq(void *a, void *b)
-{
-	// debug_ptr(a, b);
+{	
+#ifdef Py_DEBUG
+	debug_ptr(a, b);
+#endif
 	return __builtin_cheri_address_get(a) == __builtin_cheri_address_get(b);
 }
 #endif
@@ -434,7 +437,7 @@ static int
 pymemallocator_eq(PyMemAllocatorEx *a, PyMemAllocatorEx *b)
 {
 #ifdef __CHERI_PURE_CAPABILITY__
-	// Benchmark ABI might relax the bound condition
+	// Benchmark ABI might relax the bounds condition
 	return (ptr_eq(a->ctx,  b->ctx) && 
 		ptr_eq(a->malloc,  b->malloc) &&
 		ptr_eq(a->calloc,  b->calloc) &&
@@ -1031,7 +1034,112 @@ validate_freed_pointer(OMState *state, void *ptr);
 static void
 pymalloc_revoke(OMState *state, void *ptr);
 static inline void
-check_flush(OMState *state); 
+check_flush(OMState *state)
+__attribute__((unused))
+	;
+
+
+
+#if WITH_MRS_UTRACE > 0
+static void
+mrs_utrace_log(OMState *state, int event) {
+	/* 1) Build a tiny text buffer that we know is NUL-terminated. */
+	char txt[128];
+	size_t app_quarantine_size = app_quarantine->size;
+	size_t freelist_size = 0;
+
+	/* (Compute quarantined_size, narenas_curr, narenas_high, etc.)… */
+	struct mrs_quarantine *curr;
+	size_t quarantined_size = 0;
+	curr = mrs_q_first(&app_quarantine_revoke_list);
+
+	while (curr != NULL){
+		quarantined_size += curr->size;
+		curr = curr->next; 
+	}
+	
+	quarantined_size += app_quarantine_size;
+
+
+	int n = snprintf(txt, sizeof(txt),
+			"%s event=%d app_q=%zu total_q=%zu \
+			narenas_curr=%zu freelist_sz=%zu narenas_high=%zu",
+			MRS_UTRACE_SIG,             /* prints “MRS ” */
+			event,
+			app_quarantine_size,
+			quarantined_size,
+			narenas_currently_allocated,
+			freelist_size,
+			narenas_highwater
+			);
+	if (n < 0) {
+		/* handle error */
+		return;
+	}
+
+//	if (event >= 2){
+//	fprintf(stderr, "event %u flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+//			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+//			"current_quarantine_size %lu, quarantine_size %lu\n",
+//			event,
+//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+//			app_quarantine_size, quarantined_size);
+//	}
+
+	/* 2) Emit exactly 'strlen(txt)' bytes of printable text. */
+	if (utrace(txt, (size_t)n) < 0) {
+		_Py_FatalErrorFunc(__func__, "utrace failed!");
+	}
+}
+
+
+
+
+static void
+mrs_utrace_log2(OMState *state, int event){
+ 	struct utrace_mrs ut;
+	struct mrs_quarantine *curr;
+	size_t quarantined_size = 0;
+
+	static const char mrs_utrace_sig[MRS_UTRACE_SIG_SZ] = MRS_UTRACE_SIG;
+
+	memcpy(ut.sig, mrs_utrace_sig, sizeof(ut.sig));
+	
+	ut.event = event;
+	ut.app_quarantine_size = app_quarantine->size;
+
+
+	curr = mrs_q_first(&app_quarantine_revoke_list);
+
+	while (curr != NULL){
+		quarantined_size += curr->size;
+		curr = curr->next; 
+	}
+	
+	quarantined_size += ut.app_quarantine_size;
+
+	ut.quarantined_size = quarantined_size;
+
+#ifdef WITH_FREELISTS
+	ut.freelist_size = 0;
+#endif
+
+	ut.narenas_curr = narenas_currently_allocated;
+	ut.narenas_high = narenas_highwater;
+
+	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+			"current_quarantine_size %lu, quarantine_size %lu\n",
+			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+			ut.app_quarantine_size, quarantined_size);
+
+	if (utrace(&ut, sizeof(ut)) < 0) {
+		_Py_FatalErrorFunc(__func__,
+				"utrace failed!");
+	}
+}
+#endif
+
 #endif
 
 Py_ssize_t
@@ -1728,8 +1836,8 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
 
 #ifdef __CHERI_PURE_CAPABILITY__
 	/* here to flush again */
-	//check_and_perform_flush(state, false);
-	check_flush(state);
+	check_and_perform_flush(state, false);
+	//check_flush(state);
 #endif
 
     if (UNLIKELY(nbytes == 0)) {
@@ -2285,10 +2393,14 @@ alloc_descriptor_slab(OMState *state)
 		/* reuse free slabs */
 		struct mrs_descriptor_slab *ret = free_descriptor_slabs;
 
+//free_descriptor_slabs->next = NULL;
+
 		while (!atomic_compare_exchange_weak(&free_descriptor_slabs,
 					&ret, ret->next))
 			;
 		//fprintf(stderr, "reused slab\n");
+		assert(free_descriptor_slabs == ret->next);
+		ret->next = NULL;
 
 		ret->num_descriptors = 0;
 		return (ret);
@@ -2362,6 +2474,9 @@ pymalloc_revoke(OMState *state, void *ptr)
 	
 	PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
 	quarantine_insert(state, app_quarantine, ptr, cheri_getlen(ptr));
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 1);
+#endif
 	PyThread_release_lock(app_quarantine_lock);
 	
 	check_and_perform_flush(state, true);
@@ -2374,7 +2489,7 @@ quarantine_should_flush(OMState *state, struct mrs_quarantine *quarantine, bool 
 {
 	if (is_free && revoke_every_free) return true;
 
-	//if (!is_free) return false;
+	if (!is_free) return false; // flush only when free
 
 #if defined(QUARANTINE_HIGHWATER)
 	/* QUARANTINE_HIGHWATER */
@@ -2481,24 +2596,16 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 	}
 
 //#ifdef STATS
-//	fprintf(stderr, "flush #max arenas %u #arenas not freed %u, \
-//#ntimes_arena_allocated %u, #arenas highwater %u\n"
-//			"allocated_size %u\n", 
-//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
-//			allocated_size);
-//#endif
-//	allocated_size = allocated_size - quarantine->size;
-//	if (allocated_size < 0) {
-//		_Py_FatalErrorFunc(__func__,
-//				"allocated_size less than 0!");
-//	}
-	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
-			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
-			"quarantine_size %lu\n",
-			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
-			quarantine->size);
 
-	
+//	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+//			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+//			"quarantine_size %lu\n",
+//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+//			quarantine->size);
+
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 2);
+#endif
 	if (prev != NULL) {
 		/* Free the quarantined descriptors. */
 		prev->next = free_descriptor_slabs;
@@ -2508,10 +2615,11 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 					&prev->next, quarantine->list))
 			;
 		
-		//allocated_size -= quarantine->size;
 		quarantine->list = NULL;
 		quarantine->size = 0;
 	}
+
+
 
 }
 
@@ -2543,6 +2651,9 @@ app_quarantine_revoke_async(OMState *state)
 
 	(void)cheri_revoke(CHERI_REVOKE_ASYNC, epoch, NULL);
 
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 3);
+#endif
 	if (cheri_revoke_epoch_clears(cri->epochs.dequeue, epoch)) {
 		struct mrs_quarantine tmp;
 
@@ -2562,11 +2673,10 @@ app_quarantine_revoke_async(OMState *state)
 
 		app_quarantine_remove(state, &tmp, next);
 		
-		quarantine_flush(state, &tmp);
 		
 		PyThread_release_lock(app_quarantine_lock);
 		
-		//quarantine_flush(state, &tmp);
+		quarantine_flush(state, &tmp);
 
 	}
 
@@ -2575,7 +2685,6 @@ app_quarantine_revoke_async(OMState *state)
 static inline void
 check_flush(OMState *state) {
 	struct mrs_quarantine *next;
-	cheri_revoke_epoch_t epoch;
 
 	struct mrs_quarantine tmp;
 	PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
@@ -2594,11 +2703,11 @@ check_flush(OMState *state) {
 
 	app_quarantine_remove(state, &tmp, next);
 
-	quarantine_flush(state, &tmp);
+	//quarantine_flush(state, &tmp);
 	
 	PyThread_release_lock(app_quarantine_lock);
 
-	//quarantine_flush(state, &tmp);
+	quarantine_flush(state, &tmp);
 
 }
 

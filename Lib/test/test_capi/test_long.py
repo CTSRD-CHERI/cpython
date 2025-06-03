@@ -401,6 +401,7 @@ class LongTests(unittest.TestCase):
             #_native_pointer(IntSubclass(x))
             #asvoidptr(_native_pointer(IntSubclass(x)))
             asvoidptr(_native_pointer(42))
+            self.assertIs(asvoidptr(_native_pointer(42)), 42)
         else:
             self.assertIs(asvoidptr(IntSubclass(x)), obj)
             z = IntSubclass(x)

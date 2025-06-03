@@ -756,7 +756,7 @@ configure:10230: checking whether pthreads are available without options
 configure:10257: cc -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c  >&5
 ld: error: undefined symbol: pthread_create
 >>> referenced by conftest.c
->>>               /tmp/conftest-acd281.o:(main)
+>>>               /tmp/conftest-46b673.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:10257: $? = 1
 configure: program exited with status 1
@@ -8401,7 +8401,7 @@ configure:17596: checking for explicit_memset
 configure:17596: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: explicit_memset
 >>> referenced by conftest.c
->>>               /tmp/conftest-c2b6fa.o:(main)
+>>>               /tmp/conftest-933724.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:17596: $? = 1
 configure: failed program was:
@@ -8632,7 +8632,7 @@ configure:17638: checking for fdwalk
 configure:17638: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: fdwalk
 >>> referenced by conftest.c
->>>               /tmp/conftest-822ca6.o:(main)
+>>>               /tmp/conftest-9561bb.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:17638: $? = 1
 configure: failed program was:
@@ -8853,7 +8853,7 @@ configure:17656: checking for fork1
 configure:17656: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: fork1
 >>> referenced by conftest.c
->>>               /tmp/conftest-a761bb.o:(main)
+>>>               /tmp/conftest-048153.o:(main)
 >>> did you mean: fork
 >>> defined in: /lib/libc.so.7
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
@@ -9078,7 +9078,7 @@ configure:17674: checking for ftime
 configure:17674: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: ftime
 >>> referenced by conftest.c
->>>               /tmp/conftest-a84fa7.o:(main)
+>>>               /tmp/conftest-13ee22.o:(main)
 >>> did you mean: ctime
 >>> defined in: /lib/libc.so.7
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
@@ -9389,7 +9389,7 @@ configure:17818: checking for _getpty
 configure:17818: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: _getpty
 >>> referenced by conftest.c
->>>               /tmp/conftest-254e6e.o:(main)
+>>>               /tmp/conftest-b2d73f.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:17818: $? = 1
 configure: failed program was:
@@ -9661,7 +9661,7 @@ configure:17872: checking for getspent
 configure:17872: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: getspent
 >>> referenced by conftest.c
->>>               /tmp/conftest-75decd.o:(main)
+>>>               /tmp/conftest-4eb244.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:17872: $? = 1
 configure: failed program was:
@@ -9909,7 +9909,7 @@ configure:17878: checking for getspnam
 configure:17878: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: getspnam
 >>> referenced by conftest.c
->>>               /tmp/conftest-4a0507.o:(main)
+>>>               /tmp/conftest-73e994.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:17878: $? = 1
 configure: failed program was:
@@ -10241,7 +10241,7 @@ configure:18010: checking for mremap
 configure:18010: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: mremap
 >>> referenced by conftest.c
->>>               /tmp/conftest-475fab.o:(main)
+>>>               /tmp/conftest-07f2e7.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:18010: $? = 1
 configure: failed program was:
@@ -10538,7 +10538,7 @@ configure:18058: checking for plock
 configure:18058: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: plock
 >>> referenced by conftest.c
->>>               /tmp/conftest-66083d.o:(main)
+>>>               /tmp/conftest-7c48ab.o:(main)
 >>> did you mean: clock
 >>> defined in: /lib/libc.so.7
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
@@ -10844,7 +10844,7 @@ configure:18106: checking for preadv2
 configure:18106: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: preadv2
 >>> referenced by conftest.c
->>>               /tmp/conftest-d5ac0c.o:(main)
+>>>               /tmp/conftest-6caf18.o:(main)
 >>> did you mean: preadv
 >>> defined in: /lib/libc.so.7
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
@@ -11133,7 +11133,7 @@ configure:18118: checking for pthread_init
 configure:18118: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: pthread_init
 >>> referenced by conftest.c
->>>               /tmp/conftest-860545.o:(main)
+>>>               /tmp/conftest-2bc5f8.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:18118: $? = 1
 configure: failed program was:
@@ -11429,7 +11429,7 @@ configure:18142: checking for pwritev2
 configure:18142: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: pwritev2
 >>> referenced by conftest.c
->>>               /tmp/conftest-5f2cbf.o:(main)
+>>>               /tmp/conftest-7b5854.o:(main)
 >>> did you mean: pwritev
 >>> defined in: /lib/libc.so.7
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
@@ -11738,7 +11738,7 @@ configure:18178: checking for rtpSpawn
 configure:18178: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: rtpSpawn
 >>> referenced by conftest.c
->>>               /tmp/conftest-af7bc0.o:(main)
+>>>               /tmp/conftest-48ce23.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:18178: $? = 1
 configure: failed program was:
@@ -12050,7 +12050,7 @@ configure:18214: checking for sem_clockwait
 configure:18214: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: sem_clockwait
 >>> referenced by conftest.c
->>>               /tmp/conftest-4e4992.o:(main)
+>>>               /tmp/conftest-c6c851.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:18214: $? = 1
 configure: failed program was:
@@ -12480,7 +12480,7 @@ configure:18412: checking for splice
 configure:18412: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: splice
 >>> referenced by conftest.c
->>>               /tmp/conftest-6a9554.o:(main)
+>>>               /tmp/conftest-932757.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:18412: $? = 1
 configure: failed program was:
@@ -12870,7 +12870,7 @@ configure:18502: checking for tmpnam_r
 configure:18502: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: tmpnam_r
 >>> referenced by conftest.c
->>>               /tmp/conftest-3fbe05.o:(main)
+>>>               /tmp/conftest-7d79fd.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:18502: $? = 1
 configure: failed program was:
@@ -15228,7 +15228,7 @@ configure:21387: checking for openpty
 configure:21387: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  >&5
 ld: error: undefined symbol: openpty
 >>> referenced by conftest.c
->>>               /tmp/conftest-8f582d.o:(main)
+>>>               /tmp/conftest-866814.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:21387: $? = 1
 configure: failed program was:
@@ -15639,7 +15639,7 @@ configure:21638: checking for fseek64
 configure:21638: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  -lutil >&5
 ld: error: undefined symbol: fseek64
 >>> referenced by conftest.c
->>>               /tmp/conftest-ac4c86.o:(main)
+>>>               /tmp/conftest-c36004.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:21638: $? = 1
 configure: failed program was:
@@ -16049,7 +16049,7 @@ configure:21656: checking for ftell64
 configure:21656: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  -lutil >&5
 ld: error: undefined symbol: ftell64
 >>> referenced by conftest.c
->>>               /tmp/conftest-153e91.o:(main)
+>>>               /tmp/conftest-261227.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:21656: $? = 1
 configure: failed program was:
@@ -16859,7 +16859,7 @@ configure:21748: checking for setns
 configure:21748: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  -lutil >&5
 ld: error: undefined symbol: setns
 >>> referenced by conftest.c
->>>               /tmp/conftest-d8aa61.o:(main)
+>>>               /tmp/conftest-efe689.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:21748: $? = 1
 configure: failed program was:
@@ -17269,7 +17269,7 @@ configure:21754: checking for unshare
 configure:21754: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  -lutil >&5
 ld: error: undefined symbol: unshare
 >>> referenced by conftest.c
->>>               /tmp/conftest-104897.o:(main)
+>>>               /tmp/conftest-4364ac.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:21754: $? = 1
 configure: failed program was:
@@ -17694,7 +17694,7 @@ configure:21830: checking for library containing crypt_r
 configure:21860: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  -lutil >&5
 ld: error: undefined symbol: crypt_r
 >>> referenced by conftest.c
->>>               /tmp/conftest-be178c.o:(main)
+>>>               /tmp/conftest-1ef1b1.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:21860: $? = 1
 configure: failed program was:
@@ -19030,7 +19030,7 @@ configure:23334: checking for __fpu_control
 configure:23334: cc -pthread -o conftest -mabi=purecap -I/usr/local/include -I/usr/include -mabi=purecap -L/usr/local/lib -L/usr/lib -lmd -lcheri_caprevoke conftest.c -lintl -ldl  -lutil >&5
 ld: error: undefined symbol: __fpu_control
 >>> referenced by conftest.c
->>>               /tmp/conftest-a39acc.o:(main)
+>>>               /tmp/conftest-3b18fa.o:(main)
 clang-14: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:23334: $? = 1
 configure: failed program was:
@@ -25335,6 +25335,7 @@ config.status:1753: creating Modules/Setup.bootstrap
 config.status:1753: creating Modules/Setup.stdlib
 config.status:1753: creating Modules/ld_so_aix
 config.status:1753: creating pyconfig.h
+config.status:1919: pyconfig.h is unchanged
 configure:32915: creating Modules/Setup.local
 configure:32922: creating Makefile
 configure:32953: WARNING:
@@ -27144,139 +27145,3 @@ target_alias=''
 #define PY_BUILTIN_HASHLIB_HASHES "md5,sha1,sha2,sha3,blake2"
 
 configure: exit 0
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = Makefile.pre
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status 
-
-on cheribsd
-
-config.status:1753: creating Makefile.pre
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = 
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status Modules/Setup.bootstrap
-
-on cheribsd
-
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = 
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status Modules/Setup.stdlib
-
-on cheribsd
-
-config.status:1753: creating Modules/Setup.bootstrap
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = 
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status Modules/Setup.stdlib
-
-on cheribsd
-
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = 
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status Modules/Setup.bootstrap
-
-on cheribsd
-
-config.status:1753: creating Modules/Setup.stdlib
-config.status:1753: creating Modules/Setup.stdlib
-config.status:1753: creating Modules/Setup.bootstrap
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = 
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status Modules/Setup.stdlib
-
-on cheribsd
-
-config.status:1753: creating Modules/Setup.stdlib
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = 
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status Modules/Setup.bootstrap
-
-on cheribsd
-
-config.status:1753: creating Modules/Setup.bootstrap
-
-## ---------------------- ##
-## Running config.status. ##
-## ---------------------- ##
-
-This file was extended by python config.status 3.12, which was
-generated by GNU Autoconf 2.71.  Invocation command line was
-
-  CONFIG_FILES    = Makefile.pre
-  CONFIG_HEADERS  = 
-  CONFIG_LINKS    = 
-  CONFIG_COMMANDS = 
-  $ ./config.status 
-
-on cheribsd
-
-config.status:1753: creating Makefile.pre

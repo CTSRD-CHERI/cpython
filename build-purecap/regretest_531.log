@@ -1,0 +1,773 @@
+Checked 111 modules (31 built-in, 78 shared, 2 n/a on freebsd-15.0-CURRENT-arm64, 0 disabled, 0 missing, 0 failed on import)
+./python -E  ../Tools/scripts/run_tests.py --junit-xml=regret_results_531.xml -v --timeout=600
+== CPython 3.12.2+ (heads/with-buildfiles-dirty:d0ff142844, May 31 2025, 17:06:11) [Clang 14.0.0 ]
+== FreeBSD-15.0-CURRENT-arm64-aarch64c-64bit-ELF little-endian
+== Python build: debug
+== cwd: /home/qianhuiwang/cpython/build-purecap/build/test_python_worker_4373æ
+== CPU count: 4
+== encodings: locale=UTF-8 FS=utf-8
+== resources: all,-audio,-gui,-largefile
+
+Using random seed: 1792000927
+0:00:00 load avg: 0.74 Run 488 tests in parallel using 6 worker processes (timeout: 10 min, worker timeout: 15 min)
+0:00:01 load avg: 1.40 [  1/488] test_dynamicclassattribute passed
+test_docstring_copy (test.test_dynamicclassattribute.PropertySubclassTests.test_docstring_copy) ... ok
+test_property_new_getter_new_docstring (test.test_dynamicclassattribute.PropertySubclassTests.test_property_new_getter_new_docstring) ... ok
+test_property_setter_copies_getter_docstring (test.test_dynamicclassattribute.PropertySubclassTests.test_property_setter_copies_getter_docstring) ... ok
+test_slots_docstring_copy_exception (test.test_dynamicclassattribute.PropertySubclassTests.test_slots_docstring_copy_exception) ... skipped '__doc__ is already present, __slots__ will have no effect'
+test_abstract_virtual (test.test_dynamicclassattribute.PropertyTests.test_abstract_virtual) ... ok
+test_property___isabstractmethod__descriptor (test.test_dynamicclassattribute.PropertyTests.test_property___isabstractmethod__descriptor) ... ok
+test_property_decorator_baseclass (test.test_dynamicclassattribute.PropertyTests.test_property_decorator_baseclass) ... ok
+test_property_decorator_baseclass_doc (test.test_dynamicclassattribute.PropertyTests.test_property_decorator_baseclass_doc) ... ok
+test_property_decorator_doc (test.test_dynamicclassattribute.PropertyTests.test_property_decorator_doc) ... ok
+test_property_decorator_subclass (test.test_dynamicclassattribute.PropertyTests.test_property_decorator_subclass) ... ok
+test_property_decorator_subclass_doc (test.test_dynamicclassattribute.PropertyTests.test_property_decorator_subclass_doc) ... ok
+test_property_getter_doc_override (test.test_dynamicclassattribute.PropertyTests.test_property_getter_doc_override) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.007s
+
+OK (skipped=1)
+0:00:01 load avg: 1.40 [  2/488] test_pyexpat passed
+test1 (test.test_pyexpat.BufferTextTest.test1) ... ok
+test2 (test.test_pyexpat.BufferTextTest.test2) ... ok
+test3 (test.test_pyexpat.BufferTextTest.test3) ... ok
+test4 (test.test_pyexpat.BufferTextTest.test4) ... ok
+test5 (test.test_pyexpat.BufferTextTest.test5) ... ok
+test6 (test.test_pyexpat.BufferTextTest.test6) ... ok
+test7 (test.test_pyexpat.BufferTextTest.test7) ... ok
+test_buffering_enabled (test.test_pyexpat.BufferTextTest.test_buffering_enabled) ... ok
+test_default_to_disabled (test.test_pyexpat.BufferTextTest.test_default_to_disabled) ... ok
+test_1000_bytes (test.test_pyexpat.ChardataBufferTest.test_1000_bytes) ... ok
+test_1025_bytes (test.test_pyexpat.ChardataBufferTest.test_1025_bytes) ... ok
+test_change_size_1 (test.test_pyexpat.ChardataBufferTest.test_change_size_1) ... ok
+test_change_size_2 (test.test_pyexpat.ChardataBufferTest.test_change_size_2) ... ok
+test_disabling_buffer (test.test_pyexpat.ChardataBufferTest.test_disabling_buffer) ... ok
+test_unchanged_size (test.test_pyexpat.ChardataBufferTest.test_unchanged_size) ... ok
+test_wrong_size (test.test_pyexpat.ChardataBufferTest.test_wrong_size) ... ok
+test_codes (test.test_pyexpat.ErrorMessageTest.test_codes) ... ok
+test_expaterror (test.test_pyexpat.ErrorMessageTest.test_expaterror) ... ok
+test_ignore_use_foreign_dtd (test.test_pyexpat.ForeignDTDTests.test_ignore_use_foreign_dtd)
+If UseForeignDTD is passed True and a document with an external ... ok
+test_use_foreign_dtd (test.test_pyexpat.ForeignDTDTests.test_use_foreign_dtd)
+If UseForeignDTD is passed True and a document without an external ... ok
+test_exception (test.test_pyexpat.HandlerExceptionTest.test_exception) ... ok
+test (test.test_pyexpat.InterningTest.test) ... ok
+test_issue9402 (test.test_pyexpat.InterningTest.test_issue9402) ... ok
+test1 (test.test_pyexpat.MalformedInputTest.test1) ... ok
+test2 (test.test_pyexpat.MalformedInputTest.test2) ... ok
+test_illegal (test.test_pyexpat.NamespaceSeparatorTest.test_illegal) ... ok
+test_legal (test.test_pyexpat.NamespaceSeparatorTest.test_legal) ... ok
+test_zero_length (test.test_pyexpat.NamespaceSeparatorTest.test_zero_length) ... ok
+test_parse_again (test.test_pyexpat.ParseTest.test_parse_again) ... ok
+test_parse_bytes (test.test_pyexpat.ParseTest.test_parse_bytes) ... ok
+test_parse_file (test.test_pyexpat.ParseTest.test_parse_file) ... ok
+test_parse_str (test.test_pyexpat.ParseTest.test_parse_str) ... ok
+test (test.test_pyexpat.PositionTest.test) ... ok
+test_buffer_text (test.test_pyexpat.SetAttributeTest.test_buffer_text) ... ok
+test_invalid_attributes (test.test_pyexpat.SetAttributeTest.test_invalid_attributes) ... ok
+test_namespace_prefixes (test.test_pyexpat.SetAttributeTest.test_namespace_prefixes) ... ok
+test_ordered_attributes (test.test_pyexpat.SetAttributeTest.test_ordered_attributes) ... ok
+test_specified_attributes (test.test_pyexpat.SetAttributeTest.test_specified_attributes) ... ok
+test_parse_only_xml_data (test.test_pyexpat.sf1296433Test.test_parse_only_xml_data) ... ok
+
+----------------------------------------------------------------------
+Ran 39 tests in 0.159s
+
+OK
+0:00:01 load avg: 1.40 [  3/488] test_spwd skipped
+test_spwd skipped -- No module named 'spwd'
+0:00:01 load avg: 1.40 [  4/488] test_typechecks passed
+testIsInstanceActual (test.test_typechecks.TypeChecksTest.testIsInstanceActual) ... ok
+testIsInstanceBuiltin (test.test_typechecks.TypeChecksTest.testIsInstanceBuiltin) ... ok
+testIsSubclassActual (test.test_typechecks.TypeChecksTest.testIsSubclassActual) ... ok
+testIsSubclassBuiltin (test.test_typechecks.TypeChecksTest.testIsSubclassBuiltin) ... ok
+testIsSubclassInternal (test.test_typechecks.TypeChecksTest.testIsSubclassInternal) ... ok
+testSubclassBehavior (test.test_typechecks.TypeChecksTest.testSubclassBehavior) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.003s
+
+OK
+0:00:02 load avg: 1.40 [  5/488] test_codecmaps_hk passed
+test_errorhandle (test.test_codecmaps_hk.TestBig5HKSCSMap.test_errorhandle) ... ok
+test_mapping_file (test.test_codecmaps_hk.TestBig5HKSCSMap.test_mapping_file) ... ok
+test_mapping_supplemental (test.test_codecmaps_hk.TestBig5HKSCSMap.test_mapping_supplemental) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.417s
+
+OK
+0:00:02 load avg: 1.40 [  6/488] test_genexps passed
+doctests (test.test_genexps.__test__)
+Doctest: test.test_genexps.__test__.doctests ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.223s
+
+OK
+0:00:03 load avg: 1.40 [  7/488] test_codecencodings_tw passed
+test_callback_None_index (test.test_codecencodings_tw.Test_Big5.test_callback_None_index) ... ok
+test_callback_backward_index (test.test_codecencodings_tw.Test_Big5.test_callback_backward_index) ... ok
+test_callback_forward_index (test.test_codecencodings_tw.Test_Big5.test_callback_forward_index) ... ok
+test_callback_index_outofbound (test.test_codecencodings_tw.Test_Big5.test_callback_index_outofbound) ... ok
+test_callback_long_index (test.test_codecencodings_tw.Test_Big5.test_callback_long_index) ... ok
+test_callback_returns_bytes (test.test_codecencodings_tw.Test_Big5.test_callback_returns_bytes) ... ok
+test_callback_wrong_objects (test.test_codecencodings_tw.Test_Big5.test_callback_wrong_objects) ... ok
+test_chunkcoding (test.test_codecencodings_tw.Test_Big5.test_chunkcoding) ... ok
+test_customreplace_encode (test.test_codecencodings_tw.Test_Big5.test_customreplace_encode) ... ok
+test_errorhandle (test.test_codecencodings_tw.Test_Big5.test_errorhandle) ... ok
+test_incrementaldecoder (test.test_codecencodings_tw.Test_Big5.test_incrementaldecoder) ... ok
+test_incrementalencoder (test.test_codecencodings_tw.Test_Big5.test_incrementalencoder) ... ok
+test_incrementalencoder_del_segfault (test.test_codecencodings_tw.Test_Big5.test_incrementalencoder_del_segfault) ... ok
+test_incrementalencoder_error_callback (test.test_codecencodings_tw.Test_Big5.test_incrementalencoder_error_callback) ... ok
+test_streamreader (test.test_codecencodings_tw.Test_Big5.test_streamreader) ... ok
+test_streamwriter (test.test_codecencodings_tw.Test_Big5.test_streamwriter) ... ok
+test_streamwriter_reset_no_pending (test.test_codecencodings_tw.Test_Big5.test_streamwriter_reset_no_pending) ... ok
+test_xmlcharrefreplace (test.test_codecencodings_tw.Test_Big5.test_xmlcharrefreplace) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.230s
+
+OK
+0:00:03 load avg: 1.40 [  8/488] test_cgitb passed
+test_blanks (test.test_cgitb.TestCgitb.test_blanks) ... ok
+test_fonts (test.test_cgitb.TestCgitb.test_fonts) ... ok
+test_html (test.test_cgitb.TestCgitb.test_html) ... ok
+test_syshook_no_logdir_default_format (test.test_cgitb.TestCgitb.test_syshook_no_logdir_default_format) ... ok
+test_syshook_no_logdir_text_format (test.test_cgitb.TestCgitb.test_syshook_no_logdir_text_format) ... ok
+test_text (test.test_cgitb.TestCgitb.test_text) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.623s
+
+OK
+0:00:03 load avg: 1.40 [  9/488] test_super passed
+test___class___classmethod (test.test_super.TestSuper.test___class___classmethod) ... ok
+test___class___delayed (test.test_super.TestSuper.test___class___delayed) ... ok
+test___class___instancemethod (test.test_super.TestSuper.test___class___instancemethod) ... ok
+test___class___mro (test.test_super.TestSuper.test___class___mro) ... ok
+test___class___new (test.test_super.TestSuper.test___class___new) ... ok
+test___class___staticmethod (test.test_super.TestSuper.test___class___staticmethod) ... ok
+test___classcell___expected_behaviour (test.test_super.TestSuper.test___classcell___expected_behaviour) ... ok
+test___classcell___missing (test.test_super.TestSuper.test___classcell___missing) ... ok
+test___classcell___overwrite (test.test_super.TestSuper.test___classcell___overwrite) ... ok
+test___classcell___wrong_cell (test.test_super.TestSuper.test___classcell___wrong_cell) ... ok
+test_attribute_error (test.test_super.TestSuper.test_attribute_error) ... ok
+test_bad_first_arg (test.test_super.TestSuper.test_bad_first_arg) ... ok
+test_basics_working (test.test_super.TestSuper.test_basics_working) ... ok
+test_cell_as_self (test.test_super.TestSuper.test_cell_as_self) ... ok
+test_class_getattr_working (test.test_super.TestSuper.test_class_getattr_working) ... ok
+test_class_methods_still_working (test.test_super.TestSuper.test_class_methods_still_working) ... ok
+test_mixed_staticmethod_hierarchy (test.test_super.TestSuper.test_mixed_staticmethod_hierarchy) ... ok
+test_obscure_super_errors (test.test_super.TestSuper.test_obscure_super_errors) ... ok
+test_reassigned_new (test.test_super.TestSuper.test_reassigned_new) ... ok
+test_shadowed_dynamic (test.test_super.TestSuper.test_shadowed_dynamic) ... ok
+test_shadowed_dynamic_two_arg (test.test_super.TestSuper.test_shadowed_dynamic_two_arg) ... ok
+test_shadowed_global (test.test_super.TestSuper.test_shadowed_global) ... ok
+test_shadowed_local (test.test_super.TestSuper.test_shadowed_local) ... ok
+test_subclass_no_override_working (test.test_super.TestSuper.test_subclass_no_override_working) ... ok
+test_super___class__ (test.test_super.TestSuper.test_super___class__) ... ok
+test_super_argcount (test.test_super.TestSuper.test_super_argcount) ... ok
+test_super_argtype (test.test_super.TestSuper.test_super_argtype) ... ok
+test_super_in_class_methods_working (test.test_super.TestSuper.test_super_in_class_methods_working) ... ok
+test_super_init_leaks (test.test_super.TestSuper.test_super_init_leaks) ... ok
+test_super_subclass___class__ (test.test_super.TestSuper.test_super_subclass___class__) ... ok
+test_super_with_closure (test.test_super.TestSuper.test_super_with_closure) ... ok
+test_unbound_method_transfer_working (test.test_super.TestSuper.test_unbound_method_transfer_working) ... ok
+test_unusual_getattro (test.test_super.TestSuper.test_unusual_getattro) ... ok
+test_various___class___pathologies (test.test_super.TestSuper.test_various___class___pathologies) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.151s
+
+OK
+0:00:04 load avg: 1.40 [ 10/488] test_format passed
+test_better_error_message_format (test.test_format.FormatTest.test_better_error_message_format) ... ok
+test_bytes_and_bytearray_format (test.test_format.FormatTest.test_bytes_and_bytearray_format) ... ok
+test_common_format (test.test_format.FormatTest.test_common_format) ... ok
+test_g_format_has_no_trailing_zeros (test.test_format.FormatTest.test_g_format_has_no_trailing_zeros) ... ok
+test_locale (test.test_format.FormatTest.test_locale) ... ok
+test_negative_zero (test.test_format.FormatTest.test_negative_zero) ... ok
+test_non_ascii (test.test_format.FormatTest.test_non_ascii) ... ok
+test_nul (test.test_format.FormatTest.test_nul) ... ok
+test_optimisations (test.test_format.FormatTest.test_optimisations) ... ok
+test_precision (test.test_format.FormatTest.test_precision) ... ok
+test_precision_c_limits (test.test_format.FormatTest.test_precision_c_limits) ... ok
+test_specifier_z_error (test.test_format.FormatTest.test_specifier_z_error) ... ok
+test_str_format (test.test_format.FormatTest.test_str_format) ... ok
+test_unicode_in_error_message (test.test_format.FormatTest.test_unicode_in_error_message) ... ok
+test_with_a_commas_and_an_underscore_in_format_specifier (test.test_format.FormatTest.test_with_a_commas_and_an_underscore_in_format_specifier) ... ok
+test_with_an_underscore_and_a_comma_in_format_specifier (test.test_format.FormatTest.test_with_an_underscore_and_a_comma_in_format_specifier) ... ok
+test_with_two_commas_in_format_specifier (test.test_format.FormatTest.test_with_two_commas_in_format_specifier) ... ok
+test_with_two_underscore_in_format_specifier (test.test_format.FormatTest.test_with_two_underscore_in_format_specifier) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.066s
+
+OK
+0:00:04 load avg: 1.40 [ 11/488] test_bigmem passed
+test_capitalize (test.test_bigmem.BytearrayTest.test_capitalize) ... ok
+test_center (test.test_bigmem.BytearrayTest.test_center) ... ok
+test_compare (test.test_bigmem.BytearrayTest.test_compare) ... ok
+test_concat (test.test_bigmem.BytearrayTest.test_concat) ... ok
+test_contains (test.test_bigmem.BytearrayTest.test_contains) ... ok
+test_count (test.test_bigmem.BytearrayTest.test_count) ... ok
+test_decode (test.test_bigmem.BytearrayTest.test_decode) ... ok
+test_endswith (test.test_bigmem.BytearrayTest.test_endswith) ... ok
+test_expandtabs (test.test_bigmem.BytearrayTest.test_expandtabs) ... ok
+test_find (test.test_bigmem.BytearrayTest.test_find) ... ok
+test_index (test.test_bigmem.BytearrayTest.test_index) ... ok
+test_isalnum (test.test_bigmem.BytearrayTest.test_isalnum) ... ok
+test_isalpha (test.test_bigmem.BytearrayTest.test_isalpha) ... ok
+test_isdigit (test.test_bigmem.BytearrayTest.test_isdigit) ... ok
+test_islower (test.test_bigmem.BytearrayTest.test_islower) ... ok
+test_isspace (test.test_bigmem.BytearrayTest.test_isspace) ... ok
+test_istitle (test.test_bigmem.BytearrayTest.test_istitle) ... ok
+test_isupper (test.test_bigmem.BytearrayTest.test_isupper) ... ok
+test_join (test.test_bigmem.BytearrayTest.test_join) ... ok
+test_ljust (test.test_bigmem.BytearrayTest.test_ljust) ... ok
+test_lower (test.test_bigmem.BytearrayTest.test_lower) ... ok
+test_lstrip (test.test_bigmem.BytearrayTest.test_lstrip) ... ok
+test_repeat (test.test_bigmem.BytearrayTest.test_repeat) ... ok
+test_replace (test.test_bigmem.BytearrayTest.test_replace) ... ok
+test_rfind (test.test_bigmem.BytearrayTest.test_rfind) ... ok
+test_rindex (test.test_bigmem.BytearrayTest.test_rindex) ... ok
+test_rjust (test.test_bigmem.BytearrayTest.test_rjust) ... ok
+test_rstrip (test.test_bigmem.BytearrayTest.test_rstrip) ... ok
+test_slice_and_getitem (test.test_bigmem.BytearrayTest.test_slice_and_getitem) ... ok
+test_split_small (test.test_bigmem.BytearrayTest.test_split_small) ... ok
+test_splitlines (test.test_bigmem.BytearrayTest.test_splitlines) ... ok
+test_startswith (test.test_bigmem.BytearrayTest.test_startswith) ... ok
+test_strip (test.test_bigmem.BytearrayTest.test_strip) ... ok
+test_swapcase (test.test_bigmem.BytearrayTest.test_swapcase) ... ok
+test_title (test.test_bigmem.BytearrayTest.test_title) ... ok
+test_translate (test.test_bigmem.BytearrayTest.test_translate) ... ok
+test_upper (test.test_bigmem.BytearrayTest.test_upper) ... ok
+test_zfill (test.test_bigmem.BytearrayTest.test_zfill) ... ok
+test_capitalize (test.test_bigmem.BytesTest.test_capitalize) ... ok
+test_center (test.test_bigmem.BytesTest.test_center) ... ok
+test_compare (test.test_bigmem.BytesTest.test_compare) ... ok
+test_concat (test.test_bigmem.BytesTest.test_concat) ... ok
+test_contains (test.test_bigmem.BytesTest.test_contains) ... ok
+test_count (test.test_bigmem.BytesTest.test_count) ... ok
+test_decode (test.test_bigmem.BytesTest.test_decode) ... ok
+test_endswith (test.test_bigmem.BytesTest.test_endswith) ... ok
+test_expandtabs (test.test_bigmem.BytesTest.test_expandtabs) ... ok
+test_find (test.test_bigmem.BytesTest.test_find) ... ok
+test_hash (test.test_bigmem.BytesTest.test_hash) ... ok
+test_index (test.test_bigmem.BytesTest.test_index) ... ok
+test_isalnum (test.test_bigmem.BytesTest.test_isalnum) ... ok
+test_isalpha (test.test_bigmem.BytesTest.test_isalpha) ... ok
+test_isdigit (test.test_bigmem.BytesTest.test_isdigit) ... ok
+test_islower (test.test_bigmem.BytesTest.test_islower) ... ok
+test_isspace (test.test_bigmem.BytesTest.test_isspace) ... ok
+test_istitle (test.test_bigmem.BytesTest.test_istitle) ... ok
+test_isupper (test.test_bigmem.BytesTest.test_isupper) ... ok
+test_join (test.test_bigmem.BytesTest.test_join) ... ok
+test_ljust (test.test_bigmem.BytesTest.test_ljust) ... ok
+test_lower (test.test_bigmem.BytesTest.test_lower) ... ok
+test_lstrip (test.test_bigmem.BytesTest.test_lstrip) ... ok
+test_repeat (test.test_bigmem.BytesTest.test_repeat) ... ok
+test_replace (test.test_bigmem.BytesTest.test_replace) ... ok
+test_rfind (test.test_bigmem.BytesTest.test_rfind) ... ok
+test_rindex (test.test_bigmem.BytesTest.test_rindex) ... ok
+test_rjust (test.test_bigmem.BytesTest.test_rjust) ... ok
+test_rstrip (test.test_bigmem.BytesTest.test_rstrip) ... ok
+test_slice_and_getitem (test.test_bigmem.BytesTest.test_slice_and_getitem) ... ok
+test_split_large (test.test_bigmem.BytesTest.test_split_large) ... ok
+test_split_small (test.test_bigmem.BytesTest.test_split_small) ... ok
+test_splitlines (test.test_bigmem.BytesTest.test_splitlines) ... ok
+test_startswith (test.test_bigmem.BytesTest.test_startswith) ... ok
+test_strip (test.test_bigmem.BytesTest.test_strip) ... ok
+test_swapcase (test.test_bigmem.BytesTest.test_swapcase) ... ok
+test_title (test.test_bigmem.BytesTest.test_title) ... ok
+test_translate (test.test_bigmem.BytesTest.test_translate) ... ok
+test_upper (test.test_bigmem.BytesTest.test_upper) ... ok
+test_zfill (test.test_bigmem.BytesTest.test_zfill) ... ok
+test_dict (test.test_bigmem.DictTest.test_dict) ... ok
+test_append (test.test_bigmem.ListTest.test_append) ... ok
+test_compare (test.test_bigmem.ListTest.test_compare) ... ok
+test_concat_large (test.test_bigmem.ListTest.test_concat_large) ... ok
+test_concat_small (test.test_bigmem.ListTest.test_concat_small) ... ok
+test_contains (test.test_bigmem.ListTest.test_contains) ... ok
+test_count (test.test_bigmem.ListTest.test_count) ... ok
+test_extend_large (test.test_bigmem.ListTest.test_extend_large) ... ok
+test_extend_small (test.test_bigmem.ListTest.test_extend_small) ... ok
+test_hash (test.test_bigmem.ListTest.test_hash) ... ok
+test_index (test.test_bigmem.ListTest.test_index) ... ok
+test_index_and_slice (test.test_bigmem.ListTest.test_index_and_slice) ... ok
+test_inplace_concat_large (test.test_bigmem.ListTest.test_inplace_concat_large) ... ok
+test_inplace_concat_small (test.test_bigmem.ListTest.test_inplace_concat_small) ... ok
+test_inplace_repeat_large (test.test_bigmem.ListTest.test_inplace_repeat_large) ... ok
+test_inplace_repeat_small (test.test_bigmem.ListTest.test_inplace_repeat_small) ... ok
+test_insert (test.test_bigmem.ListTest.test_insert) ... ok
+test_pop (test.test_bigmem.ListTest.test_pop) ... ok
+test_remove (test.test_bigmem.ListTest.test_remove) ... ok
+test_repeat_large (test.test_bigmem.ListTest.test_repeat_large) ... ok
+test_repeat_small (test.test_bigmem.ListTest.test_repeat_small) ... ok
+test_repr_large (test.test_bigmem.ListTest.test_repr_large) ... ok
+test_repr_small (test.test_bigmem.ListTest.test_repr_small) ... ok
+test_reverse (test.test_bigmem.ListTest.test_reverse) ... ok
+test_sort (test.test_bigmem.ListTest.test_sort) ... ok
+test_capitalize (test.test_bigmem.StrTest.test_capitalize) ... ok
+test_center (test.test_bigmem.StrTest.test_center) ... ok
+test_compare (test.test_bigmem.StrTest.test_compare) ... ok
+test_concat (test.test_bigmem.StrTest.test_concat) ... ok
+test_contains (test.test_bigmem.StrTest.test_contains) ... ok
+test_count (test.test_bigmem.StrTest.test_count) ... ok
+test_encode (test.test_bigmem.StrTest.test_encode) ... ok
+test_encode_ascii (test.test_bigmem.StrTest.test_encode_ascii) ... ok
+test_encode_raw_unicode_escape (test.test_bigmem.StrTest.test_encode_raw_unicode_escape) ... ok
+test_encode_utf32 (test.test_bigmem.StrTest.test_encode_utf32) ... ok
+test_encode_utf7 (test.test_bigmem.StrTest.test_encode_utf7) ... ok
+test_endswith (test.test_bigmem.StrTest.test_endswith) ... ok
+test_expandtabs (test.test_bigmem.StrTest.test_expandtabs) ... ok
+test_find (test.test_bigmem.StrTest.test_find) ... ok
+test_format (test.test_bigmem.StrTest.test_format) ... ok
+test_hash (test.test_bigmem.StrTest.test_hash) ... ok
+test_index (test.test_bigmem.StrTest.test_index) ... ok
+test_isalnum (test.test_bigmem.StrTest.test_isalnum) ... ok
+test_isalpha (test.test_bigmem.StrTest.test_isalpha) ... ok
+test_isdigit (test.test_bigmem.StrTest.test_isdigit) ... ok
+test_islower (test.test_bigmem.StrTest.test_islower) ... ok
+test_isspace (test.test_bigmem.StrTest.test_isspace) ... ok
+test_istitle (test.test_bigmem.StrTest.test_istitle) ... ok
+test_isupper (test.test_bigmem.StrTest.test_isupper) ... ok
+test_join (test.test_bigmem.StrTest.test_join) ... ok
+test_ljust (test.test_bigmem.StrTest.test_ljust) ... ok
+test_lower (test.test_bigmem.StrTest.test_lower) ... ok
+test_lstrip (test.test_bigmem.StrTest.test_lstrip) ... ok
+test_repeat (test.test_bigmem.StrTest.test_repeat) ... ok
+test_replace (test.test_bigmem.StrTest.test_replace) ... ok
+test_repr_large (test.test_bigmem.StrTest.test_repr_large) ... ok
+test_repr_small (test.test_bigmem.StrTest.test_repr_small) ... ok
+test_rfind (test.test_bigmem.StrTest.test_rfind) ... ok
+test_rindex (test.test_bigmem.StrTest.test_rindex) ... ok
+test_rjust (test.test_bigmem.StrTest.test_rjust) ... ok
+test_rstrip (test.test_bigmem.StrTest.test_rstrip) ... ok
+test_slice_and_getitem (test.test_bigmem.StrTest.test_slice_and_getitem) ... ok
+test_split_large (test.test_bigmem.StrTest.test_split_large) ... ok
+test_split_small (test.test_bigmem.StrTest.test_split_small) ... ok
+test_splitlines (test.test_bigmem.StrTest.test_splitlines) ... ok
+test_startswith (test.test_bigmem.StrTest.test_startswith) ... ok
+test_strip (test.test_bigmem.StrTest.test_strip) ... ok
+test_swapcase (test.test_bigmem.StrTest.test_swapcase) ... ok
+test_title (test.test_bigmem.StrTest.test_title) ... ok
+test_translate (test.test_bigmem.StrTest.test_translate) ... ok
+test_unicode_repr (test.test_bigmem.StrTest.test_unicode_repr) ... ok
+test_unicode_repr_wide (test.test_bigmem.StrTest.test_unicode_repr_wide) ... ok
+test_upper (test.test_bigmem.StrTest.test_upper) ... ok
+test_zfill (test.test_bigmem.StrTest.test_zfill) ... ok
+test_compare (test.test_bigmem.TupleTest.test_compare) ... ok
+test_concat_large (test.test_bigmem.TupleTest.test_concat_large) ... ok
+test_concat_small (test.test_bigmem.TupleTest.test_concat_small) ... ok
+test_contains (test.test_bigmem.TupleTest.test_contains) ... ok
+test_from_2G_generator (test.test_bigmem.TupleTest.test_from_2G_generator) ... ok
+test_from_almost_2G_generator (test.test_bigmem.TupleTest.test_from_almost_2G_generator) ... ok
+test_hash (test.test_bigmem.TupleTest.test_hash) ... ok
+test_index_and_slice (test.test_bigmem.TupleTest.test_index_and_slice) ... ok
+test_repeat_large (test.test_bigmem.TupleTest.test_repeat_large) ... ok
+test_repeat_large_2 (test.test_bigmem.TupleTest.test_repeat_large_2) ... ok
+test_repeat_small (test.test_bigmem.TupleTest.test_repeat_small) ... ok
+test_repr_large (test.test_bigmem.TupleTest.test_repr_large) ... ok
+test_repr_small (test.test_bigmem.TupleTest.test_repr_small) ... ok
+
+----------------------------------------------------------------------
+Ran 165 tests in 0.318s
+
+OK
+0:00:05 load avg: 1.40 [ 12/488] test_secrets passed
+test_bad_types (test.test_secrets.Compare_Digest_Tests.test_bad_types) ... ok
+test_bool (test.test_secrets.Compare_Digest_Tests.test_bool) ... ok
+test_equal (test.test_secrets.Compare_Digest_Tests.test_equal) ... ok
+test_unequal (test.test_secrets.Compare_Digest_Tests.test_unequal) ... ok
+test_choice (test.test_secrets.Random_Tests.test_choice) ... ok
+test_randbelow (test.test_secrets.Random_Tests.test_randbelow) ... ok
+test_randbits (test.test_secrets.Random_Tests.test_randbits) ... ok
+test_token_bytes (test.test_secrets.Token_Tests.test_token_bytes) ... ok
+test_token_defaults (test.test_secrets.Token_Tests.test_token_defaults) ... ok
+test_token_hex (test.test_secrets.Token_Tests.test_token_hex) ... ok
+test_token_urlsafe (test.test_secrets.Token_Tests.test_token_urlsafe) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.006s
+
+OK
+0:00:05 load avg: 1.40 [ 13/488] test_except_star passed
+test_break_continue_in_except_star_block_valid (test.test_except_star.TestBreakContinueReturnInExceptStarBlock.test_break_continue_in_except_star_block_valid) ... ok
+test_break_in_except_star (test.test_except_star.TestBreakContinueReturnInExceptStarBlock.test_break_in_except_star) ... ok
+test_continue_in_except_star_block_invalid (test.test_except_star.TestBreakContinueReturnInExceptStarBlock.test_continue_in_except_star_block_invalid) ... ok
+test_return_in_except_star_block_invalid (test.test_except_star.TestBreakContinueReturnInExceptStarBlock.test_return_in_except_star_block_invalid) ... ok
+test_return_in_except_star_block_valid (test.test_except_star.TestBreakContinueReturnInExceptStarBlock.test_return_in_except_star_block_valid) ... ok
+test_sys_exception_restored (test.test_except_star.TestExceptStarCleanup.test_sys_exception_restored) ... ok
+test_except_star_EG_subclass (test.test_except_star.TestExceptStarExceptionGroupSubclass.test_except_star_EG_subclass) ... ok
+test_falsy_exception_group_subclass (test.test_except_star.TestExceptStarExceptionGroupSubclass.test_falsy_exception_group_subclass) ... ok
+test_raise_handle_all_raise_one_named (test.test_except_star.TestExceptStarRaise.test_raise_handle_all_raise_one_named) ... ok
+test_raise_handle_all_raise_one_unnamed (test.test_except_star.TestExceptStarRaise.test_raise_handle_all_raise_one_unnamed) ... ok
+test_raise_handle_all_raise_two_named (test.test_except_star.TestExceptStarRaise.test_raise_handle_all_raise_two_named) ... ok
+test_raise_handle_all_raise_two_unnamed (test.test_except_star.TestExceptStarRaise.test_raise_handle_all_raise_two_unnamed) ... ok
+test_raise_named (test.test_except_star.TestExceptStarRaise.test_raise_named) ... ok
+test_raise_unnamed (test.test_except_star.TestExceptStarRaise.test_raise_unnamed) ... ok
+test_raise_handle_all_raise_one_named (test.test_except_star.TestExceptStarRaiseFrom.test_raise_handle_all_raise_one_named) ... ok
+test_raise_handle_all_raise_one_unnamed (test.test_except_star.TestExceptStarRaiseFrom.test_raise_handle_all_raise_one_unnamed) ... ok
+test_raise_handle_all_raise_two_named (test.test_except_star.TestExceptStarRaiseFrom.test_raise_handle_all_raise_two_named) ... ok
+test_raise_handle_all_raise_two_unnamed (test.test_except_star.TestExceptStarRaiseFrom.test_raise_handle_all_raise_two_unnamed) ... ok
+test_raise_named (test.test_except_star.TestExceptStarRaiseFrom.test_raise_named) ... ok
+test_raise_unnamed (test.test_except_star.TestExceptStarRaiseFrom.test_raise_unnamed) ... ok
+test_reraise_all_named (test.test_except_star.TestExceptStarReraise.test_reraise_all_named) ... ok
+test_reraise_all_unnamed (test.test_except_star.TestExceptStarReraise.test_reraise_all_unnamed) ... ok
+test_reraise_partial_handle_all_unnamed (test.test_except_star.TestExceptStarReraise.test_reraise_partial_handle_all_unnamed) ... ok
+test_reraise_partial_handle_some_named (test.test_except_star.TestExceptStarReraise.test_reraise_partial_handle_some_named) ... ok
+test_reraise_partial_handle_some_unnamed (test.test_except_star.TestExceptStarReraise.test_reraise_partial_handle_some_unnamed) ... ok
+test_reraise_plain_exception_named (test.test_except_star.TestExceptStarReraise.test_reraise_plain_exception_named) ... ok
+test_reraise_plain_exception_unnamed (test.test_except_star.TestExceptStarReraise.test_reraise_plain_exception_unnamed) ... ok
+test_reraise_some_handle_all_named (test.test_except_star.TestExceptStarReraise.test_reraise_some_handle_all_named) ... ok
+test_empty_groups_removed (test.test_except_star.TestExceptStarSplitSemantics.test_empty_groups_removed) ... ok
+test_exception_group_except_star_Exception_not_wrapped (test.test_except_star.TestExceptStarSplitSemantics.test_exception_group_except_star_Exception_not_wrapped) ... ok
+test_first_match_wins_named (test.test_except_star.TestExceptStarSplitSemantics.test_first_match_wins_named) ... ok
+test_first_match_wins_unnamed (test.test_except_star.TestExceptStarSplitSemantics.test_first_match_wins_unnamed) ... ok
+test_match__supertype (test.test_except_star.TestExceptStarSplitSemantics.test_match__supertype) ... ok
+test_match_single_type (test.test_except_star.TestExceptStarSplitSemantics.test_match_single_type) ... ok
+test_match_single_type_nested (test.test_except_star.TestExceptStarSplitSemantics.test_match_single_type_nested) ... ok
+test_match_single_type_partial_match (test.test_except_star.TestExceptStarSplitSemantics.test_match_single_type_partial_match) ... ok
+test_match_type_tuple_nested (test.test_except_star.TestExceptStarSplitSemantics.test_match_type_tuple_nested) ... ok
+test_multiple_matches_named (test.test_except_star.TestExceptStarSplitSemantics.test_multiple_matches_named) ... ok
+test_multiple_matches_unnamed (test.test_except_star.TestExceptStarSplitSemantics.test_multiple_matches_unnamed) ... ok
+test_naked_exception_matched_wrapped1 (test.test_except_star.TestExceptStarSplitSemantics.test_naked_exception_matched_wrapped1) ... ok
+test_naked_exception_matched_wrapped2 (test.test_except_star.TestExceptStarSplitSemantics.test_naked_exception_matched_wrapped2) ... ok
+test_nested_except_stars (test.test_except_star.TestExceptStarSplitSemantics.test_nested_except_stars) ... ok
+test_nested_in_loop (test.test_except_star.TestExceptStarSplitSemantics.test_nested_in_loop) ... ok
+test_no_match_single_type (test.test_except_star.TestExceptStarSplitSemantics.test_no_match_single_type) ... ok
+test_plain_exception_not_matched (test.test_except_star.TestExceptStarSplitSemantics.test_plain_exception_not_matched) ... ok
+test_singleton_groups_are_kept (test.test_except_star.TestExceptStarSplitSemantics.test_singleton_groups_are_kept) ... ok
+test_catch_all_unhashable_exception_group_subclass (test.test_except_star.TestExceptStar_WeirdExceptionGroupSubclass.test_catch_all_unhashable_exception_group_subclass) ... ok
+test_catch_none_unhashable_exception_group_subclass (test.test_except_star.TestExceptStar_WeirdExceptionGroupSubclass.test_catch_none_unhashable_exception_group_subclass) ... ok
+test_catch_some_unhashable_exception_group_subclass (test.test_except_star.TestExceptStar_WeirdExceptionGroupSubclass.test_catch_some_unhashable_exception_group_subclass) ... ok
+test_reraise_unhashable_eg (test.test_except_star.TestExceptStar_WeirdExceptionGroupSubclass.test_reraise_unhashable_eg) ... ok
+test_catch_everything_unhashable_leaf (test.test_except_star.TestExceptStar_WeirdLeafExceptions.test_catch_everything_unhashable_leaf) ... ok
+test_catch_nothing_unhashable_leaf (test.test_except_star.TestExceptStar_WeirdLeafExceptions.test_catch_nothing_unhashable_leaf) ... ok
+test_catch_unhashable_leaf_exception (test.test_except_star.TestExceptStar_WeirdLeafExceptions.test_catch_unhashable_leaf_exception) ... ok
+test_propagate_unhashable_leaf (test.test_except_star.TestExceptStar_WeirdLeafExceptions.test_propagate_unhashable_leaf) ... ok
+test_reraise_unhashable_leaf (test.test_except_star.TestExceptStar_WeirdLeafExceptions.test_reraise_unhashable_leaf) ... ok
+test_except_star_ExceptionGroup_is_runtime_error_single (test.test_except_star.TestInvalidExceptStar.test_except_star_ExceptionGroup_is_runtime_error_single) ... ok
+test_except_star_ExceptionGroup_is_runtime_error_tuple (test.test_except_star.TestInvalidExceptStar.test_except_star_ExceptionGroup_is_runtime_error_tuple) ... ok
+test_except_star_invalid_exception_type (test.test_except_star.TestInvalidExceptStar.test_except_star_invalid_exception_type) ... ok
+test_mixed_except_and_except_star_is_syntax_error (test.test_except_star.TestInvalidExceptStar.test_mixed_except_and_except_star_is_syntax_error) ... ok
+
+----------------------------------------------------------------------
+Ran 59 tests in 0.071s
+
+OK
+0:00:09 load avg: 1.85 [ 14/488] test_zlib passed
+test_big_buffer (test.test_zlib.ChecksumBigBufferTestCase.test_big_buffer) ... skipped 'not enough memory: 4.0G minimum needed'
+test_adler32empty (test.test_zlib.ChecksumTestCase.test_adler32empty) ... ok
+test_adler32start (test.test_zlib.ChecksumTestCase.test_adler32start) ... ok
+test_crc32_adler32_unsigned (test.test_zlib.ChecksumTestCase.test_crc32_adler32_unsigned) ... ok
+test_crc32empty (test.test_zlib.ChecksumTestCase.test_crc32empty) ... ok
+test_crc32start (test.test_zlib.ChecksumTestCase.test_crc32start) ... ok
+test_penguins (test.test_zlib.ChecksumTestCase.test_penguins) ... ok
+test_same_as_binascii_crc32 (test.test_zlib.ChecksumTestCase.test_same_as_binascii_crc32) ... ok
+test_64bit_compress (test.test_zlib.CompressObjectTestCase.test_64bit_compress) ... ok
+test_badcompresscopy (test.test_zlib.CompressObjectTestCase.test_badcompresscopy) ... ok
+test_baddecompresscopy (test.test_zlib.CompressObjectTestCase.test_baddecompresscopy) ... ok
+test_big_compress_buffer (test.test_zlib.CompressObjectTestCase.test_big_compress_buffer) ... ok
+test_big_decompress_buffer (test.test_zlib.CompressObjectTestCase.test_big_decompress_buffer) ... ok
+test_clear_unconsumed_tail (test.test_zlib.CompressObjectTestCase.test_clear_unconsumed_tail) ... ok
+test_compresscopy (test.test_zlib.CompressObjectTestCase.test_compresscopy) ... ok
+test_compressincremental (test.test_zlib.CompressObjectTestCase.test_compressincremental) ... ok
+test_compressoptions (test.test_zlib.CompressObjectTestCase.test_compressoptions) ... ok
+test_compresspickle (test.test_zlib.CompressObjectTestCase.test_compresspickle) ... ok
+test_decompimax (test.test_zlib.CompressObjectTestCase.test_decompimax) ... ok
+test_decompinc (test.test_zlib.CompressObjectTestCase.test_decompinc) ... ok
+test_decompincflush (test.test_zlib.CompressObjectTestCase.test_decompincflush) ... ok
+test_decompress_eof (test.test_zlib.CompressObjectTestCase.test_decompress_eof) ... ok
+test_decompress_eof_incomplete_stream (test.test_zlib.CompressObjectTestCase.test_decompress_eof_incomplete_stream) ... ok
+test_decompress_incomplete_stream (test.test_zlib.CompressObjectTestCase.test_decompress_incomplete_stream) ... ok
+test_decompress_raw_with_dictionary (test.test_zlib.CompressObjectTestCase.test_decompress_raw_with_dictionary) ... ok
+test_decompress_unused_data (test.test_zlib.CompressObjectTestCase.test_decompress_unused_data) ... ok
+test_decompresscopy (test.test_zlib.CompressObjectTestCase.test_decompresscopy) ... ok
+test_decompressmaxlen (test.test_zlib.CompressObjectTestCase.test_decompressmaxlen) ... ok
+test_decompressmaxlenflush (test.test_zlib.CompressObjectTestCase.test_decompressmaxlenflush) ... ok
+test_decompresspickle (test.test_zlib.CompressObjectTestCase.test_decompresspickle) ... ok
+test_dictionary (test.test_zlib.CompressObjectTestCase.test_dictionary) ... ok
+test_dictionary_streaming (test.test_zlib.CompressObjectTestCase.test_dictionary_streaming) ... ok
+test_empty_flush (test.test_zlib.CompressObjectTestCase.test_empty_flush) ... ok
+test_flush_custom_length (test.test_zlib.CompressObjectTestCase.test_flush_custom_length) ... ok
+test_flush_large_length (test.test_zlib.CompressObjectTestCase.test_flush_large_length) ... ok
+test_flush_with_freed_input (test.test_zlib.CompressObjectTestCase.test_flush_with_freed_input) ... ok
+test_flushes (test.test_zlib.CompressObjectTestCase.test_flushes) ... ok
+test_keywords (test.test_zlib.CompressObjectTestCase.test_keywords) ... ok
+test_large_unconsumed_tail (test.test_zlib.CompressObjectTestCase.test_large_unconsumed_tail) ... ok
+test_large_unused_data (test.test_zlib.CompressObjectTestCase.test_large_unused_data) ... ok
+test_maxlen_custom (test.test_zlib.CompressObjectTestCase.test_maxlen_custom) ... ok
+test_maxlen_large (test.test_zlib.CompressObjectTestCase.test_maxlen_large) ... ok
+test_maxlenmisc (test.test_zlib.CompressObjectTestCase.test_maxlenmisc) ... ok
+test_odd_flush (test.test_zlib.CompressObjectTestCase.test_odd_flush) ... ok
+test_pair (test.test_zlib.CompressObjectTestCase.test_pair) ... ok
+test_wbits (test.test_zlib.CompressObjectTestCase.test_wbits) ... ok
+test_64bit_compress (test.test_zlib.CompressTestCase.test_64bit_compress) ... ok
+test_big_compress_buffer (test.test_zlib.CompressTestCase.test_big_compress_buffer) ... ok
+test_big_decompress_buffer (test.test_zlib.CompressTestCase.test_big_decompress_buffer) ... ok
+test_custom_bufsize (test.test_zlib.CompressTestCase.test_custom_bufsize) ... ok
+test_incomplete_stream (test.test_zlib.CompressTestCase.test_incomplete_stream) ... ok
+test_keywords (test.test_zlib.CompressTestCase.test_keywords) ... ok
+test_large_bufsize (test.test_zlib.CompressTestCase.test_large_bufsize) ... ok
+test_speech (test.test_zlib.CompressTestCase.test_speech) ... ok
+test_speech128 (test.test_zlib.CompressTestCase.test_speech128) ... ok
+test_badargs (test.test_zlib.ExceptionTestCase.test_badargs) ... ok
+test_badcompressobj (test.test_zlib.ExceptionTestCase.test_badcompressobj) ... ok
+test_baddecompressobj (test.test_zlib.ExceptionTestCase.test_baddecompressobj) ... ok
+test_badlevel (test.test_zlib.ExceptionTestCase.test_badlevel) ... ok
+test_decompressobj_badflush (test.test_zlib.ExceptionTestCase.test_decompressobj_badflush) ... ok
+test_disallow_instantiation (test.test_zlib.ExceptionTestCase.test_disallow_instantiation) ... ok
+test_overflow (test.test_zlib.ExceptionTestCase.test_overflow) ... ok
+test_library_version (test.test_zlib.VersionTestCase.test_library_version) ... ok
+testDecompress (test.test_zlib.ZlibDecompressorTest.testDecompress) ... ok
+testDecompress4G (test.test_zlib.ZlibDecompressorTest.testDecompress4G) ... ok
+testDecompressChunks10 (test.test_zlib.ZlibDecompressorTest.testDecompressChunks10) ... ok
+testDecompressUnusedData (test.test_zlib.ZlibDecompressorTest.testDecompressUnusedData) ... ok
+testDecompressorChunksMaxsize (test.test_zlib.ZlibDecompressorTest.testDecompressorChunksMaxsize) ... ok
+testEOFError (test.test_zlib.ZlibDecompressorTest.testEOFError) ... ok
+testPickle (test.test_zlib.ZlibDecompressorTest.testPickle) ... ok
+test_Constructor (test.test_zlib.ZlibDecompressorTest.test_Constructor) ... ok
+test_decompressor_inputbuf_1 (test.test_zlib.ZlibDecompressorTest.test_decompressor_inputbuf_1) ... ok
+test_decompressor_inputbuf_2 (test.test_zlib.ZlibDecompressorTest.test_decompressor_inputbuf_2) ... ok
+test_decompressor_inputbuf_3 (test.test_zlib.ZlibDecompressorTest.test_decompressor_inputbuf_3) ... ok
+test_failure (test.test_zlib.ZlibDecompressorTest.test_failure) ... ok
+test_refleaks_in___init__ (test.test_zlib.ZlibDecompressorTest.test_refleaks_in___init__) ... ok
+
+----------------------------------------------------------------------
+Ran 76 tests in 2.292s
+
+OK (skipped=1)
+0:00:09 load avg: 1.85 [ 15/488] test_syslog passed
+test_closelog (test.test_syslog.Test.test_closelog) ... ok
+test_log_mask (test.test_syslog.Test.test_log_mask) ... ok
+test_openlog (test.test_syslog.Test.test_openlog) ... ok
+test_openlog_noargs (test.test_syslog.Test.test_openlog_noargs) ... ok
+test_setlogmask (test.test_syslog.Test.test_setlogmask) ... ok
+test_subinterpreter_closelog (test.test_syslog.Test.test_subinterpreter_closelog) ... ok
+test_subinterpreter_openlog (test.test_syslog.Test.test_subinterpreter_openlog) ... ok
+test_subinterpreter_syslog (test.test_syslog.Test.test_subinterpreter_syslog) ... ok
+test_syslog (test.test_syslog.Test.test_syslog) ... ok
+test_syslog_implicit_open (test.test_syslog.Test.test_syslog_implicit_open) ... ok
+test_syslog_threaded (test.test_syslog.Test.test_syslog_threaded) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 7.290s
+
+OK
+0:00:10 load avg: 1.85 [ 16/488] test_fractions passed
+testApproximateCos1 (test.test_fractions.FractionTest.testApproximateCos1) ... ok
+testApproximatePi (test.test_fractions.FractionTest.testApproximatePi) ... ok
+testArithmetic (test.test_fractions.FractionTest.testArithmetic) ... ok
+testBigComplexComparisons (test.test_fractions.FractionTest.testBigComplexComparisons) ... ok
+testBigFloatComparisons (test.test_fractions.FractionTest.testBigFloatComparisons) ... ok
+testBoolGuarateesBoolReturn (test.test_fractions.FractionTest.testBoolGuarateesBoolReturn) ... ok
+testComparisons (test.test_fractions.FractionTest.testComparisons) ... ok
+testComparisonsDummyFloat (test.test_fractions.FractionTest.testComparisonsDummyFloat) ... ok
+testComparisonsDummyRational (test.test_fractions.FractionTest.testComparisonsDummyRational) ... ok
+testConversions (test.test_fractions.FractionTest.testConversions) ... ok
+testFromDecimal (test.test_fractions.FractionTest.testFromDecimal) ... ok
+testFromFloat (test.test_fractions.FractionTest.testFromFloat) ... ok
+testFromString (test.test_fractions.FractionTest.testFromString) ... ok
+testHash (test.test_fractions.FractionTest.testHash) ... ok
+testImmutable (test.test_fractions.FractionTest.testImmutable) ... ok
+testInit (test.test_fractions.FractionTest.testInit) ... ok
+testInitFromDecimal (test.test_fractions.FractionTest.testInitFromDecimal) ... ok
+testInitFromFloat (test.test_fractions.FractionTest.testInitFromFloat) ... ok
+testIntGuaranteesIntReturn (test.test_fractions.FractionTest.testIntGuaranteesIntReturn) ... ok
+testLargeArithmetic (test.test_fractions.FractionTest.testLargeArithmetic) ... ok
+testLimitDenominator (test.test_fractions.FractionTest.testLimitDenominator) ... ok
+testMixedArithmetic (test.test_fractions.FractionTest.testMixedArithmetic) ... ok
+testMixedEqual (test.test_fractions.FractionTest.testMixedEqual) ... ok
+testMixedLess (test.test_fractions.FractionTest.testMixedLess) ... ok
+testMixedLessEqual (test.test_fractions.FractionTest.testMixedLessEqual) ... ok
+testMixingWithDecimal (test.test_fractions.FractionTest.testMixingWithDecimal) ... ok
+testRound (test.test_fractions.FractionTest.testRound) ... ok
+testStringification (test.test_fractions.FractionTest.testStringification) ... ok
+testSupportsInt (test.test_fractions.FractionTest.testSupportsInt) ... ok
+test_as_integer_ratio (test.test_fractions.FractionTest.test_as_integer_ratio) ... ok
+test_copy_deepcopy_pickle (test.test_fractions.FractionTest.test_copy_deepcopy_pickle) ... ok
+test_float_format_testfile (test.test_fractions.FractionTest.test_float_format_testfile) ... ok
+test_format_e_presentation_type (test.test_fractions.FractionTest.test_format_e_presentation_type) ... ok
+test_format_f_presentation_type (test.test_fractions.FractionTest.test_format_f_presentation_type) ... ok
+test_format_g_presentation_type (test.test_fractions.FractionTest.test_format_g_presentation_type) ... ok
+test_format_no_presentation_type (test.test_fractions.FractionTest.test_format_no_presentation_type) ... ok
+test_int_subclass (test.test_fractions.FractionTest.test_int_subclass) ... ok
+test_invalid_formats (test.test_fractions.FractionTest.test_invalid_formats) ... ok
+test_is_integer (test.test_fractions.FractionTest.test_is_integer) ... ok
+test_slots (test.test_fractions.FractionTest.test_slots) ... ok
+
+----------------------------------------------------------------------
+Ran 40 tests in 0.275s
+
+OK
+0:00:11 load avg: 1.85 [ 17/488] test_rlcompleter passed
+test_attr_matches (test.test_rlcompleter.TestRlcompleter.test_attr_matches) ... ok
+test_complete (test.test_rlcompleter.TestRlcompleter.test_complete) ... ok
+test_duplicate_globals (test.test_rlcompleter.TestRlcompleter.test_duplicate_globals) ... ok
+test_excessive_getattr (test.test_rlcompleter.TestRlcompleter.test_excessive_getattr)
+Ensure getattr() is invoked no more than once per attribute ... ok
+test_global_matches (test.test_rlcompleter.TestRlcompleter.test_global_matches) ... ok
+test_namespace (test.test_rlcompleter.TestRlcompleter.test_namespace) ... ok
+test_property_method_not_called (test.test_rlcompleter.TestRlcompleter.test_property_method_not_called) ... ok
+test_uncreated_attr (test.test_rlcompleter.TestRlcompleter.test_uncreated_attr) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.262s
+
+OK
+0:00:11 load avg: 1.85 [ 18/488] test_flufl passed
+test_barry_as_bdfl (test.test_flufl.FLUFLTests.test_barry_as_bdfl) ... ok
+test_guido_as_bdfl (test.test_flufl.FLUFLTests.test_guido_as_bdfl) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+OK
+0:00:12 load avg: 1.85 [ 19/488/1] test.test_concurrent_futures.test_deadlock worker non-zero exit code (Exit code -34)
+test_crash_at_task_unpickle (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_crash_at_task_unpickle) ... ok
+test_crash_big_data (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_crash_big_data) ... ok
+test_crash_during_func_exec_on_worker (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_crash_during_func_exec_on_worker) ... ok
+test_crash_during_result_pickle_on_worker (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_crash_during_result_pickle_on_worker) ... ok
+test_error_at_task_pickle (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_error_at_task_pickle) ... ok
+test_error_at_task_unpickle (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_error_at_task_unpickle) ... ok
+test_error_during_func_exec_on_worker (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_error_during_func_exec_on_worker) ... ok
+test_error_during_result_pickle_on_worker (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_error_during_result_pickle_on_worker) ... ok
+test_error_during_result_unpickle_in_result_handler (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_error_during_result_unpickle_in_result_handler) ... ok
+test_exit_at_task_unpickle (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_exit_at_task_unpickle) ... ok
+test_exit_during_func_exec_on_worker (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_exit_during_func_exec_on_worker) ... ok
+test_exit_during_result_pickle_on_worker (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_exit_during_result_pickle_on_worker) ... ok
+test_exit_during_result_unpickle_in_result_handler (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_exit_during_result_unpickle_in_result_handler) ... ok
+test_gh105829_should_not_deadlock_if_wakeup_pipe_full (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_gh105829_should_not_deadlock_if_wakeup_pipe_full) ... ok
+test_shutdown_deadlock (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_shutdown_deadlock) ... ok
+test_shutdown_deadlock_pickle (test.test_concurrent_futures.test_deadlock.ProcessPoolForkExecutorDeadlockTest.test_shutdown_deadlock_pickle) ... ok
+test_crash_at_task_unpickle (test.test_concurrent_futures.test_deadlock.ProcessPoolForkserverExecutorDeadlockTest.test_crash_at_task_unpickle) ... /home/qianhuiwang/cpython/Lib/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+0:00:12 load avg: 2.42 [ 20/488/1] test_utf8_mode passed
+test_cmd_line (test.test_utf8_mode.UTF8ModeTests.test_cmd_line) ... ok
+test_device_encoding (test.test_utf8_mode.UTF8ModeTests.test_device_encoding) ... skipped 'sys.stdout is not a TTY'
+test_env_var (test.test_utf8_mode.UTF8ModeTests.test_env_var) ... ok
+test_filesystemencoding (test.test_utf8_mode.UTF8ModeTests.test_filesystemencoding) ... ok
+test_io (test.test_utf8_mode.UTF8ModeTests.test_io) ... ok
+test_io_encoding (test.test_utf8_mode.UTF8ModeTests.test_io_encoding) ... ok
+test_locale_getpreferredencoding (test.test_utf8_mode.UTF8ModeTests.test_locale_getpreferredencoding) ... ok
+test_optim_level (test.test_utf8_mode.UTF8ModeTests.test_optim_level) ... ok
+test_posix_locale (test.test_utf8_mode.UTF8ModeTests.test_posix_locale) ... ok
+test_pyio_encoding (test.test_utf8_mode.UTF8ModeTests.test_pyio_encoding) ... ok
+test_stdio (test.test_utf8_mode.UTF8ModeTests.test_stdio) ... ok
+test_xoption (test.test_utf8_mode.UTF8ModeTests.test_xoption) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 6.110s
+
+OK (skipped=1)
+0:00:13 load avg: 2.42 [ 21/488/1] test_tuple passed
+test_addmul (test.test_tuple.TupleTest.test_addmul) ... ok
+test_bigrepeat (test.test_tuple.TupleTest.test_bigrepeat) ... ok
+test_bug7466 (test.test_tuple.TupleTest.test_bug7466) ... ok
+test_constructors (test.test_tuple.TupleTest.test_constructors) ... ok
+test_contains (test.test_tuple.TupleTest.test_contains) ... ok
+test_contains_fake (test.test_tuple.TupleTest.test_contains_fake) ... ok
+test_contains_order (test.test_tuple.TupleTest.test_contains_order) ... ok
+test_count (test.test_tuple.TupleTest.test_count) ... ok
+test_free_after_iterating (test.test_tuple.TupleTest.test_free_after_iterating) ... ok
+test_getitem (test.test_tuple.TupleTest.test_getitem) ... ok
+test_getitem_error (test.test_tuple.TupleTest.test_getitem_error) ... ok
+test_getitemoverwriteiter (test.test_tuple.TupleTest.test_getitemoverwriteiter) ... ok
+test_getslice (test.test_tuple.TupleTest.test_getslice) ... ok
+test_hash_exact (test.test_tuple.TupleTest.test_hash_exact) ... ok
+test_hash_optional (test.test_tuple.TupleTest.test_hash_optional) ... ok
+test_iadd (test.test_tuple.TupleTest.test_iadd) ... ok
+test_imul (test.test_tuple.TupleTest.test_imul) ... ok
+test_index (test.test_tuple.TupleTest.test_index) ... ok
+test_iterator_pickle (test.test_tuple.TupleTest.test_iterator_pickle) ... ok
+test_keyword_args (test.test_tuple.TupleTest.test_keyword_args) ... ok
+test_keywords_in_subclass (test.test_tuple.TupleTest.test_keywords_in_subclass) ... ok
+test_len (test.test_tuple.TupleTest.test_len) ... ok
+test_lexicographic_ordering (test.test_tuple.TupleTest.test_lexicographic_ordering) ... ok
+test_minmax (test.test_tuple.TupleTest.test_minmax) ... ok
+test_no_comdat_folding (test.test_tuple.TupleTest.test_no_comdat_folding) ... ok
+test_pickle (test.test_tuple.TupleTest.test_pickle) ... ok
+test_repeat (test.test_tuple.TupleTest.test_repeat) ... ok
+test_repr (test.test_tuple.TupleTest.test_repr) ... ok
+test_repr_large (test.test_tuple.TupleTest.test_repr_large) ... ok
+test_reversed_pickle (test.test_tuple.TupleTest.test_reversed_pickle) ... ok
+test_subscript (test.test_tuple.TupleTest.test_subscript) ... ok
+test_track_dynamic (test.test_tuple.TupleTest.test_track_dynamic) ... ok
+test_track_literals (test.test_tuple.TupleTest.test_track_literals) ... ok
+test_track_subtypes (test.test_tuple.TupleTest.test_track_subtypes) ... ok
+test_truth (test.test_tuple.TupleTest.test_truth) ... ok
+test_tupleresizebug (test.test_tuple.TupleTest.test_tupleresizebug) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 7.964s
+
+OK
+0:00:14 load avg: 2.42 [ 22/488/1] test_smtpnet passed
+test_connect (test.test_smtpnet.SmtpSSLTest.test_connect) ... ok
+test_connect_default_port (test.test_smtpnet.SmtpSSLTest.test_connect_default_port) ... ok
+test_connect_using_sslcontext (test.test_smtpnet.SmtpSSLTest.test_connect_using_sslcontext) ... ok
+test_connect_using_sslcontext_verified (test.test_smtpnet.SmtpSSLTest.test_connect_using_sslcontext_verified) ... ok
+test_connect_starttls (test.test_smtpnet.SmtpTest.test_connect_starttls) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.311s
+
+OK
+0:00:14 load avg: 2.42 [ 23/488/1] test_xxtestfuzz passed
+test_sample_input_smoke_test (test.test_xxtestfuzz.TestFuzzer.test_sample_input_smoke_test)
+This is only a regression test: Check that it doesn't crash. ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.013s
+
+OK
+0:00:15 load avg: 2.42 [ 24/488/1] test_tabnanny passed
+test_correct_directory (test.test_tabnanny.TestCheck.test_correct_directory)
+Directory which contains few error free python source code files. ... ok
+test_correct_directory_verbose (test.test_tabnanny.TestCheck.test_correct_directory_verbose)
+Directory containing few error free python source code files. ... ok
+test_correct_file (test.test_tabnanny.TestCheck.test_correct_file)
+A python source code file without any errors. ... ok
+test_errored_directory (test.test_tabnanny.TestCheck.test_errored_directory)
+Directory containing wrongly indented python source code files. ... ok
+test_when_nannynag_error (test.test_tabnanny.TestCheck.test_when_nannynag_error)
+A python source code file eligible for raising `tabnanny.NannyNag`. ... ok
+test_when_nannynag_error_verbose (test.test_tabnanny.TestCheck.test_when_nannynag_error_verbose)
+A python source code file eligible for raising `tabnanny.NannyNag`. ... ok
+test_when_no_file (test.test_tabnanny.TestCheck.test_when_no_file)
+A python file which does not exist actually in system. ... ok
+test_when_tokenize_tokenerror (test.test_tabnanny.TestCheck.test_when_tokenize_tokenerror)
+A python source code file eligible for raising 'tokenize.TokenError'. ... ok
+test_when_wrong_indented (test.test_tabnanny.TestCheck.test_when_wrong_indented)
+A python source code file eligible for raising `IndentationError`. ... ok
+test_command_usage (test.test_tabnanny.TestCommandLine.test_command_usage)
+Should display usage on no arguments. ... ok
+test_double_verbose_mode (test.test_tabnanny.TestCommandLine.test_double_verbose_mode)
+Should display detailed error information if double verbose is on. ... ok
+test_quiet_flag (test.test_tabnanny.TestCommandLine.test_quiet_flag)
+Should display less when quite mode is on. ... ok
+test_verbose_mode (test.test_tabnanny.TestCommandLine.test_verbose_mode)
+Should display more error information if verbose mode is on. ... ok
+test_with_error_free_file (test.test_tabnanny.TestCommandLine.test_with_error_free_file)
+Should not display anything if python file is correctly indented. ... ok
+test_with_errored_file (test.test_tabnanny.TestCommandLine.test_with_errored_file)
+Should displays error when errored python file is given. ... ok
+test_errprint (test.test_tabnanny.TestErrPrint.test_errprint)
+Asserting result of `tabnanny.errprint()` by giving sample inputs. ... ok
+test_format_witnesses (test.test_tabnanny.TestFormatWitnesses.test_format_witnesses)
+Asserting formatter result by giving various input samples. ... ok
+test_all_methods (test.test_tabnanny.TestNannyNag.test_all_methods)
+Asserting behaviour of `tabnanny.NannyNag` exception. ... ok
+test_with_correct_code (test.test_tabnanny.TestProcessTokens.test_with_correct_code)
+A python source code without any whitespace related problems. ... ok
+test_with_errored_codes_samples (test.test_tabnanny.TestProcessTokens.test_with_errored_codes_samples)
+A python source code with whitespace related sampled problems. ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 1.598s
+
+OK

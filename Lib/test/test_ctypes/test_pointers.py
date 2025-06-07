@@ -228,18 +228,10 @@ class PointersTestCase(unittest.TestCase):
         P = POINTER(large_string)
         self.assertTrue(P)
         
-
         # to not leak references, we must clean _pointer_type_cache
         from ctypes import _pointer_type_cache
-        from _ctypes import _get_id
-
-#        if _get_id(P) not in _pointer_type_cache:
-#            print("oh nooooo!")
-#        else:
-#            print("yes!")
 
         #del _pointer_type_cache[id(P)]
-        #del _pointer_type_cache[_get_id(P)]
         del _pointer_type_cache[_native_pointer(P)]
 
     def test_abstract(self):

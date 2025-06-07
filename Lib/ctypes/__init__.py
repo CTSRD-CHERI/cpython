@@ -12,7 +12,6 @@ from _ctypes import __version__ as _ctypes_version
 from _ctypes import RTLD_LOCAL, RTLD_GLOBAL
 from _ctypes import ArgumentError
 from _ctypes import SIZEOF_TIME_T
-from _ctypes import _get_id
 
 from struct import calcsize as _calcsize
 
@@ -307,7 +306,6 @@ def create_unicode_buffer(init, size=None):
 def SetPointerType(pointer, cls):
     if _pointer_type_cache.get(cls, None) is not None:
         raise RuntimeError("This type already exists in the cache")
-    #pointer_id = _get_id(pointer)
     #if id(pointer) not in _pointer_type_cache:
     if _native_pointer(pointer) not in _pointer_type_cache:
         raise RuntimeError("What's this???")

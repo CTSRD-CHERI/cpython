@@ -3145,25 +3145,6 @@ _PyBuiltin_Init(PyInterpreterState *interp)
     SETBUILTIN("type",                  &PyType_Type);
     SETBUILTIN("zip",                   &PyZip_Type);
     SETBUILTIN("_native_pointer",       &_PyNativePointer_Type);
-	/* eagerly cache ctypes.c_void_p so AsVoidPointer never has to import */
-	{
-		PyObject *ct = PyImport_ImportModule("ctypes");
-		if (ct != NULL) {
-			PyObject *cvp = PyObject_GetAttrString(ct, "c_void_p");
-			Py_DECREF(ct);
-			if (cvp != NULL && PyType_Check(cvp)) {
-				/* steal the reference to the class object */
-				c_void_p_type = (PyTypeObject *)cvp;
-			}
-			else {
-				Py_XDECREF(cvp);
-				PyErr_Clear();  /* give up quietly if ctypes is missing or weird */
-			}
-		}
-		else {
-			PyErr_Clear();  /* no ctypes at all? just skip */
-		}
-	}
 
     debug = PyBool_FromLong(config->optimization_level == 0);
     if (PyDict_SetItemString(dict, "__debug__", debug) < 0) {

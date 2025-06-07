@@ -307,14 +307,14 @@ def create_unicode_buffer(init, size=None):
 def SetPointerType(pointer, cls):
     if _pointer_type_cache.get(cls, None) is not None:
         raise RuntimeError("This type already exists in the cache")
-    pointer_id = _get_id(pointer)
+    #pointer_id = _get_id(pointer)
     #if id(pointer) not in _pointer_type_cache:
-    if pointer_id not in _pointer_type_cache:
+    if _native_pointer(pointer) not in _pointer_type_cache:
         raise RuntimeError("What's this???")
     pointer.set_type(cls)
     _pointer_type_cache[cls] = pointer
     #del _pointer_type_cache[id(pointer)]
-    del _pointer_type_cache[pointer_id]
+    del _pointer_type_cache[_native_pointer(pointer)]
 
 # XXX Deprecated
 def ARRAY(typ, len):

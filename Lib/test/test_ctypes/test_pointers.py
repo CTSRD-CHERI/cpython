@@ -239,7 +239,8 @@ class PointersTestCase(unittest.TestCase):
 #            print("yes!")
 
         #del _pointer_type_cache[id(P)]
-        del _pointer_type_cache[_get_id(P)]
+        #del _pointer_type_cache[_get_id(P)]
+        del _pointer_type_cache[_native_pointer(P)]
 
     def test_abstract(self):
         from ctypes import _Pointer

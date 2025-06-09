@@ -13,7 +13,8 @@
 #undef  uint
 #define uint pymem_uint
 
-#ifdef __CHERI_PURE_CAPABILITY__
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 #include <cheri/cheric.h>
 #include <cheri/revoke.h>
 #include <cheri/libcaprevoke.h>
@@ -390,7 +391,7 @@ _PyMem_SetupAllocators(PyMemAllocatorName allocator)
     return res;
 }
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -436,7 +437,7 @@ ptr_eq(void *a, void *b)
 static int
 pymemallocator_eq(PyMemAllocatorEx *a, PyMemAllocatorEx *b)
 {
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	// Benchmark ABI might relax the bounds condition
 	return (ptr_eq(a->ctx,  b->ctx) && 
 		ptr_eq(a->malloc,  b->malloc) &&
@@ -937,7 +938,7 @@ get_state(void)
     return &interp->obmalloc;
 }
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 /* init mrs quarantine */
 
 int
@@ -949,13 +950,12 @@ _obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 	MRS_Q_INIT(qa_mgmt->app_quarantine_free_list);
 
 	qa_mgmt->app_quarantine_lock = PyThread_allocate_lock();
+#ifndef TEMPORAL_OFF
 	qa_mgmt->quarantining = true;
-//#ifdef NOQA
-//	fprintf(stderr, "disabled QA\n");
-//	qa_mgmt->quarantining = false;
-//#else 
-//	//fprintf(stderr, "enabled QA\n");
-//#endif
+#else
+	qa_mgmt->quarantining = false;
+	fprintf(stderr, "disabled quarantine\n");
+#endif
 	
 	qa_mgmt->revoke_every_free = false;
 	qa_mgmt->revoke_async = true;
@@ -986,6 +986,8 @@ _obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 	}
 	qa_mgmt->app_quarantine = &qa_mgmt->app_quarantine_store[0];
 
+	qa_mgmt->num_revocation = 0;
+
 nosys:
 	qa_mgmt->mrs_initialised = true;
 	return 0;
@@ -997,6 +999,9 @@ _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 	PyThread_free_lock(qa_mgmt->app_quarantine_lock);
 	qa_mgmt->entire_shadow = NULL;
 	qa_mgmt->cri = NULL;
+//#ifdef PRINT_NUM_REVOCATION
+//	fprintf(stderr, "number of revocations %zu\n", qa_mgmt->num_revocation);	
+//#endif
 	return 0;
 }
 #endif
@@ -1013,7 +1018,7 @@ _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 #define narenas_highwater (state->mgmt.narenas_highwater)
 #define raw_allocated_blocks (state->mgmt.raw_allocated_blocks)
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 /* macros for quarantine, rely on a local "state" variable */
 #define app_quarantine (state->qa_mgmt.app_quarantine)
 #define app_quarantine_revoke_list (state->qa_mgmt.app_quarantine_revoke_list)
@@ -1027,6 +1032,7 @@ _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
 #define entire_shadow (state->qa_mgmt.entire_shadow)
 #define free_descriptor_slabs (state->qa_mgmt.free_descriptor_slabs)
 #define allocated_size (state->qa_mgmt.allocated_size)
+#define num_revocation (state->qa_mgmt.num_revocation)
 static inline void
 check_and_perform_flush(OMState *state, bool is_free);
 static inline int 
@@ -1341,7 +1347,7 @@ arena_map_mark_used(OMState *state, uintptr_t arena_base, int is_used)
     }
     int i3 = MAP_BOT_INDEX((pymem_block *)arena_base);
 
-	#ifdef __CHERI_PURE_CAPABILITY__
+	#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 		n_hi->arenas[i3].arena_cap = is_used? arena_base : (uintptr_t) NULL;
 	#endif
 
@@ -1396,7 +1402,7 @@ arena_map_is_used(OMState *state, pymem_block *p)
     return (tail < lo) || (tail >= hi && hi != 0);
 }
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 static uintptr_t
 arena_cap_get(OMState *state, pymem_block *p)
 {	
@@ -1773,7 +1779,7 @@ allocate_from_new_pool(OMState *state, uint size)
             }
         }
     }
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	pool = //cheri_andperm(
 			cheri_setbounds(pool, POOL_SIZE)
 			//, ~CHERI_PERM_SW_VMEM)
@@ -1834,10 +1840,10 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
     }
 #endif
 
-#ifdef __CHERI_PURE_CAPABILITY__
-    /* here to flush again */
-    check_and_perform_flush(state, false);
-    //check_flush(state);
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	/* here to flush again */
+	check_and_perform_flush(state, false);
+	//check_flush(state);
 #endif
 
     if (UNLIKELY(nbytes == 0)) {
@@ -1872,7 +1878,7 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
 		bp = allocate_from_new_pool(state, size);
     }
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) == 0) {
 		_Py_FatalErrorFunc(__func__,
 				"bp should have SW_VMEM");
@@ -2137,7 +2143,7 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
 	/* We allocated this address. */
 	/* pymalloc is in charge of this block */
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	if ((cheri_getperm(p) & CHERI_PERM_SW_VMEM) != 0) {
 		_Py_FatalErrorFunc(__func__,
 				"bp should be without SW_VMEM");
@@ -2163,6 +2169,10 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
 		pymalloc_revoke(state, p);
 		return 1;
 	}
+#endif
+
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 1);
 #endif
 	
     /* Link p to the start of the pool's freeblock list.  Since
@@ -2266,7 +2276,7 @@ pymalloc_realloc(OMState *state, void *ctx,
         return 0;
     }
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	uintptr_t arena_cap = arena_cap_get(state, p);
 	// replace pool with one derived from arena (has larger bounds)
 	pool = (poolp) 
@@ -2289,7 +2299,7 @@ pymalloc_realloc(OMState *state, void *ctx,
            size can be shaved off. */
         if (4 * nbytes > 3 * size) {
             /* It's the same, or shrinking and new/old > 3/4. */
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 			p = cheri_andperm(
 					cheri_setbounds(
 						cheri_setaddress((void *)arena_cap, 
@@ -2306,7 +2316,7 @@ pymalloc_realloc(OMState *state, void *ctx,
 
     bp = _PyObject_Malloc(ctx, nbytes);
     if (bp != NULL) {
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 		size_t len = cheri_getlen(p);
 		size = len < size? len : size;
 #endif
@@ -2373,7 +2383,8 @@ _Py_FinalizeAllocatedBlocks(_PyRuntimeState *Py_UNUSED(runtime))
 /* CHERI CAPABILITY REVOCATION */
 
 #ifdef WITH_PYMALLOC
-#if defined(__CHERI_PURE_CAPABILITY__) 
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 static struct mrs_descriptor_slab *
 alloc_descriptor_slab(OMState *state)
 {
@@ -2596,6 +2607,7 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 	}
 
 //#ifdef STATS
+
 //	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
 //			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
 //			"quarantine_size %lu\n",
@@ -2605,6 +2617,7 @@ quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
 #if WITH_MRS_UTRACE > 0 
 	mrs_utrace_log(state, 2);
 #endif
+	num_revocation += 1;
 	if (prev != NULL) {
 		/* Free the quarantined descriptors. */
 		prev->next = free_descriptor_slabs;
@@ -2671,6 +2684,7 @@ app_quarantine_revoke_async(OMState *state)
 		}
 
 		app_quarantine_remove(state, &tmp, next);
+		
 		
 		PyThread_release_lock(app_quarantine_lock);
 		
@@ -3479,4 +3493,15 @@ _PyObject_DebugMallocStats(FILE *out)
     return 1;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF) 
+int
+_PyObject_NumRevocation(FILE *out) {
+
+	OMState *state = get_state();
+
+	fprintf(out, "Num_Revocation = %d\n",
+            num_revocation);
+	return 1;
+}
+#endif
 #endif /* #ifdef WITH_PYMALLOC */

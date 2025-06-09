@@ -620,7 +620,7 @@ struct _obmalloc_mgmt {
 typedef struct {
     int32_t tail_hi;
     int32_t tail_lo;
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	uintptr_t arena_cap;
 #endif
 } arena_coverage_t;
@@ -666,14 +666,14 @@ struct _obmalloc_usage {
 */
 
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 
 #include <cheri/revoke.h>
 #include <cheri/libcaprevoke.h>
 #include "pycore_atomic.h"
 
 //static bool mrs_utrace;
-#define WITH_MRS_UTRACE 0
+#define WITH_MRS_UTRACE 0 
 
 
 #if WITH_MRS_UTRACE > 0 
@@ -743,7 +743,9 @@ struct mrs_quarantine_list {
 	struct mrs_quarantine *tail;
 }; 
 
-#define APP_QUARANTINE_ARENAS 3 
+#if !defined(APP_QUARANTINE_ARENAS)
+	#define APP_QUARANTINE_ARENAS 3 
+#endif
 _Static_assert(APP_QUARANTINE_ARENAS >= 2,
 		    "APP_QUARANTINE_ARENAS must be at least 2");
 struct _obmalloc_quarantine_mgmt {
@@ -771,6 +773,8 @@ struct _obmalloc_quarantine_mgmt {
 	bool revoke_async;
 
 	bool mrs_initialised;
+
+	size_t num_revocation;
 
 };
 
@@ -839,7 +843,6 @@ quarantine_move(struct mrs_quarantine *dst, struct mrs_quarantine *src)
 }
 
 
-
 #endif
 
 
@@ -855,7 +858,7 @@ struct _obmalloc_state {
     struct _obmalloc_usage usage;
 #endif
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	struct _obmalloc_quarantine_mgmt qa_mgmt;
 #endif
 };
@@ -877,7 +880,8 @@ extern Py_ssize_t _Py_GetGlobalAllocatedBlocks(void);
 extern Py_ssize_t _PyInterpreterState_GetAllocatedBlocks(PyInterpreterState *);
 extern void _PyInterpreterState_FinalizeAllocatedBlocks(PyInterpreterState *);
 
-#ifdef __CHERI_PURE_CAPABILITY__
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 extern int _obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *);
 extern int _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *);
 #endif
@@ -885,6 +889,9 @@ extern int _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *);
 #ifdef WITH_PYMALLOC
 // Export the symbol for the 3rd party guppy3 project
 PyAPI_FUNC(int) _PyObject_DebugMallocStats(FILE *out);
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF) 
+PyAPI_FUNC(int) _PyObject_NumRevocation(FILE *out);
+#endif
 #endif
 
 

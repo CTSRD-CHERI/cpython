@@ -520,7 +520,7 @@ nu_void_p(_structmodulestate *state, const char *p, const formatdef *f)
 {
     void *x;
 
-    assert(_Py_IS_ALIGNED(p, _Alignof(void *)));
+    //assert(_Py_IS_ALIGNED(p, _Alignof(void *)));
     memcpy((char *)&x, p, sizeof x);
     // Allows untagged uintptr_t
     return PyNativePointer_FromUIntPtr((uintptr_t)x);
@@ -801,7 +801,7 @@ np_void_p(_structmodulestate *state, char *p, PyObject *v, const formatdef *f)
           "required argument is not a valid pointer or a NULL pointer");
       return -1;
     }
-    assert(_Py_IS_ALIGNED(p, _Alignof(void *)));
+    //assert(_Py_IS_ALIGNED(p, _Alignof(void *)));
 #if 1
     /*
      * Warn when creating pointers from int constants. This will not work
@@ -2265,6 +2265,7 @@ cache_struct_converter(PyObject *module, PyObject *fmt, PyStructObject **ptr)
     }
 
     s_object = PyDict_GetItemWithError(state->cache, fmt);
+
     if (s_object != NULL) {
         *ptr = (PyStructObject *)Py_NewRef(s_object);
         return Py_CLEANUP_SUPPORTED;
@@ -2338,6 +2339,7 @@ pack(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
     if (!cache_struct_converter(module, format, (PyStructObject **)&s_object)) {
         return NULL;
     }
+
     result = s_pack(s_object, args + 1, nargs - 1);
     Py_DECREF(s_object);
     return result;

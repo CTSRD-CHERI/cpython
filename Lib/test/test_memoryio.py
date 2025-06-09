@@ -792,6 +792,7 @@ class CBytesIOTest(PyBytesIOTest):
     def test_sizeof(self):
         basesize = support.calcobjsize('P2n2Pn')
         check = self.check_sizeof
+        print(basesize)
         self.assertEqual(object.__sizeof__(io.BytesIO()), basesize)
         check(io.BytesIO(), basesize )
         n = 1000  # use a variable to prevent constant folding

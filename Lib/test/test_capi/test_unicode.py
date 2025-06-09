@@ -344,6 +344,10 @@ class CAPITest(unittest.TestCase):
         self.assertRaises(TypeError, fromobject, [])
         # CRASHES fromobject(NULL)
 
+    @unittest.skipIf(
+            "purecap" in sys.executable or "benchmark" in sys.executable,
+            "broken on aarch64c because libffi no capability support for variadic arguments va_arg()"
+            )
     def test_from_format(self):
         """Test PyUnicode_FromFormat()"""
         # Length modifiers "j" and "t" are not tested here because ctypes does

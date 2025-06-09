@@ -312,7 +312,7 @@ PyMember_SetOne(char *addr, PyMemberDef *l, PyObject *v)
             return -1;
         break;
         }
-    case Py_T_ULONGLONG: {
+    case T_ULONGLONG: {
         v = _PyNumber_Index(v);
         if (v == NULL) {
             return -1;
@@ -334,6 +334,7 @@ PyMember_SetOne(char *addr, PyMemberDef *l, PyObject *v)
             }
             *(unsigned long long*)addr = ulonglong_val;
         }
+		break;
     }
     case T_CPOINTER: {
         void* value = PyNativePointer_AsVoidPointer(v);

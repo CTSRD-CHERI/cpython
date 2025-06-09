@@ -26,6 +26,7 @@ class call_function_TestCase(unittest.TestCase):
         self.assertEqual(call_function(funcaddr, (None,)),
                              windll.kernel32.GetModuleHandleA(None))
 
+@unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
 class CallbackTracbackTestCase(unittest.TestCase):
     # When an exception is raised in a ctypes callback function, the C
     # code prints a traceback.

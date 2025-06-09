@@ -14,6 +14,14 @@
 #define uint pymem_uint
 
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+#include <cheri/cheric.h>
+#include <cheri/revoke.h>
+#include <cheri/libcaprevoke.h>
+#include <machine/vmparam.h>
+#include <stdatomic.h>
+#endif
+
 /* Defined in tracemalloc.c */
 extern void _PyMem_DumpTraceback(int fd, const void *ptr);
 
@@ -140,7 +148,16 @@ _PyMem_ArenaAlloc(void *Py_UNUSED(ctx), size_t size)
     if (ptr == MAP_FAILED)
         return NULL;
     assert(ptr != NULL);
-    return ptr;
+    
+#ifdef __CHERI_PURE_CAPABILITY__
+	if ((cheri_getperm(ptr) & CHERI_PERM_SW_VMEM) == 0) {
+		// __builtin_cheri_perms_get
+		_Py_FatalErrorFunc(__func__,
+				"fatal error: mmap without SW_VMEM");
+	}
+#endif
+
+	return ptr;
 #else
     return malloc(size);
 #endif
@@ -374,11 +391,62 @@ _PyMem_SetupAllocators(PyMemAllocatorName allocator)
     return res;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+#include <fcntl.h>
+#include <unistd.h>
+
+static void
+debug_ptr(void *a, void *b)
+{	
+	size_t a_len = __builtin_cheri_length_get(a);
+	uintptr_t a_base  = __builtin_cheri_base_get(a);
+	uintptr_t a_top  = a_base + a_len;
+	uintptr_t a_addr  = __builtin_cheri_address_get(a);
+
+
+	size_t b_len = __builtin_cheri_length_get(b);
+	uintptr_t b_base  = __builtin_cheri_base_get(b);
+	uintptr_t b_top  = b_base + b_len;
+	uintptr_t b_addr  = __builtin_cheri_address_get(b);
+
+
+	int fd = open("/tmp/pymalloc_debug.log",
+                  O_WRONLY|O_CREAT|O_APPEND, 0644);
+
+	if (fd >=0) {
+		//dprintf(fd, "a=0x%016x[0x%016x-0x%016x] b=0x%016x[[0x%016x-0x%016x]\n", 
+		dprintf(fd, "a=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR 
+				"] b=0x%016" PRIxPTR "[0x%016" PRIxPTR "-0x%016" PRIxPTR "]\n",
+				(uintptr_t)a_addr, (uintptr_t)a_base, (uintptr_t)a_top, 
+			(uintptr_t)b_addr, (uintptr_t)b_base, (uintptr_t)b_top);
+		close(fd);
+	}
+}
+
+
+static int
+ptr_eq(void *a, void *b)
+{	
+#ifdef Py_DEBUG
+	debug_ptr(a, b);
+#endif
+	return __builtin_cheri_address_get(a) == __builtin_cheri_address_get(b);
+}
+#endif
 
 static int
 pymemallocator_eq(PyMemAllocatorEx *a, PyMemAllocatorEx *b)
 {
-    return (memcmp(a, b, sizeof(PyMemAllocatorEx)) == 0);
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	// Benchmark ABI might relax the bounds condition
+	return (ptr_eq(a->ctx,  b->ctx) && 
+		ptr_eq(a->malloc,  b->malloc) &&
+		ptr_eq(a->calloc,  b->calloc) &&
+		ptr_eq(a->realloc, b->realloc) &&
+		ptr_eq(a->free,    b->free));
+#else
+	return (memcmp(a, b, sizeof(PyMemAllocatorEx)) == 0);
+#endif
 }
 
 
@@ -419,7 +487,7 @@ get_current_allocator_name_unlocked(void)
             pymemallocator_eq(&_PyMem_Debug.obj.alloc, &malloc_alloc))
         {
             return "malloc_debug";
-        }
+	}
 #ifdef WITH_PYMALLOC
         if (pymemallocator_eq(&_PyMem_Debug.raw.alloc, &malloc_alloc) &&
             pymemallocator_eq(&_PyMem_Debug.mem.alloc, &pymalloc) &&
@@ -870,6 +938,74 @@ get_state(void)
     return &interp->obmalloc;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+/* init mrs quarantine */
+
+int
+_obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
+{
+	//atomic_store_ptr(&qa_mgmt->free_descriptor_slabs, NULL);
+
+	MRS_Q_INIT(qa_mgmt->app_quarantine_revoke_list);
+	MRS_Q_INIT(qa_mgmt->app_quarantine_free_list);
+
+	qa_mgmt->app_quarantine_lock = PyThread_allocate_lock();
+#ifndef TEMPORAL_OFF
+	qa_mgmt->quarantining = true;
+#else
+	qa_mgmt->quarantining = false;
+	fprintf(stderr, "disabled quarantine\n");
+#endif
+	
+	qa_mgmt->revoke_every_free = false;
+	qa_mgmt->revoke_async = true;
+
+	if (cheri_revoke_get_shadow(CHERI_REVOKE_SHADOW_INFO_STRUCT, NULL,
+				(void **)&qa_mgmt->cri) != 0) {
+		if (errno == ENOSYS) {
+			qa_mgmt->quarantining = false;
+			goto nosys;
+		}
+		_Py_FatalErrorFunc(__func__,
+				"the interpreter cannot get shadow info struct");
+
+	}
+
+	if (cheri_revoke_get_shadow(CHERI_REVOKE_SHADOW_NOVMEM_ENTIRE, NULL,
+				&qa_mgmt->entire_shadow) != 0) {
+		_Py_FatalErrorFunc(__func__,
+				"the interpreter cannot get entire shadow");
+	}
+
+	for (uint i = 0; i < APP_QUARANTINE_ARENAS; i++) {
+		qa_mgmt->app_quarantine_store[i].revoking = false;
+		if (i > 0) {
+			mrs_q_enqueue(&qa_mgmt->app_quarantine_free_list,
+					&qa_mgmt->app_quarantine_store[i]);
+		}
+	}
+	qa_mgmt->app_quarantine = &qa_mgmt->app_quarantine_store[0];
+
+	qa_mgmt->num_revocation = 0;
+
+nosys:
+	qa_mgmt->mrs_initialised = true;
+	return 0;
+}
+
+int 
+_obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *qa_mgmt)
+{
+	PyThread_free_lock(qa_mgmt->app_quarantine_lock);
+	qa_mgmt->entire_shadow = NULL;
+	qa_mgmt->cri = NULL;
+//#ifdef PRINT_NUM_REVOCATION
+//	fprintf(stderr, "number of revocations %zu\n", qa_mgmt->num_revocation);	
+//#endif
+	return 0;
+}
+#endif
+
 // These macros all rely on a local "state" variable.
 #define usedpools (state->pools.used)
 #define allarenas (state->mgmt.arenas)
@@ -881,6 +1017,136 @@ get_state(void)
 #define ntimes_arena_allocated (state->mgmt.ntimes_arena_allocated)
 #define narenas_highwater (state->mgmt.narenas_highwater)
 #define raw_allocated_blocks (state->mgmt.raw_allocated_blocks)
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+/* macros for quarantine, rely on a local "state" variable */
+#define app_quarantine (state->qa_mgmt.app_quarantine)
+#define app_quarantine_revoke_list (state->qa_mgmt.app_quarantine_revoke_list)
+#define app_quarantine_free_list (state->qa_mgmt.app_quarantine_free_list)
+#define mrs_initialised (state->qa_mgmt.mrs_initialised)
+#define quarantining (state->qa_mgmt.quarantining)
+#define app_quarantine_lock (state->qa_mgmt.app_quarantine_lock)
+#define revoke_async (state->qa_mgmt.revoke_async)
+#define revoke_every_free (state->qa_mgmt.revoke_every_free)
+#define cri (state->qa_mgmt.cri)
+#define entire_shadow (state->qa_mgmt.entire_shadow)
+#define free_descriptor_slabs (state->qa_mgmt.free_descriptor_slabs)
+#define allocated_size (state->qa_mgmt.allocated_size)
+#define num_revocation (state->qa_mgmt.num_revocation)
+static inline void
+check_and_perform_flush(OMState *state, bool is_free);
+static inline int 
+validate_freed_pointer(OMState *state, void *ptr);
+static void
+pymalloc_revoke(OMState *state, void *ptr);
+static inline void
+check_flush(OMState *state)
+__attribute__((unused))
+	;
+
+
+
+#if WITH_MRS_UTRACE > 0
+static void
+mrs_utrace_log(OMState *state, int event) {
+	/* 1) Build a tiny text buffer that we know is NUL-terminated. */
+	char txt[128];
+	size_t app_quarantine_size = app_quarantine->size;
+	size_t freelist_size = 0;
+
+	/* (Compute quarantined_size, narenas_curr, narenas_high, etc.)… */
+	struct mrs_quarantine *curr;
+	size_t quarantined_size = 0;
+	curr = mrs_q_first(&app_quarantine_revoke_list);
+
+	while (curr != NULL){
+		quarantined_size += curr->size;
+		curr = curr->next; 
+	}
+	
+	quarantined_size += app_quarantine_size;
+
+
+	int n = snprintf(txt, sizeof(txt),
+			"%s event=%d app_q=%zu total_q=%zu \
+			narenas_curr=%zu freelist_sz=%zu narenas_high=%zu",
+			MRS_UTRACE_SIG,             /* prints “MRS ” */
+			event,
+			app_quarantine_size,
+			quarantined_size,
+			narenas_currently_allocated,
+			freelist_size,
+			narenas_highwater
+			);
+	if (n < 0) {
+		/* handle error */
+		return;
+	}
+
+//	if (event >= 2){
+//	fprintf(stderr, "event %u flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+//			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+//			"current_quarantine_size %lu, quarantine_size %lu\n",
+//			event,
+//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+//			app_quarantine_size, quarantined_size);
+//	}
+
+	/* 2) Emit exactly 'strlen(txt)' bytes of printable text. */
+	if (utrace(txt, (size_t)n) < 0) {
+		_Py_FatalErrorFunc(__func__, "utrace failed!");
+	}
+}
+
+
+
+
+static void
+mrs_utrace_log2(OMState *state, int event){
+ 	struct utrace_mrs ut;
+	struct mrs_quarantine *curr;
+	size_t quarantined_size = 0;
+
+	static const char mrs_utrace_sig[MRS_UTRACE_SIG_SZ] = MRS_UTRACE_SIG;
+
+	memcpy(ut.sig, mrs_utrace_sig, sizeof(ut.sig));
+	
+	ut.event = event;
+	ut.app_quarantine_size = app_quarantine->size;
+
+
+	curr = mrs_q_first(&app_quarantine_revoke_list);
+
+	while (curr != NULL){
+		quarantined_size += curr->size;
+		curr = curr->next; 
+	}
+	
+	quarantined_size += ut.app_quarantine_size;
+
+	ut.quarantined_size = quarantined_size;
+
+#ifdef WITH_FREELISTS
+	ut.freelist_size = 0;
+#endif
+
+	ut.narenas_curr = narenas_currently_allocated;
+	ut.narenas_high = narenas_highwater;
+
+	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+			"current_quarantine_size %lu, quarantine_size %lu\n",
+			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+			ut.app_quarantine_size, quarantined_size);
+
+	if (utrace(&ut, sizeof(ut)) < 0) {
+		_Py_FatalErrorFunc(__func__,
+				"utrace failed!");
+	}
+}
+#endif
+
+#endif
 
 Py_ssize_t
 _PyInterpreterState_GetAllocatedBlocks(PyInterpreterState *interp)
@@ -1074,16 +1340,23 @@ arena_map_mark_used(OMState *state, uintptr_t arena_base, int is_used)
     /* sanity check that IGNORE_BITS is correct */
     assert(HIGH_BITS(arena_base) == HIGH_BITS(&arena_map_root));
     arena_map_bot_t *n_hi = arena_map_get(
-            state, (pymem_block *)arena_base, is_used);
+            state, (pymem_block *)arena_base, is_used);// is_used -> create
     if (n_hi == NULL) {
         assert(is_used); /* otherwise node should already exist */
         return 0; /* failed to allocate space for node */
     }
     int i3 = MAP_BOT_INDEX((pymem_block *)arena_base);
+
+	#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+		n_hi->arenas[i3].arena_cap = is_used? arena_base : (uintptr_t) NULL;
+	#endif
+
     int32_t tail = (int32_t)(arena_base & ARENA_SIZE_MASK);
-    if (tail == 0) {
+    
+	// tail_lo and tail_hi are used to indicate spill/unaligned arena_base
+	if (tail == 0) {
         /* is ideal arena address */
-        n_hi->arenas[i3].tail_hi = is_used ? -1 : 0;
+        n_hi->arenas[i3].tail_hi = is_used ? -1 : 0; 
     }
     else {
         /* arena_base address is not ideal (aligned to arena size) and
@@ -1128,6 +1401,45 @@ arena_map_is_used(OMState *state, pymem_block *p)
     int32_t tail = (int32_t)(AS_UINT(p) & ARENA_SIZE_MASK);
     return (tail < lo) || (tail >= hi && hi != 0);
 }
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+static uintptr_t
+arena_cap_get(OMState *state, pymem_block *p)
+{	
+	arena_map_bot_t *n = arena_map_get(state, p, 0);
+    if (n == NULL) {
+        return (uintptr_t) NULL;
+    }
+    int i3 = MAP_BOT_INDEX(p);
+	//int32_t hi = n->arenas[i3].tail_hi;
+    int32_t lo = n->arenas[i3].tail_lo; 
+    int32_t tail = (int32_t)(AS_UINT(p) & ARENA_SIZE_MASK);
+
+	if (tail < lo) { // spill, go back to previous bottom node to look for arena_base
+		uintptr_t arena_base_pre = (uintptr_t) p - ARENA_SIZE;
+		arena_map_bot_t *n2 = arena_map_get(state, (pymem_block *) arena_base_pre, 0);
+		if (n2 == NULL) {
+			fprintf(stderr, "!!pre arena not allocated--WRONG\n");
+			return (uintptr_t) NULL;
+		}
+		int i3_pre = MAP_BOT_INDEX(arena_base_pre);
+		uintptr_t arena_cap_pre = n2->arenas[i3_pre].arena_cap;
+		if (arena_cap_pre == (uintptr_t) NULL){
+			fprintf(stderr, "!!pre arena null arena_cap\n");
+			return (uintptr_t) NULL;
+		}
+		return arena_cap_pre;
+	}
+
+	uintptr_t arena_cap = n->arenas[i3].arena_cap;
+	if (arena_cap == (uintptr_t) NULL){
+		fprintf(stderr, "!!null arena_cap\n");
+		return (uintptr_t) NULL;
+	}
+
+	return arena_cap;
+}
+#endif
 
 /* end of radix tree logic */
 /*==========================================================================*/
@@ -1467,6 +1779,12 @@ allocate_from_new_pool(OMState *state, uint size)
             }
         }
     }
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	pool = //cheri_andperm(
+			cheri_setbounds(pool, POOL_SIZE)
+			//, ~CHERI_PERM_SW_VMEM)
+			;
+#endif
 
     /* Frontlink to used pools. */
     pymem_block *bp;
@@ -1496,7 +1814,8 @@ allocate_from_new_pool(OMState *state, uint size)
     bp = (pymem_block *)pool + POOL_OVERHEAD;
     pool->nextoffset = POOL_OVERHEAD + (size << 1);
     pool->maxnextoffset = POOL_SIZE - size;
-    pool->freeblock = bp + size;
+    pool->freeblock = bp + size; // outside pool header bound
+								 // uintptr_t arithmetics is fine, but deref crashes
     *(pymem_block **)(pool->freeblock) = NULL;
     return bp;
 }
@@ -1519,6 +1838,12 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
     if (UNLIKELY(running_on_valgrind)) {
         return NULL;
     }
+#endif
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	/* here to flush again */
+	check_and_perform_flush(state, false);
+	//check_flush(state);
 #endif
 
     if (UNLIKELY(nbytes == 0)) {
@@ -1550,10 +1875,29 @@ pymalloc_alloc(OMState *state, void *Py_UNUSED(ctx), size_t nbytes)
         /* There isn't a pool of the right size class immediately
          * available:  use a free pool.
          */
-        bp = allocate_from_new_pool(state, size);
+		bp = allocate_from_new_pool(state, size);
     }
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) == 0) {
+		_Py_FatalErrorFunc(__func__,
+				"bp should have SW_VMEM");
+	}
+	
+	//allocated_size += cheri_getlen(bp);
+
+//	bp = cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM);
+//	if ((cheri_getperm(bp) & CHERI_PERM_SW_VMEM) != 0) {
+//		_Py_FatalErrorFunc(__func__,
+//				"bp removes SW_VMEM unsuccessful");
+//	} 
+
+	//return (void *)bp;
+	return (void *)cheri_andperm(cheri_setbounds(bp, nbytes), ~CHERI_PERM_SW_VMEM); 
+#else
     return (void *)bp;
+#endif
+	
 }
 
 
@@ -1791,13 +2135,46 @@ pymalloc_free(OMState *state, void *Py_UNUSED(ctx), void *p)
         return 0;
     }
 #endif
+   
+	poolp pool = POOL_ADDR(p); // in CHERI C/C++, pool inherits bound of p
+	if (UNLIKELY(!address_in_range(state, p, pool))) {
+		return 0;
+	}
+	/* We allocated this address. */
+	/* pymalloc is in charge of this block */
 
-    poolp pool = POOL_ADDR(p);
-    if (UNLIKELY(!address_in_range(state, p, pool))) {
-        return 0;
-    }
-    /* We allocated this address. */
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	if ((cheri_getperm(p) & CHERI_PERM_SW_VMEM) != 0) {
+		_Py_FatalErrorFunc(__func__,
+				"bp should be without SW_VMEM");
+	}
 
+	uintptr_t arena_cap = arena_cap_get(state, p);
+	/* rederive pool capability from arena (larger bounds) */
+	pool = (poolp) 
+		cheri_setbounds(
+			cheri_setaddress((void *)arena_cap,
+				cheri_getaddress((void *)pool))
+			, POOL_SIZE);
+
+    size_t size = INDEX2SIZE(pool->szidx);
+
+	p = cheri_setbounds(
+			cheri_setaddress((void *)arena_cap, 
+				cheri_getaddress((void *)p))
+			, size)
+		;
+
+	if (quarantining){
+		pymalloc_revoke(state, p);
+		return 1;
+	}
+#endif
+
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 1);
+#endif
+	
     /* Link p to the start of the pool's freeblock list.  Since
      * the pool had at least the p block outstanding, the pool
      * wasn't empty (so it's already in a usedpools[] list, or
@@ -1899,8 +2276,19 @@ pymalloc_realloc(OMState *state, void *ctx,
         return 0;
     }
 
-    /* pymalloc is in charge of this block */
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	uintptr_t arena_cap = arena_cap_get(state, p);
+	// replace pool with one derived from arena (has larger bounds)
+	pool = (poolp) 
+		cheri_setbounds(
+			cheri_setaddress((void *)arena_cap,
+				cheri_getaddress(POOL_ADDR(p)))
+			, POOL_SIZE);
+#endif
+
+/* pymalloc is in charge of this block */
     size = INDEX2SIZE(pool->szidx);
+
     if (nbytes <= size) {
         /* The block is staying the same or shrinking.
 
@@ -1911,15 +2299,28 @@ pymalloc_realloc(OMState *state, void *ctx,
            size can be shaved off. */
         if (4 * nbytes > 3 * size) {
             /* It's the same, or shrinking and new/old > 3/4. */
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+			p = cheri_andperm(
+					cheri_setbounds(
+						cheri_setaddress((void *)arena_cap, 
+							cheri_getaddress((void *)p))
+						, nbytes), 
+				~CHERI_PERM_SW_VMEM)
+				;
+#endif
             *newptr_p = p;
             return 1;
         }
-        size = nbytes;
+        size = nbytes; // a smaller block
     }
 
     bp = _PyObject_Malloc(ctx, nbytes);
     if (bp != NULL) {
-        memcpy(bp, p, size);
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+		size_t len = cheri_getlen(p);
+		size = len < size? len : size;
+#endif
+		memcpy(bp, p, size); 
         _PyObject_Free(ctx, p);
     }
     *newptr_p = bp;
@@ -1976,6 +2377,386 @@ _Py_FinalizeAllocatedBlocks(_PyRuntimeState *Py_UNUSED(runtime))
 
 #endif /* WITH_PYMALLOC */
 
+
+
+/*==========================================================================*/
+/* CHERI CAPABILITY REVOCATION */
+
+#ifdef WITH_PYMALLOC
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+static struct mrs_descriptor_slab *
+alloc_descriptor_slab(OMState *state)
+{
+	if (free_descriptor_slabs == NULL) {
+		//void *ret = mmap(NULL, sizeof(struct mrs_descriptor_slab),
+		//		PROT_READ | PROT_WRITE, MAP_ANON, -1, 0);
+		//return ((ret == MAP_FAILED) ? NULL : ret);
+
+		void *ret = _PyObject_Arena.alloc(_PyObject_Arena.ctx, 
+				sizeof(struct mrs_descriptor_slab));
+		
+		//fprintf(stderr, "allocated new slab %lu KB\n", sizeof(struct mrs_descriptor_slab) / 1024 );
+
+		return (ret);
+
+	} else {
+		/* reuse free slabs */
+		struct mrs_descriptor_slab *ret = free_descriptor_slabs;
+
+//free_descriptor_slabs->next = NULL;
+
+		while (!atomic_compare_exchange_weak(&free_descriptor_slabs,
+					&ret, ret->next))
+			;
+		//fprintf(stderr, "reused slab\n");
+		assert(free_descriptor_slabs == ret->next);
+		ret->next = NULL;
+
+		ret->num_descriptors = 0;
+		return (ret);
+	}
+}
+
+
+static inline void
+quarantine_insert(OMState *state, struct mrs_quarantine *quarantine, void *ptr, size_t size)
+{
+	if (quarantine->list == NULL ||
+			quarantine->list->num_descriptors == DESCRIPTOR_SLAB_ENTRIES) {
+		struct mrs_descriptor_slab *ins = alloc_descriptor_slab(state);
+		if (ins == NULL) {
+			_Py_FatalErrorFunc(__func__,
+					"cannot allocate new descriptor slab");
+		}
+		ins->next = quarantine->list;
+		quarantine->list = ins;
+	}
+
+	if ((cheri_getperm(ptr) & CHERI_PERM_SW_VMEM) == 0) {
+		_Py_FatalErrorFunc(__func__,
+				"ptr to be quarantined without SW_VMEM");
+	}
+
+	quarantine->list->slab[quarantine->list->num_descriptors].ptr = ptr;
+	quarantine->list->slab[quarantine->list->num_descriptors].size = size;
+	quarantine->list->num_descriptors++;
+
+	quarantine->size += size;
+	if (quarantine->size > quarantine->max_size) {
+		quarantine->max_size = quarantine->size;
+	}
+}
+
+/* assumed ptr is rebounded to full block size */
+static inline int 
+validate_freed_pointer(OMState *state, void *ptr)
+{
+	if (!cheri_gettag(ptr)) {
+		_Py_FatalErrorFunc(__func__,
+				"ptr to be revoked no valid tag!");
+//		PyErr_WarnFormat(PyExc_RuntimeWarning,
+//				1,
+//				"%s : ptr to be revoked no valid tag",
+//				__func__);	
+//		return 1;
+
+	}
+	/* bitmap painting */
+	if (caprev_shadow_nomap_set_len(cri->base_mem_nomap, entire_shadow,
+				cheri_getbase(ptr),
+				__builtin_align_up(cheri_getlen(ptr),
+					CAPREVOKE_BITMAP_ALIGNMENT), ptr)) {
+		_Py_FatalErrorFunc(__func__,
+				"bit map painting failed!");
+	}
+
+	return 1; 
+
+}
+
+static void
+pymalloc_revoke(OMState *state, void *ptr)
+{
+	if (!validate_freed_pointer(state, ptr)){
+		_Py_FatalErrorFunc(__func__,
+				"pointer validation failed!");
+	}
+	
+	PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
+	quarantine_insert(state, app_quarantine, ptr, cheri_getlen(ptr));
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 1);
+#endif
+	PyThread_release_lock(app_quarantine_lock);
+	
+	check_and_perform_flush(state, true);
+}
+
+
+
+static inline bool
+quarantine_should_flush(OMState *state, struct mrs_quarantine *quarantine, bool is_free)
+{
+	if (is_free && revoke_every_free) return true;
+
+	if (!is_free) return false; // flush only when free
+
+#if defined(QUARANTINE_HIGHWATER)
+	/* QUARANTINE_HIGHWATER */
+	return (quarantine->size >= QUARANTINE_HIGHWATER);
+
+#else
+	/* QUARANTINE_RATIO */
+#if !defined(QUARANTINE_RATIO)
+ #  define QUARANTINE_RATIO 4 
+	
+#endif
+	return ((quarantine->size >= MIN_REVOKE_HEAP_SIZE) &&
+			(quarantine->size * QUARANTINE_RATIO) >= 
+			(narenas_currently_allocated * ARENA_SIZE));
+//	return ((allocated_size >= MIN_REVOKE_HEAP_SIZE) &&
+//			((quarantine->size * QUARANTINE_RATIO) >= allocated_size));
+#endif
+}
+
+static void
+app_quarantine_remove(OMState *state, struct mrs_quarantine *to, struct mrs_quarantine *src)
+{
+	quarantine_move(to, src);
+	mrs_q_remove(&app_quarantine_revoke_list, src);
+	src->revoking = false;
+	mrs_q_enqueue(&app_quarantine_free_list, src);
+}
+
+static inline int 
+pymalloc_release(OMState *state, void *p)
+{
+	poolp pool = POOL_ADDR(p);
+	assert(address_in_range(state, p, pool));
+
+	uintptr_t arena_cap = arena_cap_get(state, p);
+	// replace pool with one derived from arena (has larger bounds)
+	pool = (poolp) 
+		cheri_setbounds(
+			cheri_setaddress((void *)arena_cap,
+				cheri_getaddress((void *)pool))
+			, POOL_SIZE);
+
+    size_t size = INDEX2SIZE(pool->szidx);
+	assert(size == cheri_getlen(p));
+	//p = cheri_setbounds(
+//			cheri_setaddress((void *)arena_cap, 
+//				cheri_getaddress((void *)p))
+//			, size)
+//		;
+	assert(pool->ref.count > 0);            /* else it was empty */
+    pymem_block *lastfree = pool->freeblock;
+	
+	//memset(lastfree, PYMEM_CLEANBYTE, size);
+	//p = cheri_andperm(p, ~CHERI_PERM_SW_VMEM);
+
+
+    *(pymem_block **)p = lastfree;
+    pool->freeblock = (pymem_block *)p;
+    pool->ref.count--;
+
+    if (UNLIKELY(lastfree == NULL)) {
+		/* pool was full: insert into usedpools */
+		insert_to_usedpool(state, pool);
+        return 1;
+    }
+	
+	if (LIKELY(pool->ref.count != 0)) {
+        /* pool isn't empty:  leave it in usedpools */
+        return 1;
+    }
+	
+	/* pool is empty */
+	insert_to_freepool(state, pool);
+    return 1;
+
+}
+
+static void
+quarantine_flush(OMState *state, struct mrs_quarantine *quarantine)
+{
+	struct mrs_descriptor_slab *prev = NULL;
+
+	for (struct mrs_descriptor_slab *iter = quarantine->list; iter != NULL;
+			iter = iter->next) {
+		for (int i = 0; i < iter->num_descriptors; i++) {
+			size_t len = __builtin_align_up(
+					cheri_getlen(iter->slab[i].ptr),
+					CAPREVOKE_BITMAP_ALIGNMENT);
+			/* clear bit map */
+			caprev_shadow_nomap_clear_len(
+					cri->base_mem_nomap, entire_shadow,
+					cheri_getbase(iter->slab[i].ptr), len);
+
+			atomic_thread_fence(memory_order_release);
+			
+			/* release back memory to pool freelists */
+			if (!pymalloc_release(state, iter->slab[i].ptr)){
+				_Py_FatalErrorFunc(__func__,
+						"blocks not released back from quarantine!");
+			}
+		}
+
+		prev = iter;
+	}
+
+//#ifdef STATS
+
+//	fprintf(stderr, "flush #max_arenas %u #narenas_currently_allocated %lu,\t"
+//			"ntimes_arena_allocated %zu, #arenas_highwater %lu\n"
+//			"quarantine_size %lu\n",
+//			maxarenas, narenas_currently_allocated, ntimes_arena_allocated, narenas_highwater,
+//			quarantine->size);
+
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 2);
+#endif
+	num_revocation += 1;
+	if (prev != NULL) {
+		/* Free the quarantined descriptors. */
+		prev->next = free_descriptor_slabs;
+
+		/* might not be portable if C11 not supported */
+		while (!atomic_compare_exchange_weak(&free_descriptor_slabs,
+					&prev->next, quarantine->list))
+			;
+		
+		quarantine->list = NULL;
+		quarantine->size = 0;
+	}
+
+
+
+}
+
+static void
+app_quarantine_revoke_async(OMState *state)
+{
+	struct mrs_quarantine *curr, *next;
+	cheri_revoke_epoch_t epoch;
+
+	curr = app_quarantine;
+
+	next = mrs_q_first(&app_quarantine_free_list);
+
+	if (!curr->revoking && next != NULL) {
+		mrs_q_remove(&app_quarantine_free_list, next);
+		app_quarantine = next;
+
+		curr->epoch = cri->epochs.enqueue;
+		curr->revoking = true;
+		
+		mrs_q_enqueue(&app_quarantine_revoke_list, curr);
+
+	}
+	assert(!mrs_q_empty(&app_quarantine_revoke_list));
+
+	epoch = mrs_q_first(&app_quarantine_revoke_list)->epoch;
+	
+	PyThread_release_lock(app_quarantine_lock);
+
+	(void)cheri_revoke(CHERI_REVOKE_ASYNC, epoch, NULL);
+
+#if WITH_MRS_UTRACE > 0 
+	mrs_utrace_log(state, 3);
+#endif
+	if (cheri_revoke_epoch_clears(cri->epochs.dequeue, epoch)) {
+		struct mrs_quarantine tmp;
+
+		PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
+
+		next = mrs_q_first(&app_quarantine_revoke_list);
+		if (next == NULL) {
+			PyThread_release_lock(app_quarantine_lock);
+			return;
+		}
+		assert(next->revoking);
+		if (!cheri_revoke_epoch_clears(cri->epochs.dequeue,
+					next->epoch)) {
+			PyThread_release_lock(app_quarantine_lock);
+			return;
+		}
+
+		app_quarantine_remove(state, &tmp, next);
+		
+		
+		PyThread_release_lock(app_quarantine_lock);
+		
+		quarantine_flush(state, &tmp);
+
+	}
+
+}
+
+static inline void
+check_flush(OMState *state) {
+	struct mrs_quarantine *next;
+
+	struct mrs_quarantine tmp;
+	PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
+
+	next = mrs_q_first(&app_quarantine_revoke_list);
+	if (next == NULL) {
+		PyThread_release_lock(app_quarantine_lock);
+		return;
+	}
+	assert(next->revoking);
+	if (!cheri_revoke_epoch_clears(cri->epochs.dequeue,
+				next->epoch)) {
+		PyThread_release_lock(app_quarantine_lock);
+		return;
+	}
+
+	app_quarantine_remove(state, &tmp, next);
+
+	//quarantine_flush(state, &tmp);
+	
+	PyThread_release_lock(app_quarantine_lock);
+
+	quarantine_flush(state, &tmp);
+
+}
+
+static inline void
+check_and_perform_flush(OMState *state, bool is_free)
+{
+	//struct mrs_quarantine local_quarantine;
+
+	/*
+	 ** Do an unlocked check and bail quickly if the quarantine
+	 ** does not require flushing.
+	 **/
+	if (!quarantine_should_flush(state, app_quarantine, is_free))
+		return;
+
+	PyThread_acquire_lock(app_quarantine_lock, WAIT_LOCK);
+	if (!quarantine_should_flush(state, app_quarantine, is_free)) {
+		PyThread_release_lock(app_quarantine_lock);
+		return;
+	}
+
+	if (revoke_async) {
+		app_quarantine_revoke_async(state);
+	} else {
+		_Py_FatalErrorFunc(__func__,
+				"not yet allowed sync revocation");
+	}
+
+
+}
+
+
+
+#endif
+
+
+#endif
 
 /*==========================================================================*/
 /* A x-platform debugging allocator.  This doesn't manage memory directly,
@@ -2159,7 +2940,16 @@ _PyMem_DebugRawFree(void *ctx, void *p)
     _PyMem_DebugCheckAddress(__func__, api->api_id, p);
     nbytes = read_size_t(q);
     nbytes += PYMEM_DEBUG_EXTRA_BYTES;
+//#ifdef __CHERI_PURE_CAPABILITY__
+//	//OMState *state = get_state();
+//	//if (quarantining)
+//	/* clear memory */
+//	//memset(q, 0, nbytes);
+//	//else 
+//		memset(q, PYMEM_DEADBYTE, nbytes);
+//#else
     memset(q, PYMEM_DEADBYTE, nbytes);
+//#endif
     api->alloc.free(api->alloc.ctx, q);
 }
 
@@ -2703,4 +3493,15 @@ _PyObject_DebugMallocStats(FILE *out)
     return 1;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF) 
+int
+_PyObject_NumRevocation(FILE *out) {
+
+	OMState *state = get_state();
+
+	fprintf(out, "Num_Revocation = %d\n",
+            num_revocation);
+	return 1;
+}
+#endif
 #endif /* #ifdef WITH_PYMALLOC */

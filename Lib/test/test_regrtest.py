@@ -688,7 +688,8 @@ class BaseTestCase(unittest.TestCase):
         if env is None:
             env = dict(os.environ)
             env.pop('SOURCE_DATE_EPOCH', None)
-
+        
+        #print("do I come here?", args, kw)
         proc = subprocess.run(args,
                               text=True,
                               input=input,
@@ -1173,9 +1174,15 @@ class ArgsTestCase(BaseTestCase):
         self.check_leak(code, 'references', run_workers=run_workers)
 
     def test_huntrleaks(self):
+#        from ctypes import c_void_p, sizeof
+#        if sizeof(c_void_p) == 16:
+#            self.fail("CHERI quarantine halt")
         self.check_huntrleaks(run_workers=False)
 
     def test_huntrleaks_mp(self):
+#        from ctypes import c_void_p, sizeof
+#        if sizeof(c_void_p) == 16:
+#            self.fail("CHERI quarantine halt")
         self.check_huntrleaks(run_workers=True)
 
     @unittest.skipUnless(support.Py_DEBUG, 'need a debug build')
@@ -2139,6 +2146,8 @@ class ArgsTestCase(BaseTestCase):
             self.assertIn(f"Exit code {exitcode} (SIGSEGV)", output)
         self.check_line(output, "just before crash!", full=True, regex=False)
 
+
+    #@unittest.skipIf(sizeof(c_void_p) == 16, "CHERI quarantine halt")
     def test_verbose3(self):
         code = textwrap.dedent(r"""
             import unittest
@@ -2154,11 +2163,17 @@ class ArgsTestCase(BaseTestCase):
         output = self.run_tests("--verbose3", testname)
         self.check_executed_tests(output, testname, stats=1)
         self.assertNotIn('SPAM SPAM SPAM', output)
+       
 
+#        from ctypes import c_void_p, sizeof
+#        if sizeof(c_void_p) == 16:
+#            self.fail("CHERI quarantine halt")
+       
         # -R option needs a debug build
         if support.Py_DEBUG:
             # Check for reference leaks, run in parallel
             output = self.run_tests("-R", "3:3", "-j1", "--verbose3", testname)
+            print("? i passed run_tests")
             self.check_executed_tests(output, testname, stats=1, parallel=True)
             self.assertNotIn('SPAM SPAM SPAM', output)
 

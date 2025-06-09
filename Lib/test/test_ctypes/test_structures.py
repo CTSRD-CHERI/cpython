@@ -542,6 +542,7 @@ class StructureTestCase(unittest.TestCase):
             _fields_ = [('x', c_double)]
         self._test_issue18060(Vector)
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi CheriBSD libc SIGABRT")
     def test_array_in_struct(self):
         # See bpo-22273
 

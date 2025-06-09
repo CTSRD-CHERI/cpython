@@ -7,6 +7,9 @@ from test.test_ctypes import need_symbol
 from _ctypes import CTYPES_MAX_ARGCOUNT
 import _ctypes_test
 
+if sizeof(c_void_p) == 16:
+    raise unittest.SkipTest("libffi closure not supported for CHERI128")
+
 class Callbacks(unittest.TestCase):
     functype = CFUNCTYPE
 
@@ -93,6 +96,7 @@ class Callbacks(unittest.TestCase):
         self.check_type(c_char, b"x")
         self.check_type(c_char, b"a")
 
+    @unittest.skipIf(not isinstance(c_void_p(0), int), "libffi no closure support for CHERI hybrid void *")
     def test_pyobject(self):
         o = ()
         from sys import getrefcount as grc

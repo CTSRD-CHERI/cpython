@@ -1423,8 +1423,14 @@ P_set(void *ptr, PyObject *value, Py_ssize_t size)
                          "from integer constants is deprecated.", 1)) {
             return NULL;
         }
-        v = (void*)PyNativePointer_AsUIntPtr(value);
-    }
+        //v = (void*)PyNativePointer_AsUIntPtr(value);
+		v = (void*)PyNativePointer_AsVoidPointer(value);
+
+    } else {
+		 PyErr_SetString(PyExc_TypeError,
+				 "cannot be converted to pointer");
+		 return NULL;
+	}
 
     if (PyErr_Occurred())
         return NULL;

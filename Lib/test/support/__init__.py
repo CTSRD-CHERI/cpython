@@ -20,45 +20,45 @@ import warnings
 
 
 __all__ = [
-    # globals
-    "PIPE_MAX_SIZE", "verbose", "max_memuse", "use_resources", "failfast",
-    # exceptions
-    "Error", "TestFailed", "TestDidNotRun", "ResourceDenied",
-    # io
-    "record_original_stdout", "get_original_stdout", "captured_stdout",
-    "captured_stdin", "captured_stderr",
-    # unittest
-    "is_resource_enabled", "requires", "requires_freebsd_version",
-    "requires_linux_version", "requires_mac_ver",
-    "check_syntax_error",
-    "requires_gzip", "requires_bz2", "requires_lzma",
-    "bigmemtest", "bigaddrspacetest", "cpython_only", "get_attribute",
-    "requires_IEEE_754", "requires_zlib",
-    "has_fork_support", "requires_fork",
-    "has_subprocess_support", "requires_subprocess",
-    "has_socket_support", "requires_working_socket",
-    "anticipate_failure", "load_package_tests", "detect_api_mismatch",
-    "check__all__", "skip_if_buggy_ucrt_strfptime",
-    "check_disallow_instantiation", "check_sanitizer", "skip_if_sanitizer",
-    "requires_limited_api", "requires_specialization",
-    # sys
-    "MS_WINDOWS", "is_jython", "is_android", "is_emscripten", "is_wasi",
-    "check_impl_detail", "unix_shell", "setswitchinterval",
-    # os
-    "get_pagesize",
-    # network
-    "open_urlresource",
-    # processes
-    "reap_children",
-    # miscellaneous
-    "run_with_locale", "swap_item", "findfile", "infinite_recursion",
-    "swap_attr", "Matcher", "set_memlimit", "SuppressCrashReport", "sortdict",
-    "run_with_tz", "PGO", "missing_compiler_executable",
-    "ALWAYS_EQ", "NEVER_EQ", "LARGEST", "SMALLEST",
-    "LOOPBACK_TIMEOUT", "INTERNET_TIMEOUT", "SHORT_TIMEOUT", "LONG_TIMEOUT",
-    "Py_DEBUG", "EXCEEDS_RECURSION_LIMIT", "C_RECURSION_LIMIT",
-    "skip_on_s390x",
-    ]
+        # globals
+        "PIPE_MAX_SIZE", "verbose", "max_memuse", "use_resources", "failfast",
+        # exceptions
+        "Error", "TestFailed", "TestDidNotRun", "ResourceDenied",
+        # io
+        "record_original_stdout", "get_original_stdout", "captured_stdout",
+        "captured_stdin", "captured_stderr",
+        # unittest
+        "is_resource_enabled", "requires", "requires_freebsd_version",
+        "requires_linux_version", "requires_mac_ver",
+        "check_syntax_error",
+        "requires_gzip", "requires_bz2", "requires_lzma",
+        "bigmemtest", "bigaddrspacetest", "cpython_only", "get_attribute",
+        "requires_IEEE_754", "requires_zlib",
+        "has_fork_support", "requires_fork",
+        "has_subprocess_support", "requires_subprocess",
+        "has_socket_support", "requires_working_socket",
+        "anticipate_failure", "load_package_tests", "detect_api_mismatch",
+        "check__all__", "skip_if_buggy_ucrt_strfptime",
+        "check_disallow_instantiation", "check_sanitizer", "skip_if_sanitizer",
+        "requires_limited_api", "requires_specialization",
+        # sys
+        "MS_WINDOWS", "is_jython", "is_android", "is_emscripten", "is_wasi",
+        "check_impl_detail", "unix_shell", "setswitchinterval",
+        # os
+        "get_pagesize",
+        # network
+        "open_urlresource",
+        # processes
+        "reap_children",
+        # miscellaneous
+        "run_with_locale", "swap_item", "findfile", "infinite_recursion",
+        "swap_attr", "Matcher", "set_memlimit", "SuppressCrashReport", "sortdict",
+        "run_with_tz", "PGO", "missing_compiler_executable",
+        "ALWAYS_EQ", "NEVER_EQ", "LARGEST", "SMALLEST",
+        "LOOPBACK_TIMEOUT", "INTERNET_TIMEOUT", "SHORT_TIMEOUT", "LONG_TIMEOUT",
+        "Py_DEBUG", "EXCEEDS_RECURSION_LIMIT", "C_RECURSION_LIMIT",
+        "skip_on_s390x",
+        ]
 
 
 # Timeout in seconds for tests using a network server listening on the network
@@ -234,10 +234,10 @@ def _is_gui_available():
         uof = USEROBJECTFLAGS()
         needed = ctypes.wintypes.DWORD()
         res = dll.GetUserObjectInformationW(h,
-            UOI_FLAGS,
-            ctypes.byref(uof),
-            ctypes.sizeof(uof),
-            ctypes.byref(needed))
+                                            UOI_FLAGS,
+                                            ctypes.byref(uof),
+                                            ctypes.sizeof(uof),
+                                            ctypes.byref(needed))
         if not res:
             raise ctypes.WinError()
         if not bool(uof.dwFlags & WSF_VISIBLE):
@@ -263,7 +263,7 @@ def _is_gui_available():
             psn = ProcessSerialNumber()
             psn_p = pointer(psn)
             if (  (app_services.GetCurrentProcess(psn_p) < 0) or
-                  (app_services.SetFrontProcess(psn_p) < 0) ):
+                (app_services.SetFrontProcess(psn_p) < 0) ):
                 reason = "cannot run without OS X gui process"
 
     # check on every platform whether tkinter can actually do anything
@@ -326,10 +326,10 @@ def _requires_unix_version(sysname, min_version):
         skip = False
 
     return unittest.skipIf(
-        skip,
-        f"{sysname} version {min_version_txt} or higher required, not "
-        f"{version_txt}"
-    )
+            skip,
+            f"{sysname} version {min_version_txt} or higher required, not "
+            f"{version_txt}"
+            )
 
 
 def requires_freebsd_version(*min_version):
@@ -371,8 +371,8 @@ def requires_mac_ver(*min_version):
                     if version < min_version:
                         min_version_txt = '.'.join(map(str, min_version))
                         raise unittest.SkipTest(
-                            "Mac OS X %s or higher required, not %s"
-                            % (min_version_txt, version_txt))
+                                "Mac OS X %s or higher required, not %s"
+                                % (min_version_txt, version_txt))
             return func(*args, **kw)
         wrapper.min_version = min_version
         return wrapper
@@ -400,22 +400,22 @@ def check_sanitizer(*, address=False, memory=False, ub=False):
     cflags = sysconfig.get_config_var('CFLAGS') or ''
     config_args = sysconfig.get_config_var('CONFIG_ARGS') or ''
     memory_sanitizer = (
-        '-fsanitize=memory' in cflags or
-        '--with-memory-sanitizer' in config_args
-    )
+            '-fsanitize=memory' in cflags or
+            '--with-memory-sanitizer' in config_args
+            )
     address_sanitizer = (
-        '-fsanitize=address' in cflags or
-        '--with-address-sanitizer' in config_args
-    )
+            '-fsanitize=address' in cflags or
+            '--with-address-sanitizer' in config_args
+            )
     ub_sanitizer = (
-        '-fsanitize=undefined' in cflags or
-        '--with-undefined-behavior-sanitizer' in config_args
-    )
+            '-fsanitize=undefined' in cflags or
+            '--with-undefined-behavior-sanitizer' in config_args
+            )
     return (
-        (memory and memory_sanitizer) or
-        (address and address_sanitizer) or
-        (ub and ub_sanitizer)
-    )
+            (memory and memory_sanitizer) or
+            (address and address_sanitizer) or
+            (ub and ub_sanitizer)
+            )
 
 
 def skip_if_sanitizer(reason=None, *, address=False, memory=False, ub=False):
@@ -467,8 +467,8 @@ SOCK_MAX_SIZE = 16 * 1024 * 1024 + 1
 
 # decorator for skipping tests on non-IEEE 754 platforms
 requires_IEEE_754 = unittest.skipUnless(
-    float.__getformat__("double").startswith("IEEE"),
-    "test requires IEEE 754 doubles")
+        float.__getformat__("double").startswith("IEEE"),
+        "test requires IEEE 754 doubles")
 
 def requires_zlib(reason='requires zlib'):
     try:
@@ -791,25 +791,31 @@ def check_cflags_pgo():
     # with Profile Guided Optimization (PGO).
     cflags_nodist = sysconfig.get_config_var('PY_CFLAGS_NODIST') or ''
     pgo_options = [
-        # GCC
-        '-fprofile-use',
-        # clang: -fprofile-instr-use=code.profclangd
-        '-fprofile-instr-use',
-        # ICC
-        "-prof-use",
-    ]
+            # GCC
+            '-fprofile-use',
+            # clang: -fprofile-instr-use=code.profclangd
+            '-fprofile-instr-use',
+            # ICC
+            "-prof-use",
+            ]
     PGO_PROF_USE_FLAG = sysconfig.get_config_var('PGO_PROF_USE_FLAG')
     if PGO_PROF_USE_FLAG:
         pgo_options.append(PGO_PROF_USE_FLAG)
     return any(option in cflags_nodist for option in pgo_options)
 
+#_align = '0n'
+_align = '0P' # align to pointer size rather than Py_ssize_T
+_header = 'nP' + _align
+_vheader = _header + 'n' + _align
 
-_header = 'nP'
-_align = '0n'
 if hasattr(sys, "getobjects"):
     _header = '2P' + _header
     _align = '0P'
-_vheader = _header + 'n'
+
+#import _testcapi
+#if _testcapi.SIZEOF_VOID_P == 16:
+#    _header = '2P'
+#    _vheader = '3P' 
 
 def calcobjsize(fmt):
     import struct
@@ -831,7 +837,7 @@ def check_sizeof(test, o, size):
     result = sys.getsizeof(o)
     # add GC header size
     if ((type(o) == type) and (o.__flags__ & _TPFLAGS_HEAPTYPE) or\
-        ((type(o) != type) and (type(o).__flags__ & _TPFLAGS_HAVE_GC))):
+            ((type(o) != type) and (type(o).__flags__ & _TPFLAGS_HAVE_GC))):
         size += _testinternalcapi.SIZEOF_PYGC_HEAD
     msg = 'wrong size for %s: got %d, expected %d' \
             % (type(o), result, size)
@@ -915,11 +921,11 @@ MAX_Py_ssize_t = sys.maxsize
 
 def _parse_memlimit(limit: str) -> int:
     sizes = {
-        'k': 1024,
-        'm': _1M,
-        'g': _1G,
-        't': 1024*_1G,
-    }
+            'k': 1024,
+            'm': _1M,
+            'g': _1G,
+            't': 1024*_1G,
+            }
     m = re.match(r'(\d+(?:\.\d+)?) (K|M|G|T)b?$', limit,
                  re.IGNORECASE | re.VERBOSE)
     if m is None:
@@ -996,8 +1002,8 @@ def bigmemtest(size, memuse, dry_run=True):
             if ((real_max_memuse or not dry_run)
                 and real_max_memuse < maxsize * memuse):
                 raise unittest.SkipTest(
-                    "not enough memory: %.1fG minimum needed"
-                    % (size * memuse / (1024 ** 3)))
+                        "not enough memory: %.1fG minimum needed"
+                        % (size * memuse / (1024 ** 3)))
 
             if real_max_memuse and verbose:
                 print()
@@ -1025,11 +1031,11 @@ def bigaddrspacetest(f):
         if max_memuse < MAX_Py_ssize_t:
             if MAX_Py_ssize_t >= 2**63 - 1 and max_memuse >= 2**31:
                 raise unittest.SkipTest(
-                    "not enough memory: try a 32-bit build instead")
+                        "not enough memory: try a 32-bit build instead")
             else:
                 raise unittest.SkipTest(
-                    "not enough memory: %.1fG minimum needed"
-                    % (MAX_Py_ssize_t / (1024 ** 3)))
+                        "not enough memory: %.1fG minimum needed"
+                        % (MAX_Py_ssize_t / (1024 ** 3)))
         else:
             return f(self)
     return wrapper
@@ -1121,11 +1127,11 @@ def requires_limited_api(test):
     except ImportError:
         return unittest.skip('needs _testcapi module')(test)
     return unittest.skipUnless(
-        _testcapi.LIMITED_API_AVAILABLE, 'needs Limited API support')(test)
+            _testcapi.LIMITED_API_AVAILABLE, 'needs Limited API support')(test)
 
 def requires_specialization(test):
     return unittest.skipUnless(
-        opcode.ENABLE_SPECIALIZATION, "requires specialization")(test)
+            opcode.ENABLE_SPECIALIZATION, "requires specialization")(test)
 
 
 #=======================================================================
@@ -1333,8 +1339,8 @@ def skip_if_buggy_ucrt_strfptime(test):
     global _buggy_ucrt
     if _buggy_ucrt is None:
         if(sys.platform == 'win32' and
-                locale.getencoding() == 'cp65001' and
-                time.localtime().tm_zone == ''):
+           locale.getencoding() == 'cp65001' and
+           time.localtime().tm_zone == ''):
             _buggy_ucrt = True
         else:
             _buggy_ucrt = False
@@ -1370,12 +1376,12 @@ class PythonSymlink:
             self._also_link.append((
                 dll,
                 os.path.join(dest_dir, os.path.basename(dll))
-            ))
+                ))
             for runtime in glob.glob(os.path.join(glob.escape(src_dir), "vcruntime*.dll")):
                 self._also_link.append((
                     runtime,
                     os.path.join(dest_dir, os.path.basename(runtime))
-                ))
+                    ))
 
             self._env = {k.upper(): os.getenv(k) for k in os.environ}
             self._env["PYTHONHOME"] = os.path.dirname(self.real)
@@ -1412,7 +1418,7 @@ class PythonSymlink:
                 print(repr(r[0]))
                 print(repr(r[1]), file=sys.stderr)
             raise RuntimeError(
-                'unexpected return code: {0} (0x{0:08X})'.format(p.returncode))
+                    'unexpected return code: {0} (0x{0:08X})'.format(p.returncode))
         return r
 
     def call_real(self, *args, returncode=0):
@@ -1497,9 +1503,9 @@ def check__all__(test_case, module, name_of_module=None, extra=(),
             continue
         obj = getattr(module, name)
         if (getattr(obj, '__module__', None) in name_of_module or
-                (not hasattr(obj, '__module__') and
-                 not isinstance(obj, types.ModuleType))):
-            expected.add(name)
+            (not hasattr(obj, '__module__') and
+             not isinstance(obj, types.ModuleType))):
+                expected.add(name)
     test_case.assertCountEqual(module.__all__, expected)
 
 
@@ -1559,9 +1565,9 @@ class SuppressCrashReport:
                                     msvcrt.CRT_ERROR,
                                     msvcrt.CRT_ASSERT]:
                     old_mode = msvcrt.CrtSetReportMode(report_type,
-                            msvcrt.CRTDBG_MODE_FILE)
+                                                       msvcrt.CRTDBG_MODE_FILE)
                     old_file = msvcrt.CrtSetReportFile(report_type,
-                            msvcrt.CRTDBG_FILE_STDERR)
+                                                       msvcrt.CRTDBG_FILE_STDERR)
                     self.old_modes[report_type] = old_mode, old_file
 
         else:
@@ -1697,8 +1703,8 @@ def _check_tracemalloc():
     else:
         if tracemalloc.is_tracing():
             raise unittest.SkipTest("run_in_subinterp() cannot be used "
-                                     "if tracemalloc module is tracing "
-                                     "memory allocations")
+                                    "if tracemalloc module is tracing "
+                                    "memory allocations")
 
 
 def check_free_after_iterating(test, iter, cls, args=()):
@@ -1763,7 +1769,7 @@ def setswitchinterval(interval):
         if _is_android_emulator is None:
             import subprocess
             _is_android_emulator = (subprocess.check_output(
-                               ['getprop', 'ro.kernel.qemu']).strip() == b'1')
+                ['getprop', 'ro.kernel.qemu']).strip() == b'1')
         if _is_android_emulator:
             interval = minimum_interval
     return sys.setswitchinterval(interval)
@@ -2128,11 +2134,11 @@ def infinite_recursion(max_depth=None):
 def ignore_deprecations_from(module: str, *, like: str) -> object:
     token = object()
     warnings.filterwarnings(
-        "ignore",
-        category=DeprecationWarning,
-        module=module,
-        message=like + fr"(?#support{id(token)})",
-    )
+            "ignore",
+            category=DeprecationWarning,
+            module=module,
+            message=like + fr"(?#support{id(token)})",
+            )
     return token
 
 def clear_ignored_deprecations(*tokens: object) -> None:
@@ -2180,8 +2186,8 @@ def _findwheel(pkgname):
     Otherwise, they are searched for in the test directory.
     """
     wheel_dir = sysconfig.get_config_var('WHEEL_PKG_DIR') or os.path.join(
-        TEST_HOME_DIR, 'wheeldata',
-    )
+            TEST_HOME_DIR, 'wheeldata',
+            )
     filenames = os.listdir(wheel_dir)
     filenames = sorted(filenames, reverse=True)  # approximate "newest" first
     for filename in filenames:
@@ -2315,7 +2321,7 @@ def busy_retry(timeout, err_msg=None, /, *, error=True):
 
 
 def sleeping_retry(timeout, err_msg=None, /,
-                     *, init_delay=0.010, max_delay=1.0, error=True):
+                   *, init_delay=0.010, max_delay=1.0, error=True):
     """
     Wait strategy that applies exponential backoff.
 
@@ -2388,23 +2394,23 @@ _BASE_COPY_SRC_DIR_IGNORED_NAMES = frozenset({
     '.git',
     # ignore all __pycache__/ sub-directories
     '__pycache__',
-})
+    })
 
 # Ignore function for shutil.copytree() to copy the Python source code.
 def copy_python_src_ignore(path, names):
     ignored = _BASE_COPY_SRC_DIR_IGNORED_NAMES
     if os.path.basename(path) == 'Doc':
         ignored |= {
-            # SRC_DIR/Doc/build/
-            'build',
-            # SRC_DIR/Doc/venv/
-            'venv',
-        }
+                # SRC_DIR/Doc/build/
+                'build',
+                # SRC_DIR/Doc/venv/
+                'venv',
+                }
 
     # check if we are at the root of the source code
     elif 'Modules' in names:
         ignored |= {
             # SRC_DIR/build/
             'build',
-        }
+            }
     return ignored

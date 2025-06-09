@@ -109,7 +109,9 @@ def native_type_range(fmt):
     else:
         for exp in (128, 127, 64, 63, 32, 31, 16, 15, 8, 7):
             try:
+                #print(fmt)
                 struct.pack(fmt, (1<<exp)-1)
+                #print(fmt, "success")
                 break
             except struct.error:
                 pass
@@ -639,6 +641,7 @@ def numpy_array_from_structure(items, fmt, t):
     """Return numpy_array from the tuple returned by rand_structure()"""
     memlen, itemsize, ndim, shape, strides, offset = t
     buf = bytearray(memlen)
+    print(fmt, "line=642")
     for j, v in enumerate(items):
         struct.pack_into(fmt, buf, j*itemsize, v)
     return numpy_array(buffer=buf, shape=shape, strides=strides,
@@ -2510,15 +2513,17 @@ class TestBufferProtocol(unittest.TestCase):
     def test_memoryview_sizeof(self):
         check = self.check_sizeof
         vsize = support.calcvobjsize
-        base_struct = 'Pnin 2P2n2i5P P'
+        base_struct = 'Pnin 2P2n2i5P P' 
         per_dim = '3n'
 
+        import struct
+
         items = list(range(8))
-        check(memoryview(b''), vsize(base_struct + 1 * per_dim))
+        check(memoryview(b''), vsize(base_struct) + struct.calcsize(1 * per_dim))
         a = ndarray(items, shape=[2, 4], format="b")
-        check(memoryview(a), vsize(base_struct + 2 * per_dim))
+        check(memoryview(a), vsize(base_struct) + struct.calcsize(2 * per_dim))
         a = ndarray(items, shape=[2, 2, 2], format="b")
-        check(memoryview(a), vsize(base_struct + 3 * per_dim))
+        check(memoryview(a), vsize(base_struct) + struct.calcsize(3 * per_dim))
 
     def test_memoryview_struct_module(self):
 
@@ -2548,6 +2553,8 @@ class TestBufferProtocol(unittest.TestCase):
             ex = ndarray(items, shape=[10], format=fmt, flags=ND_WRITABLE)
             nd = ndarray(items, shape=[10], format=fmt, flags=ND_WRITABLE)
             m = memoryview(ex)
+            
+            #print(fmt, "line=2553")
 
             struct.pack_into(fmt, nd, 0, item)
             m[0] = item
@@ -2560,6 +2567,7 @@ class TestBufferProtocol(unittest.TestCase):
             for v in values:
                 struct_err = None
                 try:
+                    # print(fmt, "line=2566")
                     struct.pack_into(fmt, nd, itemsize, v)
                 except struct.error:
                     struct_err = struct.error

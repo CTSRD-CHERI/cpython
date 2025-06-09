@@ -53,7 +53,8 @@ class FunctionTestCase(unittest.TestCase):
         with self.assertRaises(TypeError):
             class X4(object, Structure):
                 _fields_ = []
-
+    
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_c_char_parm(self):
         proto = CFUNCTYPE(c_int, c_char)
         def callback(*args):
@@ -230,6 +231,7 @@ class FunctionTestCase(unittest.TestCase):
         self.assertNotEqual(result.contents, 99)
 
     ################################################################
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_shorts(self):
         f = dll._testfunc_callback_i_if
 
@@ -249,7 +251,7 @@ class FunctionTestCase(unittest.TestCase):
 
     ################################################################
 
-
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_callbacks(self):
         f = dll._testfunc_callback_i_if
         f.restype = c_int
@@ -278,7 +280,7 @@ class FunctionTestCase(unittest.TestCase):
         cb = AnotherCallback(callback)
         self.assertRaises(ArgumentError, f, -10, cb)
 
-
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_callbacks_2(self):
         # Can also use simple datatypes as argument type specifiers
         # for the callback function.
@@ -299,6 +301,7 @@ class FunctionTestCase(unittest.TestCase):
         result = f(-10, cb)
         self.assertEqual(result, -18)
 
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     @need_symbol('c_longlong')
     def test_longlong_callbacks(self):
 
@@ -399,6 +402,8 @@ class FunctionTestCase(unittest.TestCase):
                 (s8i.a, s8i.b, s8i.c, s8i.d, s8i.e, s8i.f, s8i.g, s8i.h),
                 (9*2, 8*3, 7*4, 6*5, 5*6, 4*7, 3*8, 2*9))
 
+
+    @unittest.skipIf(sizeof(c_void_p) == 16, "libffi no closure support for CHERI128")
     def test_sf1651235(self):
         # see https://bugs.python.org/issue1651235
 

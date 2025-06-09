@@ -10,6 +10,9 @@ except NameError:
 import _ctypes_test
 lib = CDLL(_ctypes_test.__file__)
 
+if sizeof(c_void_p) == 16:
+    raise unittest.SkipTest("libffi closure not supported for CHERI128")
+
 class CFuncPtrTestCase(unittest.TestCase):
     def test_basic(self):
         X = WINFUNCTYPE(c_int, c_int, c_int)

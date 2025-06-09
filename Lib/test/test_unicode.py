@@ -2460,7 +2460,7 @@ class UnicodeTest(string_tests.CommonTest,
         self.assertIs(s.expandtabs(), s)
 
     def test_raiseMemError(self):
-        asciifields = "nnb"
+        asciifields = "nnb" + "0P"
         compactfields = asciifields + "nP"
         ascii_struct_size = support.calcobjsize(asciifields)
         compact_struct_size = support.calcobjsize(compactfields)

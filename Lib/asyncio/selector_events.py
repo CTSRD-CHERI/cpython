@@ -747,6 +747,11 @@ class BaseSelectorEventLoop(base_events.BaseEventLoop):
                 transp.resume_reading()
             self._transports[transp._sock_fd] = transp
 
+    # def _sock_sendfile_native(self, *args, **kwargs):
+    #    print("I reached here")
+    #    raise SendfileNotAvailableError("sendfile is not available")
+
+
     def _process_events(self, event_list):
         for key, mask in event_list:
             fileobj, (reader, writer) = key.fileobj, key.data

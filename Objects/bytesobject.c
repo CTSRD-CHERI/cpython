@@ -17,6 +17,7 @@
 
 #include <stddef.h>
 
+
 /*[clinic input]
 class bytes "PyBytesObject *" "&PyBytes_Type"
 [clinic start generated code]*/
@@ -3475,6 +3476,7 @@ _PyBytesWriter_Alloc(_PyBytesWriter *writer, Py_ssize_t size)
 #else
     writer->allocated = sizeof(writer->small_buffer);
 #endif
+
     return _PyBytesWriter_Prepare(writer, writer->small_buffer, size);
 }
 

@@ -1097,6 +1097,7 @@ PyObject *
 PyLong_FromVoidPtr(void *p)
 {
     return PyNativePointer_FromVoidPointer(p);
+	//return PyNativePointer_FromUIntPtr((uintptr_t)p);
 }
 
 /* Get a C pointer from an int object. */
@@ -1104,6 +1105,7 @@ void *
 PyLong_AsVoidPtr(PyObject *vv)
 {
     return PyNativePointer_AsVoidPointer(vv);
+	//return (void *)PyNativePointer_AsUIntPtr(vv);
 }
 
 /* Initial long long support by Chris Herborth (chrish@qnx.com), later

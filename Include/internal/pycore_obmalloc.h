@@ -505,6 +505,7 @@ struct _obmalloc_mgmt {
 };
 
 
+
 #if WITH_PYMALLOC_RADIX_TREE
 /*==========================================================================*/
 /* radix tree for tracking arena usage.  If enabled, used to implement
@@ -619,6 +620,9 @@ struct _obmalloc_mgmt {
 typedef struct {
     int32_t tail_hi;
     int32_t tail_lo;
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	uintptr_t arena_cap;
+#endif
 } arena_coverage_t;
 
 typedef struct arena_map_bot {
@@ -657,6 +661,191 @@ struct _obmalloc_usage {
 #endif /* WITH_PYMALLOC_RADIX_TREE */
 
 
+/*==========================================================================
+* Capability Revocation Quarantine
+*/
+
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+
+#include <cheri/revoke.h>
+#include <cheri/libcaprevoke.h>
+#include "pycore_atomic.h"
+
+//static bool mrs_utrace;
+#define WITH_MRS_UTRACE 0 
+
+
+#if WITH_MRS_UTRACE > 0 
+#include <sys/param.h>
+#include <sys/time.h>
+#include <sys/uio.h>
+#include <sys/ktrace.h>
+
+#define MRS_UTRACE_SIG_SZ	4
+#define MRS_UTRACE_SIG		"MRS "
+
+struct utrace_mrs {
+	char sig[MRS_UTRACE_SIG_SZ];
+	int event;
+	/* current quarantine size */
+	size_t app_quarantine_size;
+	/* all quarantined size */
+	size_t quarantined_size;	
+	/* Number of arenas allocated that haven't been free()'d. */
+    size_t narenas_curr;
+
+	size_t freelist_size;
+
+    /* Total number of times malloc() called to allocate an arena. */
+	//size_t ntimes_arena_allocated;
+    /* High water mark (max value ever seen) for narenas_currently_allocated. */
+    size_t narenas_high;
+
+};
+#endif
+
+/* Alignment requirement for caps so we can paint the caprevoke bitmap */
+#define CAPREVOKE_BITMAP_ALIGNMENT  (sizeof(void *))
+
+/* How many slab descriptors to batch at once */
+#define DESCRIPTOR_SLAB_ENTRIES     (10000)
+
+/* Minimum heap size (bytes) before we start a revocation scan */
+#define MIN_REVOKE_HEAP_SIZE        (8 * 1024 * 1024) // 8MB
+
+//#define QUARANTINE_HIGHWATER 		(8 * 1024 * 1024) // 8MB 
+
+struct mrs_descriptor_slab_entry {
+	void *ptr;
+	size_t size;
+};
+
+struct mrs_descriptor_slab {
+	int num_descriptors;
+	struct mrs_descriptor_slab *next;
+	struct mrs_descriptor_slab_entry slab[DESCRIPTOR_SLAB_ENTRIES];
+};
+
+struct mrs_quarantine {
+	size_t size;
+	size_t max_size;
+	bool revoking;
+	cheri_revoke_epoch_t epoch;/* valid when revoking */
+	struct mrs_descriptor_slab *list;
+	//TAILQ_ENTRY(mrs_quarantine) next;
+	struct mrs_quarantine *next, *prev;
+};
+
+/* a generic head/tail pair: */
+struct mrs_quarantine_list {
+	struct mrs_quarantine *head;
+	struct mrs_quarantine *tail;
+}; 
+
+#if !defined(APP_QUARANTINE_ARENAS)
+	#define APP_QUARANTINE_ARENAS 3 
+#endif
+_Static_assert(APP_QUARANTINE_ARENAS >= 2,
+		    "APP_QUARANTINE_ARENAS must be at least 2");
+struct _obmalloc_quarantine_mgmt {
+	size_t _Atomic allocated_size;
+
+	struct mrs_descriptor_slab * _Atomic free_descriptor_slabs;
+
+	struct mrs_quarantine app_quarantine_store[APP_QUARANTINE_ARENAS];
+	/* active */
+	struct mrs_quarantine *app_quarantine;
+
+	struct mrs_quarantine_list app_quarantine_revoke_list;
+
+	struct mrs_quarantine_list app_quarantine_free_list;
+	
+	PyThread_type_lock app_quarantine_lock;
+	
+	struct cheri_revoke_info *cri;
+
+	void *entire_shadow;
+
+	bool quarantining;
+
+	bool revoke_every_free;
+	bool revoke_async;
+
+	bool mrs_initialised;
+
+	size_t num_revocation;
+
+};
+
+#define MRS_Q_INIT(ql)               \
+	do {                             \
+		(ql).head = NULL;            \
+		(ql).tail = NULL;            \
+	} while (0)
+
+
+/* Returns true if the quarantine list is empty (no head element). */
+static inline bool
+mrs_q_empty(const struct mrs_quarantine_list *ql) {
+	    return (ql->head == NULL);
+}
+
+/* Returns the first element in the quarantine list, or NULL if empty. */
+static inline struct mrs_quarantine *
+mrs_q_first(const struct mrs_quarantine_list *ql) {
+	    return ql->head;
+}
+
+
+/* enqueue at tail: */
+static inline void
+mrs_q_enqueue(struct mrs_quarantine_list *ql, struct mrs_quarantine *q) {
+	q->next = NULL;
+	q->prev = ql->tail;
+	if (ql->tail) {
+		ql->tail->next = q;
+	}
+	else {
+		ql->head = q;
+	}
+	ql->tail = q;
+}
+
+/* remove an arbitrary element: */
+static inline void
+mrs_q_remove(struct mrs_quarantine_list *ql, struct mrs_quarantine *q) {
+	if (q->prev) {
+		q->prev->next = q->next;
+	}
+	else {
+		ql->head = q->next;
+	}
+	if (q->next) {
+		q->next->prev = q->prev;
+	}
+	else {
+		ql->tail = q->prev;
+	}
+	q->prev = NULL;
+	q->next = NULL;
+	/* q is now standalone */
+}
+
+static inline void
+quarantine_move(struct mrs_quarantine *dst, struct mrs_quarantine *src)
+{
+	dst->list = src->list;
+	dst->size = src->size;
+	dst->max_size = src->max_size;
+	src->list = NULL;
+	src->size = 0;
+}
+
+
+#endif
+
+
 struct _obmalloc_global_state {
     int dump_debug_stats;
     Py_ssize_t interpreter_leaks;
@@ -667,6 +856,10 @@ struct _obmalloc_state {
     struct _obmalloc_mgmt mgmt;
 #if WITH_PYMALLOC_RADIX_TREE
     struct _obmalloc_usage usage;
+#endif
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	struct _obmalloc_quarantine_mgmt qa_mgmt;
 #endif
 };
 
@@ -688,9 +881,17 @@ extern Py_ssize_t _PyInterpreterState_GetAllocatedBlocks(PyInterpreterState *);
 extern void _PyInterpreterState_FinalizeAllocatedBlocks(PyInterpreterState *);
 
 
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+extern int _obmalloc_InitMRS(struct _obmalloc_quarantine_mgmt *);
+extern int _obmalloc_FiniMRS(struct _obmalloc_quarantine_mgmt *);
+#endif
+
 #ifdef WITH_PYMALLOC
 // Export the symbol for the 3rd party guppy3 project
 PyAPI_FUNC(int) _PyObject_DebugMallocStats(FILE *out);
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF) 
+PyAPI_FUNC(int) _PyObject_NumRevocation(FILE *out);
+#endif
 #endif
 
 

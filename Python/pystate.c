@@ -686,7 +686,7 @@ init_interpreter(PyInterpreterState *interp,
                 _obmalloc_pools_INIT(interp->obmalloc.pools);
         memcpy(&interp->obmalloc.pools.used, temp, sizeof(temp));
     }
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF) 
 	if (_obmalloc_InitMRS(&interp->obmalloc.qa_mgmt)){
 		Py_FatalError("obmalloc quarantine not initialised");
 	}
@@ -1021,7 +1021,7 @@ PyInterpreterState_Delete(PyInterpreterState *interp)
         PyThread_free_lock(interp->id_mutex);
     }
 
-#ifdef __CHERI_PURE_CAPABILITY__
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
 	if (_obmalloc_FiniMRS(&interp->obmalloc.qa_mgmt)){
 		Py_FatalError("quarantine not freed");
 	}

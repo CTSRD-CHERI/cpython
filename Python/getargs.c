@@ -897,7 +897,7 @@ convertsimple(PyObject *arg, const char **p_format, va_list *p_va, int flags,
             RETURN_ERR_OCCURRED;
         break;
     }
-    case 'P': {/* pointer (as void*, inptr_t or uintptr_t) */
+    case 'P': {/* pointer (as void*, intptr_t or uintptr_t) */
         void **p = va_arg(*p_va, void**);
         void *ival;
         /*

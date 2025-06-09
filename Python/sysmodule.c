@@ -2015,6 +2015,21 @@ sys_call_tracing_impl(PyObject *module, PyObject *func, PyObject *funcargs)
 extern "C" {
 #endif
 
+
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF) 
+static PyObject *
+sys__num_revocation(PyObject *module)
+{
+#ifdef WITH_PYMALLOC
+	if (_PyObject_NumRevocation(stderr)) {
+		fputc('\n', stderr);
+	}
+#endif
+
+    Py_RETURN_NONE;
+}
+
+#endif
 /*[clinic input]
 sys._debugmallocstats
 
@@ -2390,6 +2405,9 @@ static PyMethodDef sys_methods[] = {
     SYS_GETTRACE_METHODDEF
     SYS_CALL_TRACING_METHODDEF
     SYS__DEBUGMALLOCSTATS_METHODDEF
+#if defined(__CHERI_PURE_CAPABILITY__) && !defined(SPATIAL_OFF)
+	{"getnumrev", sys__num_revocation, METH_NOARGS, "print rev num"},
+#endif
     SYS_SET_COROUTINE_ORIGIN_TRACKING_DEPTH_METHODDEF
     SYS_GET_COROUTINE_ORIGIN_TRACKING_DEPTH_METHODDEF
     {"set_asyncgen_hooks", _PyCFunction_CAST(sys_set_asyncgen_hooks),
